@@ -8,6 +8,10 @@
   <link rel="stylesheet" href="/SpanTasty/starcups/css/bootstrap.css">
   <link rel="stylesheet" href="/SpanTasty/starcups/css/fonts.css">
   <link rel="stylesheet" href="/SpanTasty/starcups/css/style.css">
+  <style>
+
+</style>
+  
 </head>
 
 <body>
@@ -51,9 +55,6 @@
                 <a class="button button-icon button-icon-left button-facebook button-pipaluk" href="#">
                   <span class="icon fa fa-facebook"></span>Facebook
                 </a>
-                <a class="button button-icon button-icon-left button-twitter button-pipaluk" href="#">
-                  <span class="icon fa fa-twitter"></span>Twitter
-                </a>
                 <a class="button button-icon button-icon-left button-google button-pipaluk" href="javascript:void(0)" onclick="loginWithGoogle()">
                   <span class="icon fa fa-google-plus"></span>Google+
                 </a>
@@ -63,14 +64,14 @@
               </div>
               <form id="loginForm">
                 <div class="form-wrap">
-                  <label class="form-label" for="form-login-name-1">Login</label>
+                  <label class="form-label" for="form-login-name-1"></label>
                   <input class="form-input" id="form-login-name-1" type="text" name="account"
-                    data-constraints="@Required">
+                    data-constraints="@Required" placeholder="帳號">
                 </div>
                 <div class="form-wrap">
-                  <label class="form-label" for="form-login-password-1">Password</label>
+                  <label class="form-label" for="form-login-password-1"></label>
                   <input class="form-input" id="form-login-password-1" type="password" name="password"
-                    data-constraints="@Required">
+                    data-constraints="@Required" placeholder="密碼">
                 </div>
                 <label class="checkbox-inline">
                   <input name="input-checkbox-1" value="checkbox-1" type="checkbox">Remember Me
@@ -95,8 +96,6 @@
               <div class="button-social">
                 <a class="button button-icon button-icon-left button-facebook button-pipaluk" href="#"> <span
                     class="icon fa fa-facebook"></span>Facebook
-                </a> <a class="button button-icon button-icon-left button-twitter button-pipaluk" href="#"> <span
-                    class="icon fa fa-twitter"></span>Twitter
                 </a> <a class="button button-icon button-icon-left button-google button-pipaluk" href="javascript:void(0)" onclick="loginWithGoogle()"> <span
                     class="icon fa fa-google-plus"></span>Google+
                 </a>
@@ -106,44 +105,44 @@
               </div>
               <form id="registerForm">
                 <div class="form-wrap">
-                  <label class="form-label" for="form-register-memberName">會員名稱</label>
+                  <label class="form-label" for="form-register-memberName"></label>
                   <input class="form-input" id="form-register-memberName" type="text" name="memberName"
-                    data-constraints="@Required">
+                    data-constraints="@Required" placeholder="會員名稱">
                 </div>
                 <div class="form-wrap">
-                  <label class="form-label" for="form-register-account">帳號</label>
+                  <label class="form-label" for="form-register-account"></label>
                   <input class="form-input" id="form-register-account" type="text" name="account"
-                    data-constraints="@Required">
+                    data-constraints="@Required" placeholder="帳號">
                 </div>
                 <div class="form-wrap">
-                  <label class="form-label" for="form-register-password">密碼</label>
+                  <label class="form-label" for="form-register-password"></label>
                   <input class="form-input" id="form-register-password" type="password" name="password"
-                    data-constraints="@Required">
+                    data-constraints="@Required" placeholder="密碼">
                 </div>
                 <div class="form-wrap">
-                  <label class="form-label" for="form-register-confirmPassword">確認密碼</label>
+                  <label class="form-label" for="form-register-confirmPassword"></label>
                   <input class="form-input" id="form-register-confirmPassword" type="password" name="confirmPassword"
-                    data-constraints="@Required">
+                    data-constraints="@Required" placeholder="確認密碼">
                 </div>
                 <div class="form-wrap">
-                  <label class="form-label" for="form-register-email">電子郵件</label>
+                  <label class="form-label" for="form-register-email"></label>
                   <input class="form-input" id="form-register-email" type="email" name="email"
-                    data-constraints="@Email @Required">
+                    data-constraints="@Email @Required" placeholder="電子郵件">
                 </div>
                 <div class="form-wrap">
-                  <label class="form-label" for="form-register-birthday">生日</label>
+                  <label class="form-label" for="form-register-birthday"></label>
                   <input class="form-input" id="form-register-birthday" type="date" name="birthday"
-                    data-constraints="@Required">
+                    data-constraints="@Required" placeholder="生日">
                 </div>
                 <div class="form-wrap">
-                  <label class="form-label" for="form-register-address">地址</label>
+                  <label class="form-label" for="form-register-address"></label>
                   <input class="form-input" id="form-register-address" type="text" name="address"
-                    data-constraints="@Required">
+                    data-constraints="@Required" placeholder="地址">
                 </div>
                 <div class="form-wrap">
-                  <label class="form-label" for="form-register-phone">電話</label>
+                  <label class="form-label" for="form-register-phone"></label>
                   <input class="form-input" id="form-register-phone" type="tel" name="phone"
-                    data-constraints="@Required">
+                    data-constraints="@Required" placeholder="電話">
                 </div>
                 <button class="button button-block button-secondary button-pipaluk" type="button"
                   onclick="registerMember()">Register</button>
@@ -167,6 +166,19 @@
   <script src="/SpanTasty/starcups/js/script.js"></script>
   <script th:src="@{/js/axios.min.js}"></script>
   <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const inputs = document.querySelectorAll('.form-input');
+
+    // 監聽自動填寫事件
+    inputs.forEach(input => {
+      input.addEventListener('animationstart', function (event) {
+        if (event.animationName === 'onAutoFillStart') {
+          input.nextElementSibling.classList.add('label-hidden');
+        }
+      });
+    });
+  });
+  
     function autoFillLogin() {
       document.getElementById('form-login-name-1').value = "testTwo";
       document.getElementById('form-login-password-1').value = "123456";

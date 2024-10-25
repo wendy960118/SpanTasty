@@ -70,7 +70,6 @@ public class ReserveController {
     }
     
     
-    
     // ajax 查詢訂位訂單
     @GetMapping("/getList")
     public ResponseEntity<?> getReserveList(@RequestParam(required = false) String memberName,
@@ -88,11 +87,11 @@ public class ReserveController {
     // 匯出 JSON 訂位訂單
     @GetMapping("/export")
     public ResponseEntity<?> exportReserveList(@RequestParam(required = false) String memberName,
-                                                     @RequestParam(required = false) String phone,
-                                                     @RequestParam(required = false) Integer restaurantId,
-                                                     @RequestParam(required = false) String tableTypeId,
-                                                     @RequestParam(required = false) LocalDate reserveTimeStart,
-                                                     @RequestParam(required = false) LocalDate reserveTimeEnd) {
+                                                 @RequestParam(required = false) String phone,
+                                                 @RequestParam(required = false) Integer restaurantId,
+                                                 @RequestParam(required = false) String tableTypeId,
+                                                 @RequestParam(required = false) LocalDate reserveTimeStart,
+                                                 @RequestParam(required = false) LocalDate reserveTimeEnd) {
         
         List<Reserve> reserveByCriteria = reserveService.findReserveByCriteria(memberName, phone, restaurantId, tableTypeId, reserveTimeStart, reserveTimeEnd);
         
@@ -124,7 +123,6 @@ public class ReserveController {
 		return ResponseEntity.ok("delete ok");
 	}
     
-	
 	
 	// 新增訂位的ajax
 	@PostMapping("/add")

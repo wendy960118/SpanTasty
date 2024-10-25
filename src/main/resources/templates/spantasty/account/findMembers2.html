@@ -160,9 +160,42 @@
     </div>
   </div>
 
+  <!-- 新增狀態修改模態框 -->
+  <div class="modal fade" id="statusChangeModal" tabindex="-1" aria-labelledby="statusChangeModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-secondary text-light">
+          <h5 class="modal-title" id="statusChangeModalLabel">修改會員狀態</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="reasonInput">修改原因：</label>
+            <input type="text" id="reasonInput" class="form-control" placeholder="請輸入原因">
+          </div>
+          <div class="form-group mt-3" id="suspendedDateInputContainer" style="display: none;">
+            <label for="suspendedUntilInput">停權日期 (YYYY-MM-DD)：</label>
+            <input type="date" id="suspendedUntilInput" class="form-control">
+          </div>
+        </div>
+        <div class="modal-footer border-secondary d-flex">
+          <button type="button" class="btn btn-secondary me-auto p-2" onclick="autoFill()">一鍵填寫</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+          <button type="button" id="saveStatusChangeBtn" class="btn btn-primary">保存修改</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
 
   <script type="text/javascript">
+  	function autoFill() {
+      document.getElementById('reasonInput').value = "違反使用規定";
+      document.getElementById('suspendedUntilInput').value = "2024-11-09";
+    }
+  	
     document.addEventListener("DOMContentLoaded", function () {
       showSidebar('member');
     });
@@ -213,10 +246,26 @@
       document.getElementById('memberDetailPhone').innerText = member.phone;
       document.getElementById('memberDetailRegisterDate').innerText = member.registerDate;
       document.getElementById('memberDetailLoginDate').innerText = member.loginDate;
-      document.getElementById('memberDetailStatus').innerText = member.status;
       document.getElementById('memberDetailReason').innerText = member.reason ? member.reason : '無';
       document.getElementById('memberDetailSuspendedUntil').innerText = member.suspendedUntil ? member.suspendedUntil : '無';
       document.getElementById('memberDetailProvider').innerText = member.provider ? member.provider : '本地註冊';
+
+      var statusText = '';
+      switch (member.status) {
+        case 'A':
+          statusText = '啟用';
+          break;
+        case 'S':
+          statusText = '暫停';
+          break;
+        case 'I':
+          statusText = '禁用';
+          break;
+        default:
+          statusText = '未知狀態';
+      }
+
+      document.getElementById('memberDetailStatus').innerText = statusText;
 
       // 顯示模態框
       new bootstrap.Modal(document.getElementById('memberDetailModal')).show();
@@ -224,36 +273,60 @@
 
 
     function handleStatusChange(selectElement, memberId) {
-      var status = selectElement.value;
-      var reason = prompt("請輸入修改原因：");
-      var suspendedUntil = null;
+      selectedMemberId = memberId;
+      selectedStatus = selectElement.value;
+      document.getElementById('reasonInput').value = '';
+      document.getElementById('suspendedUntilInput').value = '';
 
-      if (status === 'S') {
-        suspendedUntil = prompt("請輸入停權日期 (格式：YYYY-MM-DD)：");
+      // 如果選擇的是停權狀態，顯示停權日期選項
+      if (selectedStatus === 'S') {
+        document.getElementById('suspendedDateInputContainer').style.display = 'block';
+      } else {
+        document.getElementById('suspendedDateInputContainer').style.display = 'none';
+      }
+
+
+
+      // 顯示模態框
+      new bootstrap.Modal(document.getElementById('statusChangeModal')).show();
+    }
+
+    // 點擊保存按鈕後提交狀態修改
+    document.getElementById('saveStatusChangeBtn').addEventListener('click', function () {
+      var reason = document.getElementById('reasonInput').value;
+      var suspendedUntil = selectedStatus === 'S' ? document.getElementById('suspendedUntilInput').value : null;
+
+      if (!reason) {
+        alert("請輸入修改原因！");
+        return;
       }
 
       var requestData = {
-        memberId: memberId,
-        status: status,
+        memberId: selectedMemberId,
+        status: selectedStatus,
         reason: reason,
         suspendedUntil: suspendedUntil
       };
 
-      // 發送更新會員狀態的請求
       axios.post('/SpanTasty/admin/updateMemberStatus', requestData)
         .then(function (response) {
           if (response.data.success) {
-            alert(response.data.message);  // 顯示成功訊息
+            alert("會員狀態更新成功！");
             loadMembers(currentPage);  // 重新加載當前頁面
           } else {
-            alert(response.data.message);  // 顯示失敗訊息
+            alert("會員狀態更新失敗：" + response.data.message);
           }
         })
         .catch(function (error) {
           console.error(error);
-          alert("會員狀態更新失敗，請重試！");
+          alert("會員狀態更新失敗，請稍後重試！");
+        })
+        .finally(function () {
+          // 關閉模態框
+          var modal = bootstrap.Modal.getInstance(document.getElementById('statusChangeModal'));
+          modal.hide();
         });
-    }
+    });
 
     // 頭像預覽和刪除功能
     function previewMemberAvatar(memberId, avatarUrl) {

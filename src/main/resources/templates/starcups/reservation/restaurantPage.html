@@ -39,6 +39,12 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
     height: 400px; /* 調整地圖高度 */
     width: 100%; /* 讓地圖寬度為100% */
 }
+.btn-cus{
+	width: 100px !important;
+	height: 50px !important;
+	min-width: 130px !important;
+}
+
 </style>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
@@ -171,21 +177,18 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
                   <li><span>Phone:</span><span  th:text="${restaurant.restaurantPhone}">Valley Accommodation Ltd.</span></li>
                   <li><span>Time:</span><span th:text="${restaurant.restaurantOpentime}+' - '+${restaurant.restaurantClosetime}"></span></li>
                   <li><span>Location:</span><span th:text="${restaurant.restaurantAddress}"></span></li>
-                  <li><span>Categories:</span><span>Custom Projects</span></li>
+                  <li><span>Dining Time Limited:</span><span th:text="${restaurant.eattime} + '分鐘'"></span></li>
                 </ul>
+                
                 <div class="divider divider-30"></div>
-                <div class="group-md group-middle justify-content-sm-start"><span class="social-title">Share</span>
-                  <div>
-                    <ul class="list-inline list-inline-sm social-list">
-                      <li><a class="novi-icon icon fa fa-facebook" href="#"></a></li>
-                      <li><a class="novi-icon icon fa fa-twitter" href="#"></a></li>
-                      <li><a class="novi-icon icon fa fa-google-plus" href="#"></a></li>
-                      <li><a class="novi-icon icon fa fa-instagram" href="#"></a></li>
+                  <div class="d-flex justify-content-center">
+                    <ul class="list-inline list-inline-sm social-list d-flex justify-content-start">
+                      <li class="ms-0"><a class="button button-md button-ujarak button-gray-7 btn-cus" th:href="@{/StarCups/reserve(restaurantId=${restaurant.restaurantId})}">線上訂位</a></li>
+                      <li class="ms-3"><a class="button button-md button-ujarak button-gray-7 btn-cus" href="/SpanTasty/StarCups/order">外帶訂餐</a></li>
+                      <li class="ms-3"><a class="button button-md button-ujarak button-gray-7 btn-cus" href="/SpanTasty/StarCups/rental/rent">環保租借</a></li>
                     </ul>
                   </div>
-                </div>
-              </div>
-            </div>
+            	</div>
           </div>
         </div>
       </section>

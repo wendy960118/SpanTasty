@@ -110,6 +110,10 @@
 	<script src="https://cdn.jsdelivr.net/npm/progressbar.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	<script>
+	
+	    document.addEventListener("DOMContentLoaded", function () {
+      showSidebar('member');
+    });
     // 通用函數來更新 DOM 元素的內容
     function updateTextContent(elementId, content) {
       document.getElementById(elementId).textContent = content;

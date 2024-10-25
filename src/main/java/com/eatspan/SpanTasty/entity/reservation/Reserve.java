@@ -2,19 +2,25 @@ package com.eatspan.SpanTasty.entity.reservation;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.eatspan.SpanTasty.entity.account.Member;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -66,7 +72,6 @@ public class Reserve {
 	//@JoinColumn(name = "table_type_id", insertable = false, updatable = false)
 	private TableType tableType;
 	
-	
 	@ManyToOne //預設(fetch = FetchType.EAGER)
     @JoinColumn(name = "restaurant_id")
 	//@JoinColumn(name = "restaurant_id", insertable = false, updatable = false)
@@ -77,6 +82,10 @@ public class Reserve {
 	//@JoinColumn(name = "member_id", insertable = false, updatable = false)
     private Member member; // 與 Member 的關聯	
 	
+//	// 10/25 test
+//	@JsonIgnore //該屬性不要做JSON序列化避免無線迴圈 //預設lazy
+//	@OneToMany(fetch = FetchType.LAZY, mappedBy = "reserve", cascade = CascadeType.ALL)
+//	private List<RestaurantTable> restaurantTables = new ArrayList<RestaurantTable>();
 	
 	
 	@PrePersist //當物件轉換成persist時先做該方法

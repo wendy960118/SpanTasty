@@ -24,9 +24,6 @@ public class RestaurantTable {
     @EmbeddedId
     private RestaurantTableId id; // 嵌入的複合主鍵
 
-//    @Column(name = "table_type_number")
-//    private Integer tableTypeNumber; // 桌子數量
-    
     @Column(name = "table_status")
     private Integer tableStatus; // 桌子是否可供訂位(1=可, 2=不可)
     
@@ -38,6 +35,11 @@ public class RestaurantTable {
     @JoinColumn(name = "table_type_id", insertable = false, updatable = false)
     private TableType tableType; // 與 TableType 的關聯
     
+//    // 10/25 test
+//    @ManyToOne //預設(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "reserve_id", insertable = false, updatable = false)
+//    private Reserve reserve; // 與 Reserve 的關聯
+    
     
 	@PrePersist //當物件轉換成persist時先做該方法
 	public void onCreate() {
@@ -46,7 +48,7 @@ public class RestaurantTable {
 		}
 	}
 
-
+	
 	public RestaurantTable(RestaurantTableId id) {
 		this.id = id;
 	}
