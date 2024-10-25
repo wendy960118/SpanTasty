@@ -1,51 +1,63 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org/" class="wide wow-animation" lang="en">
-
 <head>
-  <title>Order Online</title>
-  <meta name="format-detection" content="telephone=no">
-  <meta name="viewport"
-    content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta charset="utf-8">
-  <link rel="icon" href="images/favicon.ico" type="image/x-icon">
-  <!-- Stylesheets-->
-  <!-- 更改樣式 -->
-  <link rel="stylesheet" type="text/css"
-    href="https://fonts.googleapis.com/css?family=Poppins:400,500%7CTeko:300,400,500%7CMaven+Pro:500">
-  <link rel="stylesheet" href="/SpanTasty/starcups/css/bootstrap.css">
-  <link rel="stylesheet" href="/SpanTasty/starcups/css/fonts.css">
-  <link rel="stylesheet" href="/SpanTasty/starcups/css/style.css">
-  <style>
-    .ie-panel {
-      display: none;
-      background: #212121;
-      padding: 10px 0;
-      box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, .3);
-      clear: both;
-      text-align: center;
-      position: relative;
-      z-index: 1;
-    }
+<title>Order Online</title>
+<meta name="format-detection" content="telephone=no">
+<meta name="viewport"
+  content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta charset="utf-8">
+<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+<!-- Stylesheets-->
+<!-- 更改樣式 -->
+<link rel="stylesheet" type="text/css"
+  href="https://fonts.googleapis.com/css?family=Poppins:400,500%7CTeko:300,400,500%7CMaven+Pro:500">
+<link rel="stylesheet" href="/SpanTasty/starcups/css/bootstrap.css">
+<link rel="stylesheet" href="/SpanTasty/starcups/css/fonts.css">
+<link rel="stylesheet" href="/SpanTasty/starcups/css/style.css">
+<style>
+.ie-panel {
+  display: none;
+  background: #212121;
+  padding: 10px 0;
+  box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, .3);
+  clear: both;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
 
-    html.ie-10 .ie-panel,
-    html.lt-ie-10 .ie-panel {
-      display: block;
-    }
+html.ie-10 .ie-panel,
+html.lt-ie-10 .ie-panel {
+  display: block;
+}
 
-    #cartContainer {
-      display: none;
-    }
+#cartContainer {
+  display: none;
+}
 
-    #cartContainer.active {
-      display: block;
-    }
-    
-    #cartIcon, .disable-link {
-	  pointer-events: none;
-	  opacity: 0.5;
-	}
-  </style>
+#cartContainer.active {
+  display: block;
+}
+   
+#cartIcon, .disable-link {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.rd-navbar-basket {
+    padding-right: 16px !important;
+}
+
+.product-top-panel {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start !important; 
+    justify-content: center;
+}
+
+
+</style>
 </head>
 
 <body>
@@ -71,42 +83,40 @@
     <section class="section breadcrumbs-custom-inset">
       <div class="breadcrumbs-custom context-dark">
         <div class="container">
-          <h2 class="breadcrumbs-custom-title">Start Rent</h2>
+          <h2 class="breadcrumbs-custom-title">Rent Now</h2>
           <ul class="breadcrumbs-custom-path">
             <li><a href="/SpanTasty/StarCups">Home</a></li>
             <!-- <li><a href="grid-gallery.html">Menu</a></li> -->
-            <li class="active">Start Rent</li>
+            <li><a href="/SpanTasty/StarCups/rental/home">Rent</a></li>
+            <li class="active">Rent Now</li>
           </ul>
         </div>
         <div class="box-position novi-bg novi-bg-img" style="background-image: url('/SpanTasty/StarCups/images/bg-breadcrumbs.jpg');"></div>
       </div>
     </section>
     <!-- Shop-->
-    <section class="section novi-bg novi-bg-img section-xl bg-default">
+    <section class="section novi-bg novi-bg-img section-xl bg-default pb-1">
       <div class="container">
         <div class="row row-90 row-fix justify-content-center">
-          <div class="col-lg-8 col-xl-9">
+          <div class="col-lg-8 col-xl-9 pe-4" style="width: 1170px;">
             <div class="product-top-panel group-lg">
-              <h5 class="">請先選擇租借餐廳 再選擇租借品項</h5>
-            <div class="content" id="container">
-              <table class="table table-striped mb-0 " style="width: 600px;">
+            <div class="content m-0" id="container">
+              <table class="table mb-0 table-secondary" style="width: 600px; border:1px solid lightgrey;">
+		        <caption>請先選擇租借餐廳 再選擇租借品項</caption>
                 <tr>
                   <td>租借餐廳:
-                    <select name="restaurantId" id="restaurantId" style="width: 500px;" required
-                      onchange="changeRestaurant()">
+                    <select name="restaurantId" id="restaurantId" style="width: 500px;" required onchange="changeRestaurant()">
                       <option value="" selected disabled>請選擇租借餐廳</option>
-                      <option th:each="restaurant : ${restaurants}" th:value="${restaurant.restaurantId}"
-                        th:text="${restaurant.restaurantName}"></option>
+                      <option th:each="restaurant : ${restaurants}" th:value="${restaurant.restaurantId}" th:text="${restaurant.restaurantName}"></option>
                     </select>
                   </td>
                 </tr>
               </table>
             </div>
                   <!-- 購物車 -->
-              <div class="rd-navbar-basket-wrap">
+              <div class="rd-navbar-basket-wrap mt-4">
                 <div>
-                  <button id="cartIcon" class="rd-navbar-basket rd-navbar-basket-mobile "
-                    data-rd-navbar-toggle=".cart-inline">
+                  <button id="cartIcon" class="rd-navbar-basket rd-navbar-basket-mobile" data-rd-navbar-toggle=".cart-inline">
                     <i class="fa-solid fa-cart-arrow-down"></i>
                     <!-- 動態更新數量 -->
                     <span id="showCartAmount"></span></button>
@@ -136,82 +146,57 @@
                         </div>
                       </div>
                     </div>
-
                   </div>
-                  <div class="cart-inline-footer pb-3 pt-3">
-                    <div class="group-sm ">
-                      <a class="button button-md button-primary button-pipaluk" onclick="submitCart()">結帳</a>
-                      <h6 class="ms-5 ps-4  cart-inline-title position-absolute top-15 end-10">總金額: <span id="showTotalPrice">$524</span></h6>
-                    </div>
+	                  <div class="cart-inline-footer pb-3 pt-3">
+	                    <div class="group-sm ">
+	                      <a class="button button-md button-primary button-pipaluk" onclick="submitCart()">結帳</a>
+	                      <h6 class="ms-5 ps-4  cart-inline-title position-absolute top-15 end-10">總金額: <span id="showTotalPrice">$524</span></h6>
+	                    </div>
+	                  </div>
+                </div>
+               </div>
+              </div>
+             </div>
+            </div>
+           </div>
+          </section>
+	
+	
+	<!-- Section Pricing-->
+	<section class="section novi-bg novi-bg-img section-xl bg-default pt-4">
+     <div class="container">
+      <div class="row row-40">
+       <div class="col-sm-6 col-lg-4 p-0" th:each="tableware : ${tablewares}">
+       <a class="disable-link" th:id="'single' + ${tableware.tablewareId}">
+          <div class="box-pricing pt-1 me-0 ms-0 ps-0 pe-0">
+            <div class="box-pricing-body">
+              <div class="box-pricing-caption">
+              <img th:src="${tableware.tablewareImage != null ? tableware.tablewareImage : 'https://via.placeholder.com/450x400'}" alt="" width="180" height="180" />
+                <h5 class="box-pricing-title" th:text="${tableware.tablewareName}"></h5>
+                <h3 class="box-pricing-price"><span>NT$</span><span class="box-icon-classic-title" th:text="${tableware.tablewareDeposit}"></span></h3>
+                <div class="quantity-selector">
+                  <div class="table-cart-stepper">
+                    <input class="form-input" th:id="'rentItemQuantity'+${tableware.tablewareId}" type="number" data-zeros="true" value="0" min="0" max="1000">
                   </div>
                 </div>
-                </div>
-                </div>
-                </div>
-                </div>
-
-
-
-    <section class="section pt-4 novi-bg novi-bg-img section-xl bg-default text-md-start pb-3">
-      <div class="container">
-        <div class="row row-90 row-fix justify-content-center">
-          <div class="col-lg-11 post-classic-wrap">
-            
-            <div class="" id="show-restaurant"></div>
+            	<span style="position: absolute; bottom: 50px; right: 10px; color:red;" th:id="'stock' + ${tableware.tablewareId}"></span>
+              </div>
+            </div>
+            <div class="box-pricing-button mt-1"><button class="button button-lg button-block button-gray-4 pt-0 pb-0" th:data-tablewareId="${tableware.tablewareId}" onclick="addToCart(this)"><i class="fa-solid fa-cart-arrow-down" style="font-size:23px;"></i></button></div>
           </div>
-        </div>
+        </a>
+       </div>
       </div>
-    </section>
-    <section class="section novi-bg novi-bg-img section-xl bg-default">
-      <div class="container">
-        <div class="row row-40">
-          <div class="col-sm-6 col-lg-4" th:each="tableware : ${tablewares}">
-            <a class="disable-link" th:id="'single' + ${tableware.tablewareId}">
-              <article class="box-icon-classic p-3">
-                <div
-                  class="unit box-icon-classic-body flex-column flex-md-row text-md-left flex-lg-column text-lg-center flex-xl-row text-xl-left">
-                  <div class="unit-left mb-0">
-                    <span class="product-title " th:text="${tableware.tablewareName}"></span>
-                    <br />
-                    <br />
-                    <span>NT$</span><span class="box-icon-classic-title "
-                      th:text="${tableware.tablewareDeposit}"></span>
-                  </div>
-                  <div class="unit-body ms-5 ps-5 mb-4">
-                    <img
-                      th:src="${tableware.tablewareImage != null ? tableware.tablewareImage : 'https://via.placeholder.com/450x400'}"
-                      alt="" width="100" height="100" />
+     </div>
+   	</section>
 
-                    <span style="position: absolute; bottom: 10px; right: 10px; color:red;"
-                      th:id="'stock' + ${tableware.tablewareId}"></span>
 
-                    <div class="quantity-selector">
-                      <div class="table-cart-stepper"
-                        style="padding-top:0; padding-bottom:0;line-height: 20px;">
-                        <input class="form-input"
-                          th:id="'rentItemQuantity'+${tableware.tablewareId}"
-                          style="min-height:1px;" type="number" data-zeros="true"
-                          value="0" min="0" max="1000">
-                      </div>
-                    </div>
-                    <button class="btn btn-primary btn-sm pb-0 pt-0"
-                      style="position: absolute; bottom: 32px; right: 15px;"
-                      th:data-tablewareId="${tableware.tablewareId}" onclick="addToCart(this)"><i
-                        class="fa-solid fa-cart-arrow-down" style="font-size:12px;"></i></button>
-                  </div>
-                </div>
-              </article>
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
+    
     
 <!-- Global Mailform Output-->
-<div class="snackbars" id="form-output-global"></div>
-
-<!-- footer  th:replace=-->
-<div th:replace="~{starcups/display/footer}"></div>
+ <div class="snackbars" id="form-output-global"></div>
+ <!-- footer  th:replace=-->
+ <div th:replace="~{starcups/display/footer}" ></div>
 
 <!-- Javascript-->
 <script src="/SpanTasty/starcups/js/core.min.js"></script>
@@ -457,8 +442,6 @@ function reloadCartItems() {
 	          if (currentValue >= max) {
 	            alert('超過庫存上限！');
 	            quantityInput.value = max;
-	          } else {
-	            quantityInput.value = currentValue + 1;
 	          }
 	          // 更新剩餘庫存
 	          stockElement.innerHTML = `剩 ${max - quantityInput.value} 件`;
@@ -468,12 +451,10 @@ function reloadCartItems() {
 	        stepDownArrow.addEventListener('click', function () {
 	          const currentValue = parseInt(quantityInput.value, 10);
 	          const min = parseInt(quantityInput.min, 10);
-	          if (currentValue > min) {
-	            quantityInput.value = currentValue - 1;
-	          } else {
+	          if (currentValue < min) {
 	            alert('數量不能少於 0 件');
 	            quantityInput.value = min;
-	          }
+	          } 
 	          // 更新剩餘庫存
 	          stockElement.innerHTML = `剩 ${parseInt(quantityInput.max, 10) - quantityInput.value} 件`;
 	        });
@@ -483,38 +464,7 @@ function reloadCartItems() {
       }
     });
   }
-/*
-  function htmlMaker(data) {
-    const restaurant = data.restaurant;
-    const showRestaurant = document.getElementById("show-restaurant");
 
-    showRestaurant.innerHTML = `
-    <section class="section novi-bg novi-bg-img section-xl bg-default pt-0">
-    <div class="container">
-      <div class="row row-50 justify-content-center align-items-xl-center" style="height: 280px">
-        <div class="col-md-4 col-lg-4 col-xl-7" style="width: 280px">
-          <div class="offset-right-xl-4 " >
-<img src="${restaurant.restaurantImg != null ? restaurant.restaurantImg : 'https://via.placeholder.com/450x400'}" alt="" class="restaurant-img img-fluid"/>
-          </div>
-        </div>
-        <div class="col-md-4 col-lg-4 col-xl-5">
-          <div class="single-project">
-            <h4>${restaurant.restaurantName}</h4>
-            <p class="text-gray-500">${restaurant.restaurantDesc}</p>
-            <div class="divider divider-30"></div>
-            <ul class="list list-description d-inline-block d-md-block">
-              <li><span>Phone:</span><span>${restaurant.restaurantPhone}</span></li>
-              <li><span>Time:</span><span>${restaurant.restaurantOpentime} - ${restaurant.restaurantClosetime}</span></li>
-              <li><span>Location:</span><span>${restaurant.restaurantAddress}</span></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-`;
-  }
-*/
 </script>
 </body>
 </html>

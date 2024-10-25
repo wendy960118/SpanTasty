@@ -88,7 +88,11 @@ public class StarCupsRentController {
 				.stream()
                 .filter(restaurant -> restaurant.getRestaurantStatus() == 1)
                 .collect(Collectors.toList());
-		List<Tableware> tablewares = tablewareService.findAllTablewares();
+		// 過濾掉 tablewareStatus == 2 的餐具
+		List<Tableware> tablewares = tablewareService.findAllTablewares()
+		        .stream()
+		        .filter(tableware -> tableware.getTablewareStatus() != 2)
+		        .collect(Collectors.toList());
 		model.addAttribute("tablewares", tablewares);
 		model.addAttribute("restaurants" ,restaurants);
 		return "starcups/rental/rentTablewarePage";
@@ -160,6 +164,13 @@ public class StarCupsRentController {
 	            // 新增每個租借項目
 	            RentItem rentItem = rentItemService.addRentItemToOrder(rent.getRentId(), tablewareId, rentItemQuantity);
 	            rentDeposit += rentItem.getRentItemDeposit();
+	            // 扣餐廳庫存
+	            
+	            TablewareStock tablewareStock = tablewareStockService.findStockById(tablewareId, restaurantId);
+		        Integer stock = tablewareStock.getStock();
+		        stock -= rentItemQuantity;
+		        tablewareStock.setStock(stock);
+		        tablewareStockService.addStock(tablewareStock);
 	        }
 			rent.setRentDeposit(rentDeposit);
 			rentService.addRent(rent);
@@ -207,18 +218,14 @@ public class StarCupsRentController {
 	@ResponseBody
 	public String ecpayCheckout(Model model) {
 	    Integer rentId = (Integer) session.getAttribute("rentId");
-	    
 	    String aioCheckOutALLForm = rentService.ecpayCheckout(rentId);
-
 	    model.addAttribute("aioCheckOutALLForm", aioCheckOutALLForm);
-	    
-	    
 	    return aioCheckOutALLForm;
 	}
 	
 	
 	//
-	@GetMapping("/rental/OrderConfirm")
+	@GetMapping("/rental/orderConfirm")
 	public String checkOutFinish(@RequestParam Map<String, String>map, Model model) {
 		Integer rentId = (Integer) session.getAttribute("rentId");
 		Rent rent = rentService.findRentById(rentId);
@@ -232,5 +239,36 @@ public class StarCupsRentController {
 		model.addAttribute("member", member);
 		
 		return "starcups/rental/rentOrderConfirm";
+	}
+	
+	
+	// 導向訂單名細頁面
+	@ResponseBody
+	@PostMapping("/rental/rentRecord")
+	public ResponseEntity<List<Rent>> toRentRecord(@RequestHeader(value = "Authorization") String token) {
+		// 解析 JWT token 取得 claims
+		Map<String, Object> claims = JwtUtil.parseToken(token);
+		Integer memberId = (Integer) claims.get("memberId"); // 獲取會員 ID
+		List<Rent> rents = rentService.findRentsByMemberId(memberId);
+		return ResponseEntity.ok(rents);
+	}
+	
+	
+	@ResponseBody
+	@PostMapping("/rental/rentItemRecord/{id}")
+    public ResponseEntity<?> orderDetail(@PathVariable Integer id, @RequestHeader("Authorization") String token) {
+        // 解析 JWT token 取得 claims
+        Map<String, Object> claims = JwtUtil.parseToken(token);
+        Integer memberId = (Integer) claims.get("memberId");
+
+        List<RentItem> rentItems = rentItemService.findRentItemsByRentId(id);
+
+        return ResponseEntity.ok(rentItems); // 返回所有商品明細
+    }
+	
+	
+	@GetMapping("/rental/memberCenterRent")
+	public String showMemberCenterPage() {
+		return "starcups/rental/memberCenterPageRent"; 
 	}
 }

@@ -28,37 +28,6 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
     display: block;
 }
 
-p.global-primary.dark-primary.section-title::after {
-    content: '';
-    display: block;
-    width: 25px; /* 設定線條的寬度 */
-    height: 3px; /* 設定線條的高度 */
-    background-color: darkgrey; /* 設定線條的顏色 */
-    margin: 20px auto 0; /* 調整線條與文字之間的距離 */
-}
-
-.section-title {
-    font-size: 20px; /* 調整文字大小 */
-    color: #333; /* 調整文字顏色 */
-    text-align: center; /* 文字居中 */
-    font-weight: bold;
-}
-
-.Grid-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* 讓每個項目占據最少250px寬度，並自動填充 */
-    gap: 20px; /* 產品之間的間距 */
-}
-
-.Grid-products-item {
-    padding: 10px;
-    border-radius: 8px;
-    transition: transform 0.3s ease-in-out;
-}
-
-.Grid-products-item:hover {
-    transform: translateY(-5px); /* 在懸停時使產品項目上移 */
-}
 </style>
 </head>
 <body>
@@ -71,6 +40,7 @@ p.global-primary.dark-primary.section-title::after {
           <h2 class="breadcrumbs-custom-title">Single Tableware</h2>
           <ul class="breadcrumbs-custom-path">
             <li><a href="/SpanTasty/StarCups">Home</a></li>
+            <li><a href="/SpanTasty/StarCups/rental/lookbook">Tableware</a></li>
             <li class="active">Single Tableware</li>
           </ul>
         </div>
@@ -82,7 +52,7 @@ p.global-primary.dark-primary.section-title::after {
 <section class="section novi-bg novi-bg-img section-xl bg-default">
         <div class="container">
           <div class="row row-50">
-            <div class="col-lg-6">
+            <div class="col-lg-5">
               <div class="slick-product">
                 <!-- Slick Carousel-->
                 <div class="slick-slider carousel-parent" data-swipe="true" data-items="1" data-child="#child-carousel" data-for="#child-carousel">
@@ -97,7 +67,7 @@ p.global-primary.dark-primary.section-title::after {
               <div class="single-product">
                 <h3 th:text="${tableware.tablewareName}" ></h3>
                 <div class="group-md group-middle">
-                  <div class="single-product-price"><span>NT$</span><span th:text="${tableware.tablewareDeposit}"></span><span>/1day</span></div>
+                  <div class="single-product-price"><span>NT$</span><span th:text="${tableware.tablewareDeposit}"></span><span>/7day</span></div>
                 </div>
                 <p th:text="${tableware.tablewareDescription}"></p>
                 <div class="divider divider-30"></div>
