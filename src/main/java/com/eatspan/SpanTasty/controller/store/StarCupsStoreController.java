@@ -1,5 +1,6 @@
 package com.eatspan.SpanTasty.controller.store;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -209,12 +210,31 @@ public class StarCupsStoreController {
 		return "starcups/store/checkOut";
 	}
 
+	
+	
 	@GetMapping("/findItem")
 	@ResponseBody
 	public List<ShoppingItem> findItemAjax(@RequestParam Integer shoppingId) {
 		return shoppingItemService.findShoppingItemById(shoppingId);
 	}
 	
+	@GetMapping("/productType")
+	public String shop(Model model) {
+	    List<ProductType> productType =productTypeService.findAllProductType(); 
+	    model.addAttribute("productType", productType);
+	    return "productType"; 
+	}
+
+    @GetMapping("/productsByCategory/{productTypeId}")
+    public String getProductsByCategory(@PathVariable Integer productTypeId, Model model) {
+        List<Product> products = productService.findProductsByCategory(productTypeId);
+        List<ProductType> productTypes = productTypeService.findAllProductType();
+        model.addAttribute("products", products);
+        model.addAttribute("productTypes", productTypes);
+        model.addAttribute("totalProducts", products.size());
+        return "shop"; // 返回的视图
+    }
+
 
 	@PostMapping("/ecpayCheckout")
 	@ResponseBody

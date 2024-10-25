@@ -154,6 +154,11 @@ public class ProductService {
 	    return productRepo.findById(id);
 	}
 	
+	public List<Product> findProductsByCategory(Integer productTypeId) {
+	    return productRepo.findProductsByProductTypeId(productTypeId);
+	}
+
+	
 	public List<Product> findAllProduct(){
 		return productRepo.findAll();
 	}

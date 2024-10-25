@@ -205,7 +205,6 @@ public class ShoppingOrderService {
 		    return null; 
 		}
 
-	
 
 	
 	public ShoppingOrder findShoppingOrderById(Integer id) {
@@ -305,7 +304,7 @@ public class ShoppingOrderService {
                           .append(quantity)
                           .append("*NT$")
                           .append(price)
-                          .append("#"); 
+                          .append("# "); 
             }
         }
 

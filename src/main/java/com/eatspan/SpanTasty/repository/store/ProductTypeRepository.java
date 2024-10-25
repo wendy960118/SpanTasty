@@ -16,5 +16,5 @@ public interface ProductTypeRepository extends JpaRepository<ProductType, Intege
 	 //Coupon使用 取得productType選項
 	 @Query("SELECT pt.productTypeName FROM ProductType pt ")
 	 	List<String> findProductTypeName();
-	
+	 
 }
