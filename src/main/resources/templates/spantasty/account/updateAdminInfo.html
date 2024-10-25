@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <title>修改管理員資料</title>
 </head>
-<body class="bg-dark text-white">
+<body>
     <!-- 頂部導航欄 -->
     <div th:replace="~{spantasty/display/navbar}"></div>
 
     <!-- 主要內容區域 -->
-    <div class="container mt-5" style="padding-left: 270px; padding-top: 80px;">
+	<div class="container mt-5"	style="padding-left: 200px; padding-top: 30px;">
         <h1 class="text-center">修改個人資料</h1>
-
+			<div class="p-4 border border-dark rounded bg-light text-dark">
         <!-- 修改管理員名稱 -->
         <div class="form-group mt-4">
             <label for="adminName" class="form-label">管理員名稱：</label>
@@ -30,12 +30,20 @@
 
         <!-- 儲存變更按鈕 -->
         <button id="saveChangesBtn" class="btn btn-primary mt-4">儲存變更</button>
+        <button class="btn btn-secondary mt-4" onclick="autoFill()">一鍵填寫</button>
 
         <!-- 顯示修改結果的區域 -->
         <div id="resultMessage" class="alert mt-3" style="display: none;"></div>
     </div>
+    </div>
 
     <script>
+    
+    	    function autoFill() {
+      document.getElementById('newAdminName').value = "周杰倫";
+      document.getElementById('newPassword').value = "1234";
+      document.getElementById('confirmPassword').value = "1234";
+    }
     
         document.addEventListener("DOMContentLoaded", function () {
             showSidebar('admin');
@@ -82,7 +90,7 @@
                     // 成功後跳轉到首頁
                     setTimeout(function () {
                         window.location.href = '/SpanTasty';
-                    }, 5000); // 2秒後跳轉
+                    }, 2000); // 2秒後跳轉
                     
                 } else {
                     resultMessage.className = 'alert alert-danger';

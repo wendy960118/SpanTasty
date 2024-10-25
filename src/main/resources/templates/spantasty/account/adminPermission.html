@@ -185,6 +185,8 @@
       let currentPage = 0;
       const pageSize = 10;
       let currentAdminId = null;
+      
+      const editPermissionsModal = new bootstrap.Modal(document.getElementById('editPermissionsModal'));
 
       // 查詢按鈕監聽事件：根據條件進行查詢（ID、姓名、帳號）
       document.querySelector('#searchByConditionBtn').addEventListener('click', function () {
@@ -361,7 +363,7 @@
             });
 
             // 打開模態框
-            new bootstrap.Modal(document.getElementById('editPermissionsModal')).show();
+            editPermissionsModal.show();
           })
           .catch(function (error) {
             console.error(error);
@@ -378,14 +380,16 @@
         if (confirm("確定要修改此管理員的權限嗎？")) {
           axios.post(`/SpanTasty/admin/${currentAdminId}/permissions`, { permissions: updatedPermissions })
             .then(function () {
+
               alert("權限更新成功！");
-              new bootstrap.Modal(document.getElementById('editPermissionsModal')).hide();
+			  editPermissionsModal.hide();
               // 默認使用 ID 進行查詢
               const searchType = 'id';
               const searchInput = currentAdminId; // 使用當前管理員 ID 進行查詢
 
               // 重新查詢並刷新表格
               searchAdminsByCondition(searchType, searchInput, currentPage);
+              
             })
             .catch(function (error) {
               console.error(error);
