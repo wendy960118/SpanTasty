@@ -183,7 +183,7 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
                 <div class="divider divider-30"></div>
                   <div class="d-flex justify-content-center">
                     <ul class="list-inline list-inline-sm social-list d-flex justify-content-start">
-                      <li class="ms-0"><a class="button button-md button-ujarak button-gray-7 btn-cus" href="/SpanTasty/StarCups/reserve">線上訂位</a></li>
+                      <li class="ms-0"><a class="button button-md button-ujarak button-gray-7 btn-cus" th:href="@{/StarCups/reserve(restaurantId=${restaurant.restaurantId})}">線上訂位</a></li>
                       <li class="ms-3"><a class="button button-md button-ujarak button-gray-7 btn-cus" href="/SpanTasty/StarCups/order">外帶訂餐</a></li>
                       <li class="ms-3"><a class="button button-md button-ujarak button-gray-7 btn-cus" href="/SpanTasty/StarCups/rental/rent">環保租借</a></li>
                     </ul>

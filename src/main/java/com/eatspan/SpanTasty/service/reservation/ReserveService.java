@@ -215,11 +215,6 @@ public class ReserveService {
 	}
 	
 	
-//	// 查詢餐廳某日所有訂位
-//	public List<Reserve> findReserveByRestaurantAndDate(Integer restaurantId, LocalDate checkDate){
-//		return reserveRepository.findReserveByRestaurantAndDate(restaurantId, checkDate);
-//	}
-	
 	
 	
 	
@@ -340,7 +335,6 @@ public class ReserveService {
 
     	Restaurant restaurant = restaurantService.findRestaurantById(restaurantId);
     	Map<String, Integer> restaurantReserveMap = new LinkedHashMap<>();
-    	
     	for(int i = restaurant.getReserveMin() ; i<=restaurant.getReserveMax() ; i++) {
     		Integer countReservationsBySeat = reserveRepository.countReservationsBySeat(restaurantId, i);
     		restaurantReserveMap.put(i+"人", countReservationsBySeat);
@@ -353,17 +347,13 @@ public class ReserveService {
     public Map<String, Integer> getReserveByWeekDay(Integer restaurantId) {
     	
     	Map<String, Integer> restaurantReserveMap = new LinkedHashMap<>();
-    	
-    	
         // 將數字對應到中文星期
         String[] weekDays = {"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
-        
         for (int i = 1; i <= 7; i++) {
             Integer countReservationsBySeat = reserveRepository.countReservationsByWeekDay(restaurantId, i);
             // 使用對應的中文星期
             restaurantReserveMap.put(weekDays[i - 1], countReservationsBySeat);
         }
-    	
     	return restaurantReserveMap;
     }
     
