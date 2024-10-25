@@ -1,6 +1,7 @@
 package com.eatspan.SpanTasty.controller.account;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
@@ -318,9 +319,13 @@ public class AdminController {
 			@RequestParam(defaultValue = "10") int size, @RequestParam(required = false) String search) {
 
 		Pageable pageable = PageRequest.of(page, size);
+		
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd a hh:mm");
+		DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
 		// 如果有搜索條件，進行模糊查詢，否則查詢所有會員
 		Page<Member> memberPage;
+		
 		if (search != null && !search.isEmpty()) {
 			// 根據會員名稱或帳號進行模糊查詢
 			memberPage = memberService.findByMemberNameContainingOrAccountContaining(search, search, pageable);
@@ -342,8 +347,10 @@ public class AdminController {
 		    memberData.put("address", member.getAddress());
 		    memberData.put("phone", member.getPhone());
 		    memberData.put("registerDate", member.getRegisterDate() != null ? member.getRegisterDate().toString() : null); // 日期轉為字串
-		    memberData.put("loginDate", member.getLoginDate() != null ? member.getLoginDate().toString() : null); // 日期轉為字串
-		    memberData.put("suspendedUntil", member.getSuspendedUntil() != null ? member.getSuspendedUntil().toString() : null); // 停權日期
+	        memberData.put("loginDate", member.getLoginDate() != null
+	                ? member.getLoginDate().format(formatter) // 使用 DateTimeFormatter 格式化
+	                : null);
+		    memberData.put("suspendedUntil", member.getSuspendedUntil() != null ? member.getSuspendedUntil().format(formatter2) : null); // 停權日期
 		    memberData.put("provider", member.getProvider());
 		    memberData.put("providerId", member.getProviderId());
 		    memberData.put("reason", member.getReason());
