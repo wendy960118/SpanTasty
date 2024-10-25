@@ -43,8 +43,8 @@
             <h5>歷史紀錄</h5>
             <div class="post-sidebar-item-inset">
               <ul class="list list-categories">
-                <li><button class="button-custom" id="btn-personal-info"><span class="icon fa fa-user"></span>
-                    訂位紀錄</button></li>
+                <li><button class="button-custom" id="btn-personal-info"><a href="/SpanTasty/StarCups/reserveRecord"><span class="icon fa fa-user"></span>
+                    訂位紀錄</a></button></li>
                 <li><button class="button-custom" id="btn-change-password"><span class="icon fa fa-key"></span>
                     訂餐紀錄</button></li>
                 <li><form th:action= "@{/StarCups/orderHistory(shoppingId=${session['shoppingId']})}" method="get" id="checkoutForm"></form>
