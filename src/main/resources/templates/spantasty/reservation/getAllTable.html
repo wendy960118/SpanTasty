@@ -219,7 +219,6 @@
 	    });
 	}
 
-	/*
 	function changeTableStatus(button){
 		const tableTypeId = button.getAttribute('data-table-type-id');
 	    const restaurantId = button.getAttribute('data-restaurant-id');
@@ -246,40 +245,6 @@
 		})
 	}
 
-	function setRestaurantReserve(event){
-		event.preventDefault();
-
-			name="restaurantName"
-			"restaurantId"
-			"restaurantAddress"
-			"restaurantPhone"
-			"restaurantOpentime"
-			name="restaurantClosetime"
-			name="restaurantStatus"
-			name="restaurantImg"
-			name="restaurantDesc"
-		const tableTypeId = button.getAttribute('data-table-type-id');
-	    const restaurantId = button.getAttribute('data-restaurant-id');
-	    const tableId = button.getAttribute('data-table-id');
-		let tableStatus = button.getAttribute('data-table-status');
-		
-
-		// 發送 Ajax 請求來更新狀態
-		axios.put('/SpanTasty/restaurant/set', {
-			tableStatus: tableStatus,
-			tableTypeId: tableTypeId,
-			tableId: tableId,
-			restaurantId: restaurantId
-		})
-		.then(res => {
-			console.log(res);
-
-		})
-		.catch(err => {
-			console.error(err); 
-		})
-	}
-    */
 </script>
 </body>
 </html>
