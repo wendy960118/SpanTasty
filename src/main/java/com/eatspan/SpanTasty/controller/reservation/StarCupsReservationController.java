@@ -60,12 +60,6 @@ public class StarCupsReservationController {
 	
 	
 	
-    // 導向到測試地圖頁面
-    @GetMapping("/map")
-    public String reserveMap() {
-    	return "starcups/reservation/googleMapPage";
-    }
-	
 	
 	// 導向到訂位頁面
     @GetMapping("/reserve")
