@@ -179,7 +179,8 @@
             <input type="date" id="suspendedUntilInput" class="form-control">
           </div>
         </div>
-        <div class="modal-footer border-secondary">
+        <div class="modal-footer border-secondary d-flex">
+          <button type="button" class="btn btn-secondary me-auto p-2" onclick="autoFill()">一鍵填寫</button>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
           <button type="button" id="saveStatusChangeBtn" class="btn btn-primary">保存修改</button>
         </div>
@@ -190,6 +191,11 @@
 
 
   <script type="text/javascript">
+  	function autoFill() {
+      document.getElementById('reasonInput').value = "違反使用規定";
+      document.getElementById('suspendedUntilInput').value = "2024-11-09";
+    }
+  	
     document.addEventListener("DOMContentLoaded", function () {
       showSidebar('member');
     });
