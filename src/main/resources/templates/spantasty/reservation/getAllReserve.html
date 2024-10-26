@@ -554,6 +554,7 @@
 		    axios.get('http://localhost:8080/SpanTasty/reserve/getList', { params })
 		        .then(function (response) {
 		            allReservations = response.data; // 儲存所有訂位資料
+		            console.log(allReservations);
 		            renderReservations(currentPage); // 根據當前頁碼顯示資料
 		            generatePagination(allReservations.length); // 根據資料數量生成分頁按鈕
 		        })
@@ -598,7 +599,7 @@
 		            <td>${reserve.member.phone}</td>
 		            <td>${reserve.restaurant.restaurantName}</td>
 		            <td>${reserve.reserveSeat}</td>
-		            <td>${reserve.tableType.tableTypeName} 人桌</td>
+		            <td> 人桌</td>
 		            <td>${reserve.reserveTime} - ${finishedTime}</td>
 		            <td><span class="${statusClass}">${statusText}</span></td>
 		            <td>

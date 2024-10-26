@@ -36,9 +36,9 @@ public class TableType {
 	private List<RestaurantTable> restaurantTables = new ArrayList<RestaurantTable>();
 	
 	
-	@JsonIgnore //該屬性不要做JSON序列化避免無線迴圈 //預設lazy
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "tableType", cascade = CascadeType.ALL)
-	private List<Reserve> reserves = new ArrayList<Reserve>();
+//	@JsonIgnore //該屬性不要做JSON序列化避免無線迴圈 //預設lazy
+//	@OneToMany(fetch = FetchType.LAZY, mappedBy = "tableType", cascade = CascadeType.ALL)
+//	private List<Reserve> reserves = new ArrayList<Reserve>();
 	
 
 }

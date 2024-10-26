@@ -79,7 +79,7 @@ public class ReserveController {
 								            @RequestParam(required = false) LocalDate reserveTimeStart,
 								            @RequestParam(required = false) LocalDate reserveTimeEnd) {
     	
-    	List<Reserve> reserveByCriteria = reserveService.findReserveByCriteria(memberName, phone, restaurantId, tableTypeId, reserveTimeStart, reserveTimeEnd);
+    	List<Reserve> reserveByCriteria = reserveService.findReserveByCriteria(memberName, phone, restaurantId, reserveTimeStart, reserveTimeEnd);
     	return ResponseEntity.ok(reserveByCriteria);
     }
     
@@ -93,7 +93,7 @@ public class ReserveController {
                                                  @RequestParam(required = false) LocalDate reserveTimeStart,
                                                  @RequestParam(required = false) LocalDate reserveTimeEnd) {
         
-        List<Reserve> reserveByCriteria = reserveService.findReserveByCriteria(memberName, phone, restaurantId, tableTypeId, reserveTimeStart, reserveTimeEnd);
+        List<Reserve> reserveByCriteria = reserveService.findReserveByCriteria(memberName, phone, restaurantId, reserveTimeStart, reserveTimeEnd);
         
         List<ExportReserveDTO> exportReserveDTOs = reserveByCriteria.stream()
                 .map(ExportReserveDTO::new)

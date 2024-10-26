@@ -54,7 +54,7 @@ public class ExportReserveDTO {
 		this.restaurantAddress = reserve.getRestaurant().getRestaurantAddress();
 		this.reserveSeat = reserve.getReserveSeat();
 		this.reserveTime = reserve.getReserveTime();
-		this.tableTypeId = reserve.getTableType().getTableTypeName().toString()+"人桌";
+//		this.tableTypeId = reserve.getTableType().getTableTypeName().toString()+"人桌";
 		this.reserveNote = reserve.getReserveNote();
 	}
 	

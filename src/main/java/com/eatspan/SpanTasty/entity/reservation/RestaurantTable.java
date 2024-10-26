@@ -2,11 +2,17 @@ package com.eatspan.SpanTasty.entity.reservation;
 
 
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
@@ -39,6 +45,10 @@ public class RestaurantTable {
 //    @ManyToOne //預設(fetch = FetchType.EAGER)
 //    @JoinColumn(name = "reserve_id", insertable = false, updatable = false)
 //    private Reserve reserve; // 與 Reserve 的關聯
+    
+    @JsonIgnore
+    @ManyToMany(mappedBy = "restaurantTables", fetch = FetchType.LAZY)
+    private List<Reserve> reserves = new ArrayList<>();
     
     
 	@PrePersist //當物件轉換成persist時先做該方法

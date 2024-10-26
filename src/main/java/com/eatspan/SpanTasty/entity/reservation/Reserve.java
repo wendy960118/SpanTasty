@@ -19,6 +19,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
@@ -60,17 +62,17 @@ public class Reserve {
 	@Column(name = "reserve_status")
 	private Integer reserveStatus;
 	
-	@Column(name = "table_id")
-	private Integer tableId;
+//	@Column(name = "table_id")
+//	private Integer tableId;
 	
 	@Column(name = "reserve_note")
 	private String reserveNote;
 	
 	
-	@ManyToOne //預設(fetch = FetchType.EAGER)
-	@JoinColumn(name = "table_type_id")
-	//@JoinColumn(name = "table_type_id", insertable = false, updatable = false)
-	private TableType tableType;
+//	@ManyToOne //預設(fetch = FetchType.EAGER)
+//	@JoinColumn(name = "table_type_id")
+//	//@JoinColumn(name = "table_type_id", insertable = false, updatable = false)
+//	private TableType tableType;
 	
 	@ManyToOne //預設(fetch = FetchType.EAGER)
     @JoinColumn(name = "restaurant_id")
@@ -86,6 +88,19 @@ public class Reserve {
 //	@JsonIgnore //該屬性不要做JSON序列化避免無線迴圈 //預設lazy
 //	@OneToMany(fetch = FetchType.LAZY, mappedBy = "reserve", cascade = CascadeType.ALL)
 //	private List<RestaurantTable> restaurantTables = new ArrayList<RestaurantTable>();
+	
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(
+        name = "reserve_table",
+        joinColumns = @JoinColumn(name = "reserve_id"),
+        inverseJoinColumns = {
+            @JoinColumn(name = "table_id"),
+            @JoinColumn(name = "restaurant_id"),
+            @JoinColumn(name = "table_type_id"),
+        }
+    )
+    private List<RestaurantTable> restaurantTables = new ArrayList<>();
 	
 	
 	@PrePersist //當物件轉換成persist時先做該方法
