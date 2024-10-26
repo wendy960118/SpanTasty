@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ShoppingItemDTO {
 	
+//	private List<ShoppingItem> shoppingItems;
 	private List<ShoppingItem> shoppingItems;
 	private Integer totalAmount;
 	private Integer memberId;

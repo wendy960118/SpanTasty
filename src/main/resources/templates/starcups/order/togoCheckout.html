@@ -654,7 +654,8 @@
         axios.post('http://localhost:8080/SpanTasty/StarCups/coupon/checkout',{
                     shoppingItems: cart,
                     totalAmount: totalPrice,
-                    memberId: memberId
+                    memberId: memberId,
+                    type:"訂餐"
                 })
                 .then(res=>{
                     console.log(res.data);
