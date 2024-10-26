@@ -27,38 +27,6 @@
 html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
     display: block;
 }
-
-p.global-primary.dark-primary.section-title::after {
-    content: '';
-    display: block;
-    width: 25px; /* 設定線條的寬度 */
-    height: 3px; /* 設定線條的高度 */
-    background-color: darkgrey; /* 設定線條的顏色 */
-    margin: 20px auto 0; /* 調整線條與文字之間的距離 */
-}
-
-.section-title {
-    font-size: 20px; /* 調整文字大小 */
-    color: #333; /* 調整文字顏色 */
-    text-align: center; /* 文字居中 */
-    font-weight: bold;
-}
-
-.Grid-row {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* 讓每個項目占據最少250px寬度，並自動填充 */
-    gap: 20px; /* 產品之間的間距 */
-}
-
-.Grid-products-item {
-    padding: 10px;
-    border-radius: 8px;
-    transition: transform 0.3s ease-in-out;
-}
-
-.Grid-products-item:hover {
-    transform: translateY(-5px); /* 在懸停時使產品項目上移 */
-}
 </style>
 </head>
 <body>
@@ -68,10 +36,11 @@ p.global-primary.dark-primary.section-title::after {
     <section class="section breadcrumbs-custom-inset">
       <div class="breadcrumbs-custom context-dark">
         <div class="container">
-          <h2 class="breadcrumbs-custom-title">Look Tableware Now</h2>
+          <h2 class="breadcrumbs-custom-title">Tableware</h2>
           <ul class="breadcrumbs-custom-path">
             <li><a href="/SpanTasty/StarCups">Home</a></li>
-            <li class="active">Tableware Lookbook</li>
+            <li><a href="/SpanTasty/StarCups/rental/home">Rent</a></li>
+            <li class="active">Tableware</li>
           </ul>
         </div>
         <!-- 圖片-->
@@ -79,18 +48,18 @@ p.global-primary.dark-primary.section-title::after {
       </div>
     </section>
 	
-	<section class="section pt-4 novi-bg novi-bg-img section-xl bg-default text-md-start">
+	<section class="section novi-bg novi-bg-img section-xl bg-default text-md-start">
     <div class="container">
         <div class="row row-90 row-fix justify-content-center">
-            <div class="product-top-panel group-lg pe-0">
-                <div class="product-top-panel-title">Showing 1–10 of <span th:text="${totalTablewares}"></span> results</div>
-                <div class="form-wrap">
-                    <label class="form-label" for="search-form">用具搜尋</label>
-                    <input class="form-input " id="search-form" type="text" name="s" autocomplete="off">
-                    <button class="button-search fl-bigmug-line-search74 d-flex align-item-center justify-content-center" id="search" type="submit"></button>
+            <div class="product-top-panel group-lg pt-0 pb-0 pe-0 ps-4" style="width:1150px;">
+                <div class="product-top-panel-title m-0">Showing 1–10 of <span th:text="${totalTablewares}"></span> results</div>
+                <div class="form-wrap m-0 align-item-center" style="height:50px">
+                    <label class="form-label" for="search-form" style="top:25px;">用具搜尋</label>
+                    <input class="form-input pt-0 pb-0 pe-0" id="search-form" style="min-height:50px;" type="text" name="s" autocomplete="off">
+                    <button class="button-search p-0 fl-bigmug-line-search74 d-flex align-item-center justify-content-center" id="search" type="submit"></button>
                   </div>
             </div>
-            <div class="row row-lg row-40" id="resultContainer">
+            <div class="row row-lg row-40 mt-5 mb-0" id="resultContainer">
                 <div class="col-sm-6 col-md-3" th:each="tableware : ${tablewarePages.content}">
                 <!-- Product-->
                 <article  class="product">
@@ -115,18 +84,18 @@ p.global-primary.dark-primary.section-title::after {
 							<ul class="pagination" th:if="${tablewarePages.totalPages != 0}">
 								<!-- Previous Page Link -->
 								<th:block th:switch="${tablewarePages.number + 1 == 1}">
-									<li th:case="${false}" class="page-item page-item-control"><a class="page-link" th:href="@{/StarCups/tableware(p=${ tablewarePages.number })}"><span class="icon" aria-hidden="true"></span></a></li>
-									<li th:case="${true}" class="page-item page-item-control disabled"><a class="page-link" th:href="@{/StarCups/tableware(p=${ tablewarePages.number })}"><span class="icon" aria-hidden="true"></span></a></li>
+									<li th:case="${false}" class="page-item page-item-control"><a class="page-link" th:href="@{/StarCups/rental/lookbook(p=${ tablewarePages.number })}"><span class="icon" aria-hidden="true"></span></a></li>
+									<li th:case="${true}" class="page-item page-item-control disabled"><a class="page-link" th:href="@{/StarCups/rental/lookbook(p=${ tablewarePages.number })}"><span class="icon" aria-hidden="true"></span></a></li>
 								</th:block>
 								<!-- Page Numbers -->
 								<li class="page-item" th:each="pageNum : ${#numbers.sequence(1, tablewarePages.totalPages)}" th:classappend="${pageNum == tablewarePages.number+1} ? 'active'">
-									<a class="page-link" th:href="@{/StarCups/tableware(page=${pageNum})}"th:text="${pageNum}"></a>
+									<a class="page-link" th:href="@{/StarCups/rental/lookbook(page=${pageNum})}"th:text="${pageNum}"></a>
 								</li>
 
 								<!-- Next Page Link -->
 								<th:block th:switch="${tablewarePages.number + 1 == tablewarePages.totalPages}">
-									<li th:case="${true}" class="page-item page-item-control disabled"><a class="page-link" th:href="@{/StarCups/tableware(page=${ tablewarePages.number + 2 })}"><span class="icon" aria-hidden="true"></span></a></li>
-									<li th:case="${false}" class="page-item page-item-control "><a class="page-link" th:href="@{/StarCups/tableware(page=${ tablewarePages.number + 2 })}"><span class="icon" aria-hidden="true"></span></a></li>
+									<li th:case="${true}" class="page-item page-item-control disabled"><a class="page-link" th:href="@{/StarCups/rental/lookbook(page=${ tablewarePages.number + 2 })}"><span class="icon" aria-hidden="true"></span></a></li>
+									<li th:case="${false}" class="page-item page-item-control "><a class="page-link" th:href="@{/StarCups/rental/lookbook(page=${ tablewarePages.number + 2 })}"><span class="icon" aria-hidden="true"></span></a></li>
 								</th:block>
 							</ul>
 						</nav>
@@ -139,12 +108,6 @@ p.global-primary.dark-primary.section-title::after {
 	
 
 
-<h5 class="ms-4">租借須知</h5>
-<div class="mt-2 ms-4 mb-5">
-  <ul class="">
-    <li>租借用具歸還時間為：租借時間開始往後算七天內。</li>
-  </ul>
-</div>
 <!-- Global Mailform Output-->
  <div class="snackbars" id="form-output-global"></div>
  <!-- footer  th:replace=-->
@@ -190,7 +153,7 @@ function htmlMaker(tablewares) {
           <div class="product-figure">
             <img src="${tableware.tablewareImage ? tableware.tablewareImage : 'https://via.placeholder.com/450x400'}" alt="" width="255" height="255" />
             <div class="product-button">
-              <a class="button button-bt button-white button-ujarak" href="cart-page.html">查看庫存</a>
+              <a class="button button-bt button-white button-ujarak" th:href="@{/StarCups/rental/single/{id}(id=${tableware.tablewareId})}">查看</a>
             </div>
           </div>
           <h6 class="product-title">${tableware.tablewareName}</h6>

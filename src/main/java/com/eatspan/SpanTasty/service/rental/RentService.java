@@ -195,9 +195,9 @@ public class RentService {
 
         obj.setItemName(itemNames.toString()); // 設置商品名稱
         obj.setTradeDesc("test Description");
-        obj.setReturnURL("https://5b6d-61-222-34-1.ngrok-free.app/SpanTasty/StarCups/rental/OrderConfirm");
+        obj.setReturnURL("https://5b6d-61-222-34-1.ngrok-free.app/SpanTasty/StarCups/rental/orderConfirm");
         obj.setNeedExtraPaidInfo("N");
-        obj.setClientBackURL("http://localhost:8080/SpanTasty/StarCups/rental/OrderConfirm");
+        obj.setClientBackURL("http://localhost:8080/SpanTasty/StarCups/rental/orderConfirm");
 
         // 生成 ECPay 表单			
         return all.aioCheckOut(obj, null);
