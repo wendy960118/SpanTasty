@@ -7,6 +7,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -41,10 +42,10 @@ public class RestaurantTable {
     @JoinColumn(name = "table_type_id", insertable = false, updatable = false)
     private TableType tableType; // 與 TableType 的關聯
     
-//    // 10/25 test
-//    @ManyToOne //預設(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "reserve_id", insertable = false, updatable = false)
-//    private Reserve reserve; // 與 Reserve 的關聯
+    // 10/25 test
+//	@JsonIgnore //該屬性不要做JSON序列化避免無線迴圈 //預設lazy
+//	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "reserve", cascade = CascadeType.ALL)
+//	private List<Reserve> restaurantTables = new ArrayList<Reserve>();
     
     @JsonIgnore
     @ManyToMany(mappedBy = "restaurantTables", fetch = FetchType.LAZY)

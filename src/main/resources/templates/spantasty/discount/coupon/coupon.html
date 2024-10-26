@@ -164,7 +164,8 @@
 	</div>	
 	<div class="distributeDiv" style="visibility:hidden" id="distributeDiv">
         <p>請輸入愈發送之客戶編號</p>
-        <input type="text" id="member">
+        <input type="text"  list="memberList" id="member">
+		<datalist id="memberList"></datalist>
         <p>優惠券將發送給 <label id="memberAmount"></label> 位顧客</p>
     
         <input type="text" name="couponInput" list="coupon_list" id="couponInput" placeholder="優惠券編號、代碼、名稱">
@@ -311,6 +312,24 @@
 				alert('請輸入發送原因')
 				return;
 			}
+			
+			axios.get('/SpanTasty/coupon/member')
+				.then(res=>{
+					console.log(res.data);
+					
+					document.getElementById('memberList').innerHTML=''
+					res.data.forEach(member=>{
+						let cell = document.createElement('option')
+						cell.textContent=member.memberOption
+						cell.value=member.memberId
+						document.getElementById('memberList').appendChild(cell)
+					})
+				})
+			
+			
+			
+			
+			
             updateDistribute();
 
     	})

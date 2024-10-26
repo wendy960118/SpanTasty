@@ -84,9 +84,9 @@ public class Reserve {
 	//@JoinColumn(name = "member_id", insertable = false, updatable = false)
     private Member member; // 與 Member 的關聯	
 	
-//	// 10/25 test
+	// 10/25 test
 //	@JsonIgnore //該屬性不要做JSON序列化避免無線迴圈 //預設lazy
-//	@OneToMany(fetch = FetchType.LAZY, mappedBy = "reserve", cascade = CascadeType.ALL)
+//	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "restaurantTable", cascade = CascadeType.ALL)
 //	private List<RestaurantTable> restaurantTables = new ArrayList<RestaurantTable>();
 	
 
