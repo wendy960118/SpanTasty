@@ -4,6 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +25,16 @@ public class TogoServiceImpl implements TogoService {
 	public List<TogoEntity> getAllTogo() {
 		return togoRepository.findAll();
 	}
-
+	
+	@Override
+	public Page<TogoEntity> getAllTogoPage(Integer pageNumber, Integer itemNumber) {
+		if(itemNumber == null) {
+			itemNumber=10;
+		}
+		Pageable pageable = PageRequest.of(pageNumber-1, itemNumber, Sort.Direction.DESC, "togoId");
+		return togoRepository.findAll(pageable);
+	}
+	
 	@Override
 	public TogoEntity getTogoById(Integer togoId) {
 		Optional<TogoEntity> optional = togoRepository.findById(togoId);
@@ -46,6 +59,15 @@ public class TogoServiceImpl implements TogoService {
 		return togoRepository.findByTgNameAndTgPhone(tgName, tgPhone);
 	}
 	
+	@Override
+	public  Page<TogoEntity> getTogoByRestaurantId(Integer pageNumber, Integer itemNumber, Integer restaurantId) {
+		if(itemNumber == null) {
+			itemNumber=10;
+		}
+		Pageable pageable = PageRequest.of(pageNumber-1, itemNumber, Sort.Direction.DESC, "togoId");
+		return togoRepository.findByRestaurantId(restaurantId, pageable);
+	}
+
 	@Override
 	public TogoEntity addTogo(TogoEntity newtogo) {
 		try {

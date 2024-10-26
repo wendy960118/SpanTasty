@@ -19,7 +19,7 @@ public class FoodKindController {
 	private FoodKindService foodKindService;
 	
 	//查詢全部
-	@GetMapping("/kinds")
+	@GetMapping("/order/kinds")
 	public ResponseEntity<List<FoodKindEntity>> getAllFoodKind() {
 		return ResponseEntity.ok(foodKindService.getAllFoodKind());
 		
