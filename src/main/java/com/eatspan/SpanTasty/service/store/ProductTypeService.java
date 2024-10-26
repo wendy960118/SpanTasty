@@ -65,6 +65,7 @@ public class ProductTypeService {
 		return null;
 	}
 	
+	
 	public List<ProductType> findProductByProductName(String productName) {
 	    return productTypeRepo.findByProductTypeName(productName);
 	}
@@ -74,7 +75,7 @@ public class ProductTypeService {
 	}
 	
 	public Optional<ProductType> findProductTypeByIdP(Integer id) {
-	    return productTypeRepo.findById(id); // 確保這裡返回 Optional<ProductType>
+	    return productTypeRepo.findById(id); 
 	}
 	
 }

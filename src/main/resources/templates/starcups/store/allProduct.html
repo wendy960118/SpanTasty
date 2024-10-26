@@ -1,213 +1,219 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org/" class="wide wow-animation"
-	lang="en">
+<html xmlns:th="http://www.thymeleaf.org/" class="wide wow-animation" lang="en">
 <head>
-<title>Shop</title>
-<meta name="format-detection" content="telephone=no">
-<meta name="viewport"
-	content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta charset="utf-8">
-<link rel="icon" href="images/favicon.ico" type="image/x-icon">
-<link rel="stylesheet" type="text/css"
-	href="https://fonts.googleapis.com/css?family=Poppins:400,500%7CTeko:300,400,500%7CMaven+Pro:500">
-<link rel="stylesheet" href="/SpanTasty/starcups/css/bootstrap.css">
-<link rel="stylesheet" href="/SpanTasty/starcups/css/fonts.css">
-<link rel="stylesheet" href="/SpanTasty/starcups/css/style.css">
-<style>
-.ie-panel {
-	display: none;
-	background: #212121;
-	padding: 10px 0;
-	box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, .3);
-	clear: both;
-	text-align: center;
-	position: relative;
-	z-index: 1;
-}
+    <title>Shop</title>
+    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Poppins:400,500%7CTeko:300,400,500%7CMaven+Pro:500">
+    <link rel="stylesheet" href="/SpanTasty/starcups/css/bootstrap.css">
+    <link rel="stylesheet" href="/SpanTasty/starcups/css/fonts.css">
+    <link rel="stylesheet" href="/SpanTasty/starcups/css/style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <style>
+        .hidden {
+            display: none;
+        }
 
-html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
-	display: block;
-}
+        .button {
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
 
-.cart-icon {
-	position: fixed;
-	bottom: 90px;
-	right: 45px;
-	z-index: 1000;
-	font-size: 2rem;
-	cursor: pointer;
-	color: #AD5A5A;
-}
+        .visible {
+            opacity: 1;
+        }
 
-.ui-to-top.active {
-	transform: 0 !important;
-}
+        .add-to-cart {
+            display: none; 
+        }
 
-</style>
+        .product-figure img {
+            width: 269px; 
+            height: 269px; 
+            object-fit: cover;
+        }
+
+        .ie-panel {
+            display: none;
+            background: #212121;
+            padding: 10px 0;
+            box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, .3);
+            clear: both;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
+            display: block;
+        }
+
+        .cart-icon {
+            position: fixed;
+            bottom: 90px;
+            right: 45px;
+            z-index: 1000;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #AD5A5A;
+        }
+
+        .out-of-stock img {
+            opacity: 0.2;
+        }
+
+        .out-of-stock .add-to-cart {
+            pointer-events: none;
+        }
+    </style>
 </head>
 <body>
-	<div th:replace="~{starcups/display/navbar}"></div>
+    <div th:replace="~{starcups/display/navbar}"></div>
 
-	<!-- Cart Icon -->
-	<form
-		th:action="@{/StarCups/cartDetail(shoppingId=${session['shoppingId']})}"
-		method="post" style="display: inline;">
+    <!-- Cart Icon -->
+    <form th:action="@{/StarCups/cartDetail(shoppingId=${session['shoppingId']})}" method="post" style="display: inline;">
+        <button type="submit" style="border: none; background: none;">
+            <i class="fa-solid fa-cart-plus cart-icon"></i> <span id="cart-count" style="position: fixed; bottom: 120px; right: 25px; background: #613030; color: white; border-radius: 100%; padding: 5px 10px;">0</span>
+        </button>
+    </form>
 
-		<button type="submit" style="border: none; background: none;">
-			<i class="fa-solid fa-cart-plus cart-icon"></i> <span id="cart-count"
-				style="position: fixed; bottom: 120px; right: 25px; background: #613030; color: white; border-radius: 100%; padding: 5px 10px;">0</span>
-		</button>
-	</form>
-
-	<!-- Breadcrumbs -->
-	<section class="section breadcrumbs-custom-inset">
-		<div class="breadcrumbs-custom context-dark">
-			<div class="container">
-				<h2 class="breadcrumbs-custom-title">Shop</h2>
-				<ul class="breadcrumbs-custom-path">
-					<li><a href="index.html">Home</a></li>
-					<li class="active">Shop</li>
-				</ul>
-			</div>
-			<div class="box-position novi-bg novi-bg-img"
-				style="background-image: url(images/bg-breadcrumbs.jpg);"></div>
-		</div>
-	</section>
-
-	<!-- Shop -->
-	<section class="section novi-bg novi-bg-img section-xl bg-default">
-		<div class="container">
-			<div class="row row-90 row-fix justify-content-center">
-				<div class="col-lg-8 col-xl-9">
-					<div class="product-top-panel group-lg">
-						<div class="product-top-panel-title">
-							Showing 1–12 of <span th:text="${totalProducts}"></span> results
-						</div>
-						<form th:action= "@{/StarCups/orderHistory(shoppingId=${session['shoppingId']})}" method="get" id="checkoutForm">
-          		<button type="submit" class="button button-secondary button-pipaluk" id="checkoutBtn" hidden>His</button>
-          	</form>
-						<div class="product-top-panel-select">
-							<select class="form-input select-filter"
-								data-minimum-results-for-search="Infinity"
-								data-constraints="@Required">
-								<option value="1">Sort by new</option>
-								<option value="2">Sort by popular</option>
-								<option value="3">Sort by rating</option>
-							</select>
-						</div>
-					</div>
-					<div class="row row-lg row-40">
-						<div class="col-sm-6 col-md-4" th:each="product : ${products}">
-							<article class="product">
-								<div class="product-figure">
-									<img th:src="${product.productPicture}" alt="" width="270"
-										height="280" />
-									<div class="product-button">
-										<button
-											class="button button-md button-white button-ujarak add-to-cart"
-											th:data-productid="${product.productId}" th:data-quantity="1">Add
-											to cart</button>
-									</div>
-								</div>
-								<h5 class="product-title">
-									<a href="#" 
-                                       th:data-bs-toggle="'modal'" 
-                                       th:data-bs-target="'#productModal'" 
-                                       th:data-productpicture="${product.productPicture}" 
-                                       th:data-productname="${product.productName}" 
-                                       th:data-productprice="${product.productPrice}" 
-                                       th:data-productdescription="${product.productDescription}" 
-                                       th:data-productstock="${product.productStock}" 
-                                       th:data-productstatus="${product.productStatus}">
-                                       <span th:text="${product.productName}"></span>
-                                    </a>
-								</h5>
-								<div class="product-price-wrap">
-									<div th:text="'$' + ${product.productPrice}"></div>
-								</div>
-							</article>
-						</div>
-					</div>
-					<div class="pagination-wrap">
-						<nav aria-label="Page navigation">
-							<ul class="pagination">
-								<li class="page-item"
-									th:classappend="${currentPage == 1} ? 'disabled'"><a
-									class="page-link"
-									th:href="@{/StarCups/allProduct(page=${currentPage - 1})}"
-									aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
-								</a></li>
-								<li class="page-item"
-									th:each="pageNum : ${#numbers.sequence(1, totalPages)}"
-									th:classappend="${pageNum == currentPage} ? 'active'"><a
-									class="page-link"
-									th:href="@{/StarCups/allProduct(page=${pageNum})}"
-									th:text="${pageNum}"></a></li>
-								<li class="page-item"
-									th:classappend="${currentPage == totalPages} ? 'disabled'">
-									<a class="page-link"
-									th:href="@{/StarCups/allProduct(page=${currentPage + 1})}"
-									aria-label="Next"> <span aria-hidden="true">&raquo;</span>
-								</a>
-								</li>
-							</ul>
-						</nav>
-					</div>
-				</div>
-				<div class="col-sm-10 col-md-12 col-lg-4 col-xl-3">
-					<!-- 其他內容 -->
-					
-					        <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="productModalLabel">商品資訊</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                     <div class="row">
-                    <div class="col-md-6">
-                            <img id="modalProductPicture" src="" alt="Product Image" style="width: 100%; height: auto;" />
-					</div>
-					 <div class="col-md-6 position-relative">
-                        <ul class="list list-description position-absolute top-50 start-50 translate-middle fs-5"  style="align-items: center;  white-space: nowrap">
-                            <li><span>商品名稱:</span> <span id="modalProductName"></span></li>
-                            <li><span>商品金額:</span> <span id="modalProductPrice"></span></li>
-                            <li><span>商品描述:</span> <span id="modalProductDescription"></span></li>
-                            <li><span>商品庫存:</span> <span id="modalProductStock"></span></li>
-                            <li><span>商品狀態:</span> <span id="modalProductStatus"></span></li>
-                        </ul>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">關閉</button>
-                    </div>
-                </div>
-                </div>
+    <!-- Breadcrumbs -->
+    <section class="section breadcrumbs-custom-inset">
+        <div class="breadcrumbs-custom context-dark">
+            <div class="container">
+                <h2 class="breadcrumbs-custom-title">Shop</h2>
+                <ul class="breadcrumbs-custom-path">
+                    <li><a href="/SpanTasty/StarCups">Home</a></li>
+                    <li class="active">Shop</li>
+                </ul>
             </div>
+            <div class="box-position novi-bg novi-bg-img" style="background-image: url(images/bg-breadcrumbs.jpg);"></div>
+        </div>
+    </section>
+
+    <!-- Shop -->
+    <section class="section novi-bg novi-bg-img section-xl bg-default">
+        <div class="container">
+            <div class="row row-90 row-fix justify-content-center">
+                <div class="col-lg-8 col-xl-9">
+                    <div class="product-top-panel group-lg">
+                        <div class="product-top-panel-title">
+                            Showing 1–12 of <span th:text="${totalProducts}"></span> results
+                        </div>
+                        <form th:action="@{/StarCups/orderHistory(shoppingId=${session['shoppingId']})}" method="get" id="checkoutForm">
+                            <button type="submit" class="button button-secondary button-pipaluk" id="checkoutBtn">His</button>
+                        </form>
+                        <div class="product-top-panel-select">
+                            <select class="form-input select-filter" data-minimum-results-for-search="Infinity" data-constraints="@Required" onchange="location = this.value;">
+                                <option value="/StarCups/allProduct">Sort All</option>
+                                <option th:each="productType : ${productTypes}" th:value="@{/StarCups/productsByCategory(productType=${productType.productTypeId})}" th:text="${productType.productTypeName}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row row-lg row-40">
+                        <div class="col-sm-6 col-md-4" th:each="product : ${products}">
+                            <article class="product" th:classappend="${product.productStatus == 2} ? 'out-of-stock'" th:data-productstatus="${product.productStatus}">
+                                <div class="product-figure">
+                                    <img th:src="${product.productPicture}" alt="" />
+                                    <div class="product-button">
+                                        <button class="button button-md button-white button-ujarak add-to-cart" th:data-productid="${product.productId}" th:data-quantity="1">
+                                            <span th:if="${product.productStatus == 2}">OUT OF STOCK</span>
+                                            <span th:if="${product.productStatus != 2}">Add to cart</span>
+                                        </button>
+                                    </div>
+                                </div>
+                                <h5 class="product-title">
+                                    <a href="#" th:data-bs-toggle="'modal'" th:data-bs-target="'#productModal'" th:data-productpicture="${product.productPicture}" th:data-productname="${product.productName}" th:data-productprice="${product.productPrice}" th:data-productdescription="${product.productDescription}" th:data-productstock="${product.productStock}" th:data-productstatus="${product.productStatus}">
+                                        <span th:text="${product.productName}"></span>
+                                    </a>
+                                </h5>
+                                <div class="product-price-wrap">
+                                    <div th:text="'$' + ${product.productPrice}"></div>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                    <div class="pagination-wrap">
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination">
+                                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/StarCups/allProduct(page=${currentPage - 1})}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                <li class="page-item" th:each="pageNum : ${#numbers.sequence(1, totalPages)}" th:classappend="${pageNum == currentPage} ? 'active'">
+                                    <a class="page-link" th:href="@{/StarCups/allProduct(page=${pageNum})}" th:text="${pageNum}"></a>
+                                </li>
+                                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/StarCups/allProduct(page=${currentPage + 1})}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+                <div class="col-sm-10 col-md-12 col-lg-4 col-xl-3">
+                    <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="productModalLabel">商品資訊</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <img id="modalProductPicture" src="" alt="Product Image" style="width: 100%; height: auto;" />
+                                        </div>
+                                        <div class="col-md-6 position-relative">
+                                            <ul class="list list-description position-absolute top-50 start-50 translate-middle fs-5" style="align-items: center; white-space: nowrap">
+                                                <li><span>商品名稱:</span> <span id="modalProductName"></span></li>
+                                                <li><span>商品金額:</span> <span id="modalProductPrice"></span></li>
+                                                <li><span>商品描述:</span> <span id="modalProductDescription"></span></li>
+                                                <li><span>商品庫存:</span> <span id="modalProductStock"></span></li>
+                                                <li><span>商品狀態:</span> <span id="modalProductStatus"></span></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">關閉</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-				</div>
-			</div>
-		</div>
-	</section>
+    </section>
 
-	<div class="snackbars" id="form-output-global"></div>
+    <div class="snackbars" id="form-output-global"></div>
 
-	<div th:replace="~{starcups/display/footer}"></div>
+    <div th:replace="~{starcups/display/footer}"></div>
 
-	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-	<script>
-		const productLinks = document.querySelectorAll('.product-title a')
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script>
+        const productLinks = document.querySelectorAll('.product-title a');
         const addButtons = document.querySelectorAll('.add-to-cart');
-        let cartItemCount = 0; 
-        
-        
-          productLinks.forEach(link => {
-            link.addEventListener('click', function(event) {
-                event.preventDefault(); // 防止默認行為
+        let cartItemCount = 0;
 
-                // 獲取商品資訊
+        window.onload = function() {
+            addButtons.forEach(button => {
+                button.style.display = 'block';
+                setTimeout(() => {
+                    button.classList.add('visible');
+                }, 50);
+            });
+        };
+
+        productLinks.forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
                 const productPicture = this.getAttribute('data-productpicture');
                 const productName = this.getAttribute('data-productname');
                 const productPrice = this.getAttribute('data-productprice');
@@ -215,74 +221,89 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
                 const productStock = this.getAttribute('data-productstock');
                 const productStatus = this.getAttribute('data-productstatus');
 
-                // 更新模態框中的內容
-                document.getElementById('modalProductPicture').src  = productPicture;
+                document.getElementById('modalProductPicture').src = productPicture;
                 document.getElementById('modalProductName').textContent = productName;
                 document.getElementById('modalProductPrice').textContent = '$' + productPrice;
                 document.getElementById('modalProductDescription').textContent = productDescription;
                 document.getElementById('modalProductStock').textContent = productStock;
-                document.getElementById('modalProductStatus').textContent = productStatus;
-				document.getElementById('modalProductStatus').textContent = (productStatus == 1) ? "上架中" : (productStatus == 2) ? "已停售" : "未知狀態";
-
+                document.getElementById('modalProductStatus').textContent = (productStatus == 1) ? "上架中" : (productStatus == 2) ? "已停售" : "未知狀態";
             });
         });
-        
-
-
-
 
         addButtons.forEach(button => {
-            button.addEventListener('click', function () {
+            button.addEventListener('click', function() {
+                const productStatus = this.closest('.product').getAttribute('data-productstatus');
+                console.log('Product Status:', productStatus); 
+                if (productStatus == 2) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: '商品已完售',
+                        showConfirmButton: false,
+                        text: '  ',
+                        timer: 1000
+                    });
+                    return; 
+                }
+                
                 const token = localStorage.getItem('token');
                 const productId = this.getAttribute('data-productid');
-                const quantity = 1; 
+                const quantity = 1;
 
-                // const params = {
-                //     productId: productId,
-                //     shoppingItemQuantity: quantity
-                // };
-                
-                console.log('Token:', token);
-		        console.log('Product ID:', productId);
-		        console.log('Quantity:', quantity);
-
-				        if (!token) {
-            alert('請先登入會員');
-            return; // 如果未登入，跳出函數
-        }
-	
-                if (token) {
-                    axios.post(`http://localhost:8080/SpanTasty/StarCups/addPost`,null, {
-                        params: {
-                            productId: productId,
-                            shoppingItemQuantity: quantity
-                        },
-                        headers: {
-		                    'Authorization': `${token}`,
-		                    'Content-Type': 'application/json'
-                        }
-                    })
-                    .then(response => {
-                    console.log(response.data);
-                        if (response.status === 200) {
-                            cartItemCount++; // 增加商品數量
-                            document.getElementById('cart-count').textContent = cartItemCount; // 更新購物車數量顯示
-                            alert('成功加入購物車');
-                        } else {
-                            alert('加入購物車失敗，請稍後再試');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('發生錯誤，請檢查控制台');
+                if (!token) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: '請先登入會員',
+                        showConfirmButton: false,
+                        timer: 1500
                     });
+                    return; // 如果未登入，跳出函数
                 }
+
+                axios.post(`http://localhost:8080/SpanTasty/StarCups/addPost`, null, {
+                    params: {
+                        productId: productId,
+                        shoppingItemQuantity: quantity
+                    },
+                    headers: {
+                        'Authorization': `${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.status === 200) {
+                        cartItemCount++;
+                        document.getElementById('cart-count').textContent = cartItemCount;
+                        Swal.fire({
+                            icon: 'success',
+                            title: '商品已加入購物車',
+                            text: '  ',
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '商品已完售',
+                            text: '  ',
+                            showConfirmButton: false,
+                            timer: 1000
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    Swal.fire({
+                        icon: 'error',
+                        title: '錯誤',
+                        text: '發生錯誤，請檢察Console',
+                        confirmButtonText: '確定'
+                    });
+                });
             });
         });
-        
     </script>
 
-	<script src="/SpanTasty/starcups/js/core.min.js"></script>
-	<script src="/SpanTasty/starcups/js/script.js"></script>
+    <script src="/SpanTasty/starcups/js/core.min.js"></script>
+    <script src="/SpanTasty/starcups/js/script.js"></script>
 </body>
 </html>
