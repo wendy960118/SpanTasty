@@ -37,6 +37,7 @@ import com.eatspan.SpanTasty.entity.discount.CouponMemberId;
 import com.eatspan.SpanTasty.entity.discount.CouponSchedule;
 import com.eatspan.SpanTasty.entity.discount.Tag;
 import com.eatspan.SpanTasty.entity.discount.TagId;
+import com.eatspan.SpanTasty.entity.order.TogoItemEntity;
 import com.eatspan.SpanTasty.entity.store.ProductType;
 import com.eatspan.SpanTasty.entity.store.ShoppingItem;
 import com.eatspan.SpanTasty.entity.store.ShoppingOrder;
@@ -53,6 +54,7 @@ import com.eatspan.SpanTasty.service.store.ShoppingOrderService;
 import com.eatspan.SpanTasty.utils.discount.DateUtils;
 
 import freemarker.core.ParseException;
+import freemarker.core.ReturnInstruction.Return;
 import freemarker.template.MalformedTemplateNameException;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateNotFoundException;
@@ -394,12 +396,28 @@ public class CouponService {
 		
 	}
 	
+	private List<String> getCartItemType(List<?> cartItems,String type){
+		switch (type) {
+			case "商城":
+				return cartItems.stream()
+				.map(item -> ((ShoppingItem) item).getProduct().getProductType().getProductTypeName())
+				.collect(Collectors.toList());				
+			case "訂餐":
+				return cartItems.stream()
+						.map(item -> ((TogoItemEntity) item).getMenu().getFoodKind().getFoodKindName())
+						.collect(Collectors.toList());
+		}
+		return null;
+	}
+	
+	
 	//結帳判斷優惠券
 	public List<CouponMember> couponCanUse(List<ShoppingItem> shoppingItems,Integer totalAmount, Integer memberId,String type){
 		//購物車明細的種類 productNames
-		List<String> productNames = shoppingItems.stream()
-				.map(shoppingItem->shoppingItem.getProduct().getProductType().getProductTypeName())
-				.collect(Collectors.toList());
+//		List<String> productNames = shoppingItems.stream()
+//				.map(shoppingItem->shoppingItem.getProduct().getProductType().getProductTypeName())
+//				.collect(Collectors.toList());
+		List<String> productNames = getCartItemType(shoppingItems, type);
 
 		//取得會員擁有優惠券 coupons (可使用數量>0)
 		List<CouponMember> couponMembers = couponMemberRepo.findByMemberId(memberId).stream()

@@ -82,9 +82,8 @@ public class StarCupsCouponController {
 		Integer memberId = shoppingItemDTO.getMemberId();
 		Integer totalAmount = shoppingItemDTO.getTotalAmount();
 		List<ShoppingItem> shoppingItems = shoppingItemDTO.getShoppingItems();
-		
-        return couponService.couponCanUse(shoppingItems, totalAmount, memberId,"product");
-
+		String type = shoppingItemDTO.getType();		
+        return couponService.couponCanUse(shoppingItems, totalAmount, memberId,type);
 	}
 	
 	@PostMapping("/coupon/checkout/togo")
