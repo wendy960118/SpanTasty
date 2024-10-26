@@ -29,6 +29,8 @@ import com.eatspan.SpanTasty.config.MailConfig;
 import com.eatspan.SpanTasty.dto.discount.CouponDTO;
 import com.eatspan.SpanTasty.dto.discount.CouponDistributeDTO;
 import com.eatspan.SpanTasty.dto.discount.TagDTO;
+import com.eatspan.SpanTasty.dto.discount.couponOptionDTO;
+import com.eatspan.SpanTasty.entity.account.Member;
 import com.eatspan.SpanTasty.entity.discount.Coupon;
 import com.eatspan.SpanTasty.entity.discount.CouponMember;
 import com.eatspan.SpanTasty.entity.discount.CouponMemberId;
@@ -47,6 +49,7 @@ import com.eatspan.SpanTasty.repository.order.FoodKindRepository;
 import com.eatspan.SpanTasty.repository.store.ProductTypeRepository;
 import com.eatspan.SpanTasty.repository.store.ShoppingItemRepository;
 import com.eatspan.SpanTasty.repository.store.ShoppingOrderRepository;
+import com.eatspan.SpanTasty.service.account.MemberService;
 import com.eatspan.SpanTasty.service.store.ShoppingOrderService;
 import com.eatspan.SpanTasty.utils.discount.DateUtils;
 
@@ -82,6 +85,9 @@ public class CouponService {
 	
 	@Autowired
 	private ShoppingOrderService shoppingOrderService;
+	
+	@Autowired
+	private MemberService memberService;
 	
 	@Autowired
 	private MailConfig mailConfig;// javaMail要注入----------------------------
@@ -496,4 +502,13 @@ public class CouponService {
 		couponMemberRepo.save(couponMember);
 	}
 	
+	public List<couponOptionDTO> getMemberOption() {
+		List<Member> members = memberService.findAllMembers();
+		return  members.stream()
+					.map(member-> new couponOptionDTO(
+							member.getMemberId(),
+							member.getMemberId()+","+member.getMemberName()+","+member.getPhone())
+						)	
+					.collect(Collectors.toList());
+	}
 }

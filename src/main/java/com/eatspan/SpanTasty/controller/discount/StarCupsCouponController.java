@@ -78,15 +78,26 @@ public class StarCupsCouponController {
 	
 	@PostMapping("/coupon/checkout")
 	@ResponseBody
-	public List<CouponMember> getMethodName(@RequestBody ShoppingItemDTO shoppingItemDTO) {
+	public List<CouponMember> shopCheckout(@RequestBody ShoppingItemDTO shoppingItemDTO) {
 		Integer memberId = shoppingItemDTO.getMemberId();
 		Integer totalAmount = shoppingItemDTO.getTotalAmount();
 		List<ShoppingItem> shoppingItems = shoppingItemDTO.getShoppingItems();
-		String type = shoppingItemDTO.getType();
-		
+		String type = shoppingItemDTO.getType();		
         return couponService.couponCanUse(shoppingItems, totalAmount, memberId,type);
+	}
+	
+	@PostMapping("/coupon/checkout/togo")
+	@ResponseBody
+	public List<CouponMember> togoCheckout(@RequestBody ShoppingItemDTO shoppingItemDTO) {
+		Integer memberId = shoppingItemDTO.getMemberId();
+		Integer totalAmount = shoppingItemDTO.getTotalAmount();
+		List<ShoppingItem> shoppingItems = shoppingItemDTO.getShoppingItems();
+
+		
+        return couponService.couponCanUse(shoppingItems, totalAmount, memberId,"togo");
 
 	}
+	
 	
 	@GetMapping("/coupon/discount")
 	@ResponseBody
