@@ -23,7 +23,7 @@ public interface ReserveRepository extends JpaRepository<Reserve, Integer> {
 	        + "AND (:restaurantId IS NULL OR rt.restaurantId = :restaurantId) "
 	        + "AND (:tableTypeId IS NULL OR r.tableType.tableTypeId = :tableTypeId) "
 	        + "AND (:reserveTimeStart IS NULL OR CAST(r.reserveTime AS DATE) >= :reserveTimeStart) "
-	        + "AND (:reserveTimeEnd IS NULL OR CAST(r.reserveTime AS DATE) <= :reserveTimeEnd)"
+	        + "AND (:reserveTimeEnd IS NULL OR CAST(r.reserveTime AS DATE) <= :reserveTimeEnd) "
 	        + "ORDER BY r.reserveTime DESC")
 	List<Reserve> findReserveByCriteria(
 	        @Param("memberName") String memberName,
