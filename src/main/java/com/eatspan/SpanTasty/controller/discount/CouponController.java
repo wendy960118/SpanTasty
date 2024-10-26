@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.eatspan.SpanTasty.dto.discount.CouponDTO;
 import com.eatspan.SpanTasty.dto.discount.CouponDistributeDTO;
+import com.eatspan.SpanTasty.dto.discount.couponOptionDTO;
 import com.eatspan.SpanTasty.entity.discount.Coupon;
 import com.eatspan.SpanTasty.entity.discount.CouponSchedule;
 import com.eatspan.SpanTasty.repository.discount.CouponScheduleRepository;
@@ -176,5 +177,13 @@ public class CouponController {
  		List<CouponDistributeDTO> distributeResult = couponService.distributeExcute2(memberIds, couponId, perMaxCoupon,scheduleTime,scheduleName);
  		return distributeResult;
  	}
+ 	
+ 	
+ 	@GetMapping("/coupon/member")
+ 	@ResponseBody
+ 	public List<couponOptionDTO> getMemberOption() {
+ 		return couponService.getMemberOption();
+ 	}
+ 	
  	
 }
