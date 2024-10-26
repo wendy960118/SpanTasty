@@ -82,8 +82,9 @@ public class StarCupsCouponController {
 		Integer memberId = shoppingItemDTO.getMemberId();
 		Integer totalAmount = shoppingItemDTO.getTotalAmount();
 		List<ShoppingItem> shoppingItems = shoppingItemDTO.getShoppingItems();
+		String type = shoppingItemDTO.getType();
 		
-        return couponService.couponCanUse(shoppingItems, totalAmount, memberId);
+        return couponService.couponCanUse(shoppingItems, totalAmount, memberId,type);
 
 	}
 	

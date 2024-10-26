@@ -14,4 +14,5 @@ public class ShoppingItemDTO {
 	private List<ShoppingItem> shoppingItems;
 	private Integer totalAmount;
 	private Integer memberId;
+	private String type;
 }
