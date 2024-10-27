@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+<meta charset="UTF-8">
+<title>歸還環保用具</title>
+</head>
+<style>
+.h {
+	text-align: center;
+}
+
+form {
+	width: 60%;
+	margin: 0 auto;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	background-color: #c8e6c9;
+}
+
+.table {
+    background-color: #f1f8e9; /* 表格背景：淡綠 */
+}
+.table1 {
+    background-color: #f1f8e9; /* 表格背景：淡綠 */
+}
+
+.table thead {
+    background-color: #a5d6a7; /* 表格標題：淺綠 */
+    color: #1b5e20;
+}
+.table1 thead {
+    background-color: #a5d6a7; /* 表格標題：淺綠 */
+    color: #1b5e20;
+}
+
+.tableware-input{
+	width: 86%;
+	padding: 5px;
+	margin-bottom: 0px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	box-sizing: border-box;
+}
+
+.body {
+    background-color: #e9f7ef; /* 背景色：淡綠 */
+}
+</style>
+<body class="body">
+<div th:replace="~{spantasty/display/navbar}"></div>
+<div class="content" id="container">
+<h3 class="h">歸還用具</h3>
+<form th:action="@{/rent/setPut3}" th:method="post">
+<input type="hidden" name="_method" value="put" />
+<table class="table table-striped" id="table">
+	<tr><td>訂單編號: <input class="tableware-input" type="text" name="rentId" th:value="${rent.rentId}" readonly></td></tr>
+	<tr><td>歸還日期: <input class="tableware-input" type="date" name="returnDate" th:value="${#dates.format(rent.returnDate, 'yyyy-MM-dd')}" readonly /></td></tr>
+	<tr><td>歸還餐廳:
+		<select class="tableware-input" name="returnRestaurantId" id="returnRestaurantId" required>
+			<option value="" selected disabled>請選擇租借餐廳</option>
+			<option th:each="restaurant : ${restaurants}" th:value="${restaurant.restaurantId}" th:text="${restaurant.restaurantName}" th:selected="${rent.returnRestaurantId == restaurant.restaurantId}"></option>
+		</select>
+	</td></tr>
+</table>
+<div class="table-responsive">
+        <table class="table table-striped" id="table1">
+            <tr>
+                <th>用具編號</th>
+                <th>品項數量</th>
+                <th>歸還備註</th>
+            </tr>
+            <tr th:each=" rentItemDTO, index: ${rentItemsDTO}">
+                <td th:text="${rentItemDTO.tablewareId}" th:value="${rentItemDTO.tablewareId}"  ></td>
+                <td th:text="${rentItemDTO.rentItemQuantity}" th:value="${rentItemDTO.rentItemQuantity}" ></td>
+                <td>
+			        歸還數量: <input type="number" class="tableware-input" th:name="'rentItemsDTO[' + ${index.index} + '].returnedQuantity'" min="0" th:max="${rentItemDTO.rentItemQuantity}" required style="width:15%;"/>
+			        損壞數量: <input type="number" class="tableware-input" th:name="'rentItemsDTO[' + ${index.index} + '].damagedQuantity'" min="0" th:max="${rentItemDTO.rentItemQuantity}" required style="width:15%;"/>
+			    </td>
+                 <td>
+			        <input type="hidden" th:name="'rentItemsDTO[' + ${index.index} + '].rentId'" th:value="${rentItemDTO.rentId}" />
+			        <input type="hidden" th:name="'rentItemsDTO[' + ${index.index} + '].tablewareId'" th:value="${rentItemDTO.tablewareId}" />
+			        <input type="hidden" th:name="'rentItemsDTO[' + ${index.index} + '].rentItemQuantity'" th:value="${rentItemDTO.rentItemQuantity}" />
+			        <input type="hidden" th:name="'rentItemsDTO[' + ${index.index} + '].rentItemDeposit'" th:value="${rentItemDTO.rentItemDeposit}" />
+			        <input type="hidden" th:name="'rentItemsDTO[' + ${index.index} + '].returnStatus'" th:value="${rentItemDTO.returnStatus}" />
+			        <input type="hidden" th:name="'rentItemsDTO[' + ${index.index} + '].returnMemo'" th:value="${rentItemDTO.returnMemo}" />
+			    </td>
+            </tr>
+        </table>
+	 </div>
+<span id="disabledMsg" style="color:red; display: none">訂單已完全歸還，無法再更改。</span>
+<input type="submit" id="submitBtn" value="確定歸還"/>
+<input type="hidden" name="rentDeposit" th:value="${rent.rentDeposit}"/>
+<input type="hidden" name="rentDate" th:value="${rent.rentDate}">
+<input type="hidden" name="restaurantId" th:value="${rent.restaurantId}">
+<input type="hidden" name="memberId" th:value="${rent.memberId}">
+<input type="hidden" name="dueDate" th:value="${rent.dueDate}">
+<input type="hidden" id="rentStatus" name="rentStatus" th:value="${rent.rentStatus}">
+<input type="hidden" name="rentMemo" th:value="${rent.rentMemo}"/>
+</form>
+</div>
+<script>
+window.onload = function() {
+	const rentStatus = document.getElementById('rentStatus');
+	const returnRestaurantId = document.getElementById('returnRestaurantId');
+	const submitBtn = document.getElementById('submitBtn');
+	if (rentStatus.value === '2') {
+		submitBtn.disabled = true;
+		returnRestaurantId.disabled = true;
+		document.getElementById('disabledMsg').style.display = 'block';
+	}
+};
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+	showSidebar('rental');
+});
+</script>
+</body>
+</html>

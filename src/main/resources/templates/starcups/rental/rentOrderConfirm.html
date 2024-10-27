@@ -32,6 +32,68 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
 	vertical-align: middle !important;
 }
 
+.checkout-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+.step {
+    text-align: center;
+    color: #999;
+}
+
+.step .badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #ccc;
+    color: #fff;
+    font-size: 15px;
+    margin: 0 auto;
+}
+
+.step.active .badge {
+    background-color: darkgrey; /* 可以根據需求改變主色 */
+}
+
+.step .text {
+    display: block;
+    font-weight: bold;
+}
+
+.step span {
+    display: block;
+    margin-top: 5px;
+    font-size:18px;
+}
+
+.step + .step:before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 15px;
+    width: calc(100% - 60px);
+    height: 2px;
+    background-color: #ccc;
+    left: -50%;
+    z-index: -1;
+}
+
+.checkout-nav .step:first-child + .step:before {
+    left: calc(50% + 15px);
+}
+
+.checkout-nav .step:last-child:before {
+    width: 50%;
+}
 </style>
 </head>
 <body>
@@ -56,6 +118,26 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
 
 	<!-- Testimonials #4-->
 	<section class="section novi-bg novi-bg-img section-xl bg-default">
+	<div class="checkout-nav">
+			<div class="step">
+				<span class="badge">
+					<span class="text mt-0 position-absolute top-50 start-50 translate-middle">1</span>
+				</span>
+				<span>購物車</span>
+			</div>
+			<div class="step">
+				<span class="badge">
+					<span class="text mt-0 position-absolute top-50 start-50 translate-middle">2</span>
+				</span>
+				<span>結帳</span>
+			</div>
+			<div class="step active">
+				<span class="badge">
+					<span class="text mt-0 position-absolute top-50 start-50 translate-middle">3</span>
+				</span>
+				<span>訂單成立</span>
+			</div>
+		</div>
 		<div class="container d-flex justify-content-center">
 			<!-- Quote Lisa-->
 			<article class="quote-lisa w-100" th:each="rent : ${rent}">

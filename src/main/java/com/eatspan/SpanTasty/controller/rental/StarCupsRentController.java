@@ -1,6 +1,7 @@
 package com.eatspan.SpanTasty.controller.rental;
 
 import java.util.List;
+
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -13,7 +14,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import jakarta.servlet.http.HttpSession;
 import com.eatspan.SpanTasty.dto.rental.CartRequestDTO;
-import com.eatspan.SpanTasty.dto.rental.RentDTO;
 import com.eatspan.SpanTasty.dto.rental.RestaurantStockDTO;
 import com.eatspan.SpanTasty.dto.rental.TablewareFilterDTO;
 import com.eatspan.SpanTasty.dto.rental.TablewareIdDTO;
@@ -24,9 +24,6 @@ import com.eatspan.SpanTasty.entity.rental.RentItem;
 import com.eatspan.SpanTasty.entity.rental.Tableware;
 import com.eatspan.SpanTasty.entity.rental.TablewareStock;
 import com.eatspan.SpanTasty.entity.reservation.Restaurant;
-import com.eatspan.SpanTasty.entity.store.Product;
-import com.eatspan.SpanTasty.entity.store.ShoppingItem;
-import com.eatspan.SpanTasty.entity.store.ShoppingOrder;
 import com.eatspan.SpanTasty.service.account.MemberService;
 import com.eatspan.SpanTasty.service.rental.RentItemService;
 import com.eatspan.SpanTasty.service.rental.RentService;
@@ -149,6 +146,7 @@ public class StarCupsRentController {
 			// 解析 JWT token 取得 claims
 			Map<String, Object> claims = JwtUtil.parseToken(token);
 			Integer memberId = (Integer) claims.get("memberId"); // 獲取會員 ID
+			System.out.println(memberId);
 			
 			// 清空並重新生成 rentId，確保每次請求都是一個新訂單
 	        session.removeAttribute("rentId");

@@ -1,6 +1,7 @@
 package com.eatspan.SpanTasty.service.rental;
 
 import java.time.LocalDateTime;
+
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
@@ -15,13 +16,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.eatspan.SpanTasty.dto.rental.RentDTO;
 import com.eatspan.SpanTasty.entity.account.Member;
 import com.eatspan.SpanTasty.entity.rental.Rent;
 import com.eatspan.SpanTasty.entity.rental.RentItem;
 import com.eatspan.SpanTasty.entity.rental.Tableware;
-import com.eatspan.SpanTasty.entity.store.Product;
-import com.eatspan.SpanTasty.entity.store.ShoppingItem;
 import com.eatspan.SpanTasty.repository.rental.RentItemRepository;
 import com.eatspan.SpanTasty.repository.rental.RentRepository;
 import com.eatspan.SpanTasty.repository.rental.TablewareRepository;

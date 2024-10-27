@@ -47,12 +47,12 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 30px;
-    height: 30px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     background-color: #ccc;
     color: #fff;
-    font-size: 14px;
+    font-size: 15px;
     margin: 0 auto;
 }
 
@@ -68,6 +68,7 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
 .step span {
     display: block;
     margin-top: 5px;
+    font-size:18px;
 }
 
 .step + .step:before {
@@ -94,7 +95,6 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
     font-weight: 500;
     background-color: #F6F6F6;
     line-height: 26px;
-    width: 1170px;
     height: 45px;
 }
 
@@ -144,23 +144,23 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
 			</div>
 		</div>
         <div class="container">
-        <div class="section-header  ms-0 pt-3" style="padding-left:31px;">
-          <h5 class="text-spacing-50">租借車</h5>
+        <div class="section-header  ms-0 pt-3" style="padding-left:31px; width:1170px;">
+          <h5 class="text-spacing-50">購物車</h5>
         </div>
           <!-- shopping-cart-->
           <div class="table-custom-responsive mt-0" >
             <table class="table-custom table-cart" style="line-height:0;">
               <thead>
                 <tr>
-                  <th>租借用具</th>
-                  <th>項目金額</th>
+                  <th>用具資料</th>
+                  <th>單件金額</th>
                   <th>租借數量</th>
-                  <th>項目總金額</th>
+                  <th>小計</th>
                 </tr>
               </thead>
               <tbody>
                 <tr th:each="rentItem : ${rentItems}" th:data-tablewareId="${rentItem.tableware.tablewareId}">
-                  <td><div class="table-cart-figure"><img th:src="${rentItem.tableware.tablewareImage != null ? rentItem.tableware.tablewareImage : 'https://via.placeholder.com/450x400'}" alt="" width="100" height="100" /></div><div class="table-cart-link" th:text="${rentItem.tableware.tablewareName}"></div></td>
+                  <td style="padding-top:12px; padding-bottom:12px;"><div class="table-cart-figure me-2" style="max-width:60px;"><img th:src="${rentItem.tableware.tablewareImage != null ? rentItem.tableware.tablewareImage : 'https://via.placeholder.com/450x400'}" alt="" width="60" height="60" /></div> <div class="table-cart-link fs-5" th:text="${rentItem.tableware.tablewareName}"></div></td>
                   <td><span th:text="${rentItem.tableware.tablewareDeposit}"></span></td>
                   <td>
                   <span th:text="${rentItem.rentItemQuantity}"></span>
@@ -177,11 +177,13 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
         <div class="container">
           <div class="row row-50 justify-content-center">
             <div class="col-md-10 col-lg-6">
-              <h4 class="text-spacing-50">Payment methods</h4>
-              <div class="box-radio">
+            <div class="section-header pt-3 ms-0 " style="width:570px; padding-left:23px;">
+              <h5 class="text-spacing-50">付款方式</h5>
+            </div>
+              <div class="box-radio mt-0" style="padding-bottom:21px;">
                 <div class="radio-panel">
                   <label class="radio-inline active">
-                    <input name="input-group-radio" value="checkbox-1" type="radio" checked>Direct Bank Transfer
+                    <input name="input-group-radio" value="checkbox-1" type="radio" checked>銀行轉帳支付
                   </label>
                   <div class="radio-panel-content">
                     <p>Make your payment directly into our bank account. Please use your Order ID as the payment reference.</p>
@@ -189,7 +191,7 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
                 </div>
                 <div class="radio-panel">
                   <label class="radio-inline">
-                    <input name="input-group-radio" value="checkbox-1" type="radio">PayPal
+                    <input name="input-group-radio" value="checkbox-1" type="radio">信用卡支付
                   </label>
                   <div class="radio-panel-content">
                     <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal account.</p>
@@ -197,7 +199,7 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
                 </div>
                 <div class="radio-panel">
                   <label class="radio-inline">
-                    <input name="input-group-radio" value="checkbox-1" type="radio">Cheque Payment
+                    <input name="input-group-radio" value="checkbox-1" type="radio">現金支付
                   </label>
                   <div class="radio-panel-content">
                     <p>Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.</p>
@@ -206,21 +208,27 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
               </div>
             </div>
             <div class="col-md-10 col-lg-6">
-              <h4 class="text-spacing-50">Cart totals</h4>
-              <div class="table-custom-responsive">
+              <div class="section-header pt-3 ms-0 " style="width:570px; padding-left:23px;">
+              	<h5 class="text-spacing-50">訂單資訊</h5>
+              </div>
+              <div class="table-custom-responsive mt-0">
                 <table class="table-custom table-custom-primary table-checkout">
                   <tbody>
                     <tr>
-                      <td>訂單金額</td>
+                      <td>訂單小計</td>
                       <td th:text="${rent.rentDeposit}"></td>
                     </tr>
                     <tr>
-                      <td>Shipping</td>
-                      <td>Free</td>
+                      <td>合計</td>
+                      <td th:text="${rent.rentDeposit}"></td>
                     </tr>
                     <tr>
-                      <td>總金額</td>
-                      <td th:text="${rent.rentDeposit}"></td>
+                      <td class="pe-0"></td>
+                      <td class="pt-2 pb-2 ps-0" style="text-align:left;width:70%;">
+			          	<form class="" th:action= "@{/StarCups/rental/ecpayCheckout(rentId=${session['rentId']})}" method="post">
+			          		<button type="submit" class="button button-ujarak button-gray-7">結帳</button>
+			          	</form>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -228,15 +236,17 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
             </div>
           </div>
           <!-- Section payment-->
-      <section class="section novi-bg novi-bg-img section-xl bg-default text-md-start pb-1">
-         <h4 class="text-spacing-50 d-flex justify-content-center">取件餐廳</h4>
-        <div class="container d-flex justify-content-center"  th:each="restaurant : ${restaurant}">
+      <section class="section novi-bg novi-bg-img section-xl bg-default text-md-start pb-1 pt-5">
+         <div class="section-header  ms-0 pt-3" style="padding-left:31px; width:1170px;">
+          <h5 class="text-spacing-50">取件餐廳</h5>
+        </div>
+        <div class="container d-flex justify-content-center" style="border: 1px solid #e1e1e1; width:1170px;"  th:each="restaurant : ${restaurant}">
          <div class="row me-5">
-           <img th:src="${restaurant.restaurantImg != null ? restaurant.restaurantImg : 'https://via.placeholder.com/450x400'}" alt="" style="height:400px;"/>
+           <img class="" th:src="${restaurant.restaurantImg != null ? restaurant.restaurantImg : 'https://via.placeholder.com/450x400'}" alt="" style="height:400px;"/>
          </div>
-          <div class="row">
+          <div class="row mt-0" style="width:600px; align-items:center;">
           	<div class="col-md-10 col-lg-6">
-              <form class="rd-form rd-mailform" style="width:550px;">
+              <form class="rd-form rd-mailform" style="width:600px;">
                 <div class="row row-14 row-fix gutters-14">
                   <div class="col-sm-6">
                     <div class="form-wrap">
@@ -263,19 +273,12 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
                       <label class="form-label" for="checkout-address-2">E-Mail</label>
                     </div>
                   </div>
-                  <div class="col-sm-6">
-                  </div>
                 </div>
               </form>
             </div>
            </div>
           </div>
          </section>
-          <div class="button-wrap text-center">
-          	<form th:action= "@{/StarCups/rental/ecpayCheckout(rentId=${session['rentId']})}" method="post">
-          		<button type="submit" class="button button-secondary button-pipaluk">Proceed to checkout</button>
-          	</form>
-       	 </div>
         </div>
       </section>
 

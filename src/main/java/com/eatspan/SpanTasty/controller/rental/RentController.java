@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.eatspan.SpanTasty.dto.rental.RentDetailDTO;
+import com.eatspan.SpanTasty.dto.rental.RentItemDTO;
 import com.eatspan.SpanTasty.dto.rental.RentKeywordDTO;
 import com.eatspan.SpanTasty.dto.rental.StockKeywordDTO;
 import com.eatspan.SpanTasty.dto.rental.TablewareFilterDTO;
@@ -213,14 +214,28 @@ public class RentController {
 			return "spantasty/rental/setRent";
 			
 		} else if ("return".equals(action)) {
-			List<RentItem> rentItems = rentItemService.findRentItemsByRentId(rentId);
 			List<Restaurant> restaurants = restaurantService.findAllRestaurants();
 			model.addAttribute("restaurants" ,restaurants);
+			
 			Date returnDate = new Date();
 			rent.setReturnDate(returnDate);
 			model.addAttribute("rent", rent);
-			model.addAttribute("rentItems", rentItems);
-			return "spantasty/rental/setRentReturn";
+			
+			List<RentItem> rentItems = rentItemService.findRentItemsByRentId(rentId);
+			List<RentItemDTO> rentItemsDTO = rentItems.stream()
+				    .map(rentItem -> new RentItemDTO(
+				        rentItem.getRentId(),
+				        rentItem.getTablewareId(),
+				        rentItem.getRentItemQuantity(),
+				        rentItem.getRentItemDeposit(),
+				        rentItem.getReturnMemo(),
+				        rentItem.getReturnStatus(),
+				        0, // Initialize returnedQuantity for DTO
+				        0  // Initialize damagedQuantity for DTO
+				    )).collect(Collectors.toList());
+			model.addAttribute("rentItemsDTO", rentItemsDTO);
+			
+			return "spantasty/rental/setRentReturn2";
 			
 		}else if("get".equals(action)){
 			List<RentItem> rentItems = rentItemService.findRentItemsByRentId(rentId);
@@ -385,11 +400,66 @@ public class RentController {
 	}
 	
 	
-//	查詢訂單(By過期未歸還)
-//	@GetMapping("/overtime")
-//	public String getOvertimeRents(Model model) {
-//		List<Rent> rents = rentService.findOvertimeRents();
-//		model.addAttribute("rents", rents);
-//		return "spantasty/rental/getAllRents";
-//	}
+	//歸還訂單
+	@PutMapping("/setPut3")
+	public String returnRent2(@ModelAttribute Rent rent, @RequestParam("rentItemsDTO") List<RentItemDTO> rentItemsDTO, Model model) {
+		rent.setRentStatus(2);
+		rent.setRentMemo("已歸還");
+		System.out.println(rent);
+		System.out.println(rentItemsDTO);
+		
+		int totalExpense = 0;
+		
+		for(RentItemDTO rentItemDTO : rentItemsDTO) {
+			Integer rentItemQuantity = rentItemDTO.getRentItemQuantity();
+			Integer returnedQuantity = rentItemDTO.getReturnedQuantity();
+			Integer damagedQuantity = rentItemDTO.getDamagedQuantity();
+			
+			Integer rentItemDeposit = rentItemDTO.getRentItemDeposit();
+			int unreturnedCount = rentItemQuantity - returnedQuantity;
+	        int extraCharge = (unreturnedCount + damagedQuantity) * rentItemDeposit;
+	        totalExpense += extraCharge;
+			
+			Integer returnStatus = null;
+			if (rentItemQuantity == returnedQuantity && damagedQuantity > 0) {
+				returnStatus = 3; //完全歸還(有破損)
+			} else if (rentItemQuantity == returnedQuantity) {
+				returnStatus = 2; //完全歸還
+			} else if (rentItemQuantity > returnedQuantity && damagedQuantity > 0) {
+				returnStatus = 5; //未完全歸還(有破損)
+			} else if (rentItemQuantity > returnedQuantity) {
+				returnStatus = 4; //未完全歸還
+			}
+			
+			// 組合 returnMemo
+	        String returnMemo = "歸還" + returnedQuantity + "破損" + damagedQuantity;
+	        
+			// 更新庫存
+	        int stockChange = returnedQuantity - damagedQuantity;
+	        System.out.println(stockChange);
+	        TablewareStock tablewareStock = tablewareStockService.findStockById(rentItemDTO.getTablewareId(), rent.getReturnRestaurantId());
+	        System.out.println(tablewareStock);
+	        Integer stock = tablewareStock.getStock();
+	        System.out.println(stock);
+	        Integer newStock = stock + stockChange;
+	        System.out.println(newStock);
+	        tablewareStock.setStock(newStock);
+	        tablewareStockService.addStock(tablewareStock);
+	        
+	        RentItem rentItem = new RentItem();
+	        rentItem.setRentId(rentItemDTO.getRentId());
+	        rentItem.setTablewareId(rentItemDTO.getTablewareId());
+	        rentItem.setReturnMemo(returnMemo);
+	        rentItem.setReturnStatus(returnStatus);
+	        rentItemService.addRentItem(rentItem);
+		}
+		rentService.addRent(rent);
+		
+		model.addAttribute("totalExpense", totalExpense);
+		System.out.println("有更新");
+		return "spantasty/rental/getReturnExpense";
+	}
+	
+	
+	
 }

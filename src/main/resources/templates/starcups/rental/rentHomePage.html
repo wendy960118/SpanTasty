@@ -75,7 +75,7 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
 		 <!-- RD Mailform-->
 		 <form class="rd-form rd-mailform rd-form-inline oh-desktop justify-content-center mt-5" data-form-output="form-output-global" data-form-type="subscribe" method="post" action="bat/rd-mailform.php">
 		   <div class="form-button wow slideInRight ms-0">
-		  	 <a class="button button-ujarak button-gray-7" href="/SpanTasty/StarCups/rental/rent">開始租借</a>
+		  	 <a class="button button-ujarak button-gray-7" href="javascript:void(0);" onclick="checkTokenAndProceed()">開始租借</a>
 		   </div>
 		 </form>
        </div>
@@ -90,5 +90,18 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
 <!-- Javascript-->
 <script src="/SpanTasty/starcups/js/core.min.js"></script>
 <script src="/SpanTasty/starcups/js/script.js"></script>
+<script>
+  function checkTokenAndProceed() {
+    const token = localStorage.getItem('token');
+    
+    if (!token) {
+      alert('請先登入');
+      window.location.href = '/SpanTasty/StarCups/loginRegister';
+    } else {
+      // 如果有 token，跳轉到租借頁面
+      window.location.href = '/SpanTasty/StarCups/rental/rent';
+    }
+  }
+</script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 package com.eatspan.SpanTasty.repository.rental;
 
 import java.util.Date;
+
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,7 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.eatspan.SpanTasty.dto.rental.RentDTO;
 import com.eatspan.SpanTasty.entity.account.Member;
 import com.eatspan.SpanTasty.entity.rental.Rent;
 
