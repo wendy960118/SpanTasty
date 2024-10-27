@@ -79,7 +79,7 @@
     <section class="section novi-bg novi-bg-img section-xl bg-default text-md-start">
       <div class="container">
         <div class="col-md-10 col-lg-12">
-          <h4 class="text-spacing-50" >Pickup Information</h4>
+          <h4 class="text-spacing-50" >訂購資訊</h4>
           <div class="table-custom-responsive">
             <table class="table-custom table-custom-primary table-checkout">
               <tbody>
@@ -102,21 +102,28 @@
               </tbody>
             </table>
           </div>
+          <div class="group-xmd group-middle">
+            <!-- <h4 class="text-spacing-50">購物車資訊</h4> -->
+            <div style="display: flex; align-items: center; margin-left: auto; margin-bottom: 10px;">
+              <h6 class="text-gray-500" style="margin-right: 10px;">Total</h6>
+              <h3 class="cart-product-price" th:text="'$' + ${togo.totalPrice}"><sup>$</sup></h3>
+            </div>
+          </div>
         </div>
       </div>
     </section>
     <section class="section novi-bg novi-bg-img section-xl bg-default text-md-start">
       <div class="container">
-        <h4 class="text-spacing-50">Your Order Details</h4>
+        <h4 class="text-spacing-50">訂購明細</h4>
         <!-- shopping-cart-->
         <div class="table-custom-responsive">
           <table class="table-custom table-cart">
             <thead>
               <tr>
-                <th>Product name</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Total</th>
+                <th>品項</th>
+                <th>單價</th>
+                <th>數量</th>
+                <th>小計</th>
               </tr>
             </thead>
             <tbody>
@@ -138,7 +145,7 @@
               </tr>
             </tbody>
           </table>
-        </div>
+        </div>       
       </div>
     </section>
 

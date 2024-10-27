@@ -81,7 +81,7 @@
     <section class="section novi-bg novi-bg-img section-xl bg-default text-md-start">
       <div class="container">
         <div class="group-xmd group-middle">
-          <h4 class="text-spacing-50">Your shopping cart</h4>
+          <h4 class="text-spacing-50">購物車資訊</h4>
           <div style="display: flex; align-items: center; margin-left: auto; margin-bottom: 10px;">
             <h6 class="text-gray-500" style="margin-right: 10px;">Total</h6>
             <h3 class="cart-product-price"><sup>$</sup>524</h3>
@@ -92,10 +92,10 @@
           <table class="table-custom table-cart">
             <thead>
               <tr>
-                <th>Product name</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Total</th>
+                <th>品項</th>
+                <th>單價</th>
+                <th>數量</th>
+                <th>小計</th>
               </tr>
             </thead>
             <!-- 購物車資訊 -->
@@ -210,7 +210,7 @@
         <div class="row row-50 justify-content-center">
           <!-- 取餐資訊 -->
           <div class="col-md-10 col-lg-6">
-            <h4 class="text-spacing-50">Pickup Location</h4>
+            <h4 class="text-spacing-50">取餐門市</h4>
             <div class="row row-14 row-fix gutters-14" style="margin-top: 25px;">
               <!--Select 2-->
 
@@ -235,46 +235,32 @@
                 </select>
               </div>
             </div>
-            <h4 class="text-spacing-50" style="margin-top: 30px;">Pickup Information</h4>
+            <h4 class="text-spacing-50" style="margin-top: 30px;">顧客資料</h4>
             <form class="rd-form rd-mailform">
               <div class="row row-14 row-fix gutters-14">
                 <div class="col-sm-6">
                   <div class="form-wrap">
-                    <input class="form-input" id="tgName" type="text" name="tgName" data-constraints="@Required" />
-                    <label class="form-label" for="tgName">Name</label>
+                    <input class="form-input" id="tgName" type="text" name="tgName" data-constraints="@Required" placeholder="姓名"/>
+                    <label class="form-label" for="tgName"></label>
                   </div>
                 </div>
-                <!-- <div class="col-sm-6">
-                  <div class="form-wrap">
-                    <input class="form-input" id="checkout-last-name-1" type="text" name="name"
-                      data-constraints="@Required" />
-                    <label class="form-label" for="checkout-last-name-1">Last Name</label>
-                  </div>
-                </div> -->
-                <!-- <div class="col-sm-6">
-                  <div class="form-wrap">
-                    <input class="form-input" id="checkout-email-1" type="email" name="email"
-                      data-constraints="@Email @Required" />
-                    <label class="form-label" for="checkout-email-1">E-Mail</label>
-                  </div>
-                </div> -->
                 <div class="col-sm-6">
                   <div class="form-wrap">
-                    <input class="form-input" id="tgPhone" type="text" name="tgPhone" data-constraints="@Numeric" />
-                    <label class="form-label" for="tgPhone">Phone</label>
+                    <input class="form-input" id="tgPhone" type="text" name="tgPhone" data-constraints="@Required" placeholder="電話"/>
+                    <label class="form-label" for="tgPhone"></label>
                   </div>
                 </div>
                 <div class="col-sm-12">
                   <div class="form-wrap">
-                    <label class="form-label" for="togoMemo">Memo</label>
-                    <textarea class="form-input" name="togoMemo" id="togoMemo"></textarea>
+                    <label class="form-label" for="togoMemo"></label>
+                    <textarea class="form-input" name="togoMemo" id="togoMemo" placeholder="餐點備註"></textarea>
                   </div>
                 </div>
               </div>
             </form>
           </div>
           <div class="col-md-10 col-lg-6">
-            <h4 class="text-spacing-50">Payment methods</h4>
+            <h4 class="text-spacing-50">付款方式</h4>
             <div class="box-radio">
               <div class="radio-panel">
                 <label class="radio-inline active">
@@ -284,24 +270,8 @@
                   <p>僅供門市現金支付</p>
                 </div>
               </div>
-              <!-- <div class="radio-panel">
-                <label class="radio-inline">
-                  <input name="input-group-radio" value="checkbox-1" type="radio">PayPal
-                </label>
-                <div class="radio-panel-content">
-                  <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal account.</p>
-                </div>
-              </div>
-              <div class="radio-panel">
-                <label class="radio-inline">
-                  <input name="input-group-radio" value="checkbox-1" type="radio">Cheque Payment
-                </label>
-                <div class="radio-panel-content">
-                  <p>Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.</p>
-                </div>
-              </div> -->
             </div>
-            <h4 class="text-spacing-50" style="margin-top: 30px;">Cart totals</h4>
+            <h4 class="text-spacing-50" style="margin-top: 30px;">購物車金額</h4>
             <div class="table-custom-responsive">
               <table class="table-custom table-custom-primary table-checkout">
                 <tbody>
@@ -341,12 +311,11 @@
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       loadCartIntoTable(); // 頁面加載時調用
-
+      getProfile();
 
 
       //訂單提交
       document.getElementById("submitTogoBtn").addEventListener("click", function () {
-        getProfile();
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
         // 如果購物車是空的，則提醒用戶
         if (cart.length === 0) {
@@ -562,11 +531,19 @@
             if (response.data.success) {
               const member = response.data.data;
               // 取得 memberId
-              const memberId = member.memberId;
+              var memberId = member.memberId;
               localStorage.setItem('memberId', memberId); // 儲存至 localStorage
-              // memberId.textContent = member.memberId;
-              // memberName.textContent = member.memberName;
-              // phone.textContent = member.phone;
+              // 自動填入顧客資料
+              // document.getElementById("tgName").value = member.memberName || ''; 
+              // document.getElementById("tgPhone").value = member.phone || '';
+              // 自動填入資料到輸入框中
+              if (document.getElementById('tgName').value.trim() === '') {
+                document.getElementById('tgName').value = member.memberName || '';
+              }
+
+              if (document.getElementById('tgPhone').value.trim() === '') {
+                document.getElementById('tgPhone').value = member.phone || '';
+              }
             } else {
               alert('無法獲取個人資訊');
             }
