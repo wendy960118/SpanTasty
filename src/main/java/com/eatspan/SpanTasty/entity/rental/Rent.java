@@ -8,8 +8,10 @@ import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.eatspan.SpanTasty.entity.account.Member;
+import com.eatspan.SpanTasty.entity.reservation.Restaurant;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -34,6 +36,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonInclude(JsonInclude.Include.NON_NULL) 
 public class Rent implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
@@ -76,12 +79,18 @@ public class Rent implements Serializable {
 	
 	
 	@JsonIgnore
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "rent")
+	@OneToMany(mappedBy = "rent")
 	private List<RentItem> rentItems = new ArrayList<RentItem>();
 	
 	
 	@JsonIgnore
-	@ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", insertable = false, updatable = false)  // 外鍵
+	@ManyToOne
+    @JoinColumn(name = "member_id", referencedColumnName = "member_id", insertable = false, updatable = false)  // 外鍵
     private Member member;
+	
+	
+	@JsonIgnore
+	@ManyToOne
+	@JoinColumn(name = "restaurant_id", referencedColumnName ="restaurant_id", insertable = false, updatable = false)  // 外鍵
+	private Restaurant restaurant;
 }

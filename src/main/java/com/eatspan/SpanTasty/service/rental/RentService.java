@@ -15,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.eatspan.SpanTasty.dto.rental.RentDTO;
 import com.eatspan.SpanTasty.entity.account.Member;
 import com.eatspan.SpanTasty.entity.rental.Rent;
 import com.eatspan.SpanTasty.entity.rental.RentItem;
@@ -207,6 +208,11 @@ public class RentService {
     public List<Rent> findByDueDateTomorrow(){
     	return rentRepository.findByDueDateTomorrow();
     }
+    
+    
+	public List<Rent> findAllByMemberId(Integer memberId) {
+		return rentRepository.findAllByMemberId(memberId);
+	}
 }
 
 

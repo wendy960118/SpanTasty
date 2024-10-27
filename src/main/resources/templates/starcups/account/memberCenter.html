@@ -730,6 +730,16 @@
       console.error('Error:', error);
       Swal.fire('錯誤', customMessage, 'error');
     }
+    
+   	function toAllRent() {
+	    const token = localStorage.getItem('token');
+	    if (!token) {
+	        alert('Token 不存在，請重新登錄。');
+	        return;
+	    }
+	    // 直接設置網址，並將 token 作為 URL 參數發送
+	    window.location.href = `/SpanTasty/StarCups/rental/rentRecord?token=${token}`;
+	}
   </script>
 </body>
 

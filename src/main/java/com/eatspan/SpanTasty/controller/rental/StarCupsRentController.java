@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import jakarta.servlet.http.HttpSession;
 import com.eatspan.SpanTasty.dto.rental.CartRequestDTO;
+import com.eatspan.SpanTasty.dto.rental.RentDTO;
 import com.eatspan.SpanTasty.dto.rental.RestaurantStockDTO;
 import com.eatspan.SpanTasty.dto.rental.TablewareFilterDTO;
 import com.eatspan.SpanTasty.dto.rental.TablewareIdDTO;
@@ -201,18 +202,6 @@ public class StarCupsRentController {
 	}
 	
 	
-	// 導向訂單名細頁面
-	@GetMapping("/rental/allRent")
-	public String toAllRent(@RequestParam(value = "token") String token, Model model) {
-		// 解析 JWT token 取得 claims
-		Map<String, Object> claims = JwtUtil.parseToken(token);
-		Integer memberId = (Integer) claims.get("memberId"); // 獲取會員 ID
-		List<Rent> rents = rentService.findRentsByMemberId(memberId);
-		model.addAttribute("rents", rents);
-		return "starcups/rental/allRentPage";
-	}
-	
-	
 	//
 	@PostMapping("/rental/ecpayCheckout")
 	@ResponseBody
@@ -243,32 +232,13 @@ public class StarCupsRentController {
 	
 	
 	// 導向訂單名細頁面
-	@ResponseBody
-	@PostMapping("/rental/rentRecord")
-	public ResponseEntity<List<Rent>> toRentRecord(@RequestHeader(value = "Authorization") String token) {
+	@GetMapping("/rental/rentRecord")
+	public String toRentRecord(@RequestParam(value = "token") String token, Model model) {
 		// 解析 JWT token 取得 claims
 		Map<String, Object> claims = JwtUtil.parseToken(token);
 		Integer memberId = (Integer) claims.get("memberId"); // 獲取會員 ID
-		List<Rent> rents = rentService.findRentsByMemberId(memberId);
-		return ResponseEntity.ok(rents);
-	}
-	
-	
-	@ResponseBody
-	@PostMapping("/rental/rentItemRecord/{id}")
-    public ResponseEntity<?> orderDetail(@PathVariable Integer id, @RequestHeader("Authorization") String token) {
-        // 解析 JWT token 取得 claims
-        Map<String, Object> claims = JwtUtil.parseToken(token);
-        Integer memberId = (Integer) claims.get("memberId");
-
-        List<RentItem> rentItems = rentItemService.findRentItemsByRentId(id);
-
-        return ResponseEntity.ok(rentItems); // 返回所有商品明細
-    }
-	
-	
-	@GetMapping("/rental/memberCenterRent")
-	public String showMemberCenterPage() {
-		return "starcups/rental/memberCenterPageRent"; 
+		List<Rent> rents = rentService.findAllByMemberId(memberId);
+		model.addAttribute("rents", rents);
+		return "starcups/rental/rentRecordPage";
 	}
 }
