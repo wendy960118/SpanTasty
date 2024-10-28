@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import com.eatspan.SpanTasty.dto.rental.RentDTO;
 import com.eatspan.SpanTasty.entity.account.Member;
 import com.eatspan.SpanTasty.entity.rental.Rent;
 
@@ -49,6 +50,14 @@ public interface RentRepository extends JpaRepository<Rent, Integer> {
 	
 	List<Rent> findByMemberId(Integer memberId);
 	
+	
 	@Query("SELECT m FROM Member m JOIN Rent rent ON m.id = rent.member.id WHERE rent.rentId = :rentId")
 	Member findMemberByRentId(@Param("rentId") Integer rentId);
+	
+	
+	@Query("SELECT r " +
+		       "FROM Rent r " +
+		       "JOIN Restaurant restaurant ON restaurant.restaurantId = r.restaurantId " +
+		       "WHERE r.memberId = :memberId")
+		List<Rent> findAllByMemberId(@Param("memberId") Integer memberId);
 }

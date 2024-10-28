@@ -23,14 +23,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.eatspan.SpanTasty.dto.reservation.ExportReserveDTO;
 import com.eatspan.SpanTasty.dto.reservation.ReserveCheckDTO;
 import com.eatspan.SpanTasty.dto.reservation.ReserveDTO;
-import com.eatspan.SpanTasty.entity.account.Member;
 import com.eatspan.SpanTasty.entity.reservation.Reserve;
 import com.eatspan.SpanTasty.entity.reservation.Restaurant;
 import com.eatspan.SpanTasty.entity.reservation.TableType;
-import com.eatspan.SpanTasty.service.account.MemberService;
 import com.eatspan.SpanTasty.service.reservation.ReserveService;
 import com.eatspan.SpanTasty.service.reservation.RestaurantService;
-import com.eatspan.SpanTasty.service.reservation.RestaurantTableService;
 import com.eatspan.SpanTasty.service.reservation.TableTypeService;
 
 @Controller
@@ -41,13 +38,9 @@ public class ReserveController {
 	@Autowired
 	private ReserveService reserveService;
 	@Autowired
-	private RestaurantTableService restaurantTableService;
-	@Autowired
 	private RestaurantService restaurantService;
 	@Autowired
 	private TableTypeService tableTypeService;
-	@Autowired
-	private MemberService memberService;
 	
 	
 	
@@ -110,9 +103,21 @@ public class ReserveController {
 									    	 @RequestParam Integer reserveSeat,
 									    	 @RequestParam LocalDate checkDate) {
     	
-    	String tableTypeId = reserveService.getTableTypeIdByReserveSeat(reserveSeat);
-    	List<ReserveCheckDTO> reserveCheck = reserveService.getReserveCheck(restaurantId, tableTypeId, checkDate);
-    	return ResponseEntity.ok(reserveCheck);
+    	Restaurant restaurant = restaurantService.findRestaurantById(restaurantId);
+    	Integer reserveCombinable = restaurant.getReserveCombinable();
+    	
+    	if(reserveCombinable==1) {
+    		// 單一桌位可預訂時間
+    		String tableTypeId = reserveService.getTableTypeIdByReserveSeat(reserveSeat);
+    		List<ReserveCheckDTO> reserveCheck = reserveService.getReserveCheck(restaurantId, tableTypeId, checkDate);
+    		return ResponseEntity.ok(reserveCheck);
+    	}else if (reserveCombinable==2) {
+    		// 組合桌位可預訂時間
+    		List<ReserveCheckDTO> combinedReserveCheck = reserveService.getCombinedReserveCheck(restaurantId, reserveSeat, checkDate);
+    		return ResponseEntity.ok(combinedReserveCheck);
+		}
+    	
+    	return ResponseEntity.status(HttpStatus.NOT_FOUND).body("收尋可訂位時間時出現錯誤");
     }
     
     
@@ -131,8 +136,20 @@ public class ReserveController {
 		if(validateResult!=null) {
 			return ResponseEntity.badRequest().body(validateResult);
 		}
-	    // 保存訂位
-	    reserveService.addReserve(reserveDTO);
+		
+	    // 新增訂位紀錄(單一桌位訂位)
+	    Reserve reserve = reserveService.addReserve(reserveDTO);
+	    
+	    // 新增訂位紀錄(組合桌位訂位)
+	    if(reserve==null && restaurantService.findRestaurantById(reserveDTO.getRestaurantId()).getReserveCombinable()==2) {
+	    	//新增組合桌位的訂位訂單
+	    	reserve = reserveService.addCombinedReserve(reserveDTO);
+	    }
+	    
+	    if(reserve==null) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("無法找到足夠的桌位以完成訂單");
+	    }
+	    
 		return ResponseEntity.ok("reserve add success");
 	}
 	
@@ -148,14 +165,27 @@ public class ReserveController {
 	// 修改訂位的ajax
 	@PutMapping("/set")
 	public ResponseEntity<?> updateReserve(@RequestBody ReserveDTO reserveDTO) {
+		
+	
 		String validateResult = reserveService.validateSetReserveDto(reserveDTO);
 		if(validateResult!=null) {
 			return ResponseEntity.badRequest().body(validateResult);
 		}
-	    // 保存訂位
-	    reserveService.updateReservebyDto(reserveDTO);
-		return ResponseEntity.ok("Reserve update ok");
 		
+		// 修改訂位紀錄(單一桌位訂位)
+	    Reserve reserve = reserveService.updateReservebyDto(reserveDTO);
+		
+	    // 修改訂位紀錄(組合桌位訂位)
+	    if(reserve==null && restaurantService.findRestaurantById(reserveDTO.getRestaurantId()).getReserveCombinable()==2) {
+	    	//修改組合桌位的訂位訂單
+	    	reserve = reserveService.updateCombinedReservebyDto(reserveDTO);
+	    }
+	    
+	    if(reserve==null) {
+			return ResponseEntity.status(HttpStatus.CONFLICT).body("無法找到足夠的桌位以完成訂單");
+	    }
+		
+	    return ResponseEntity.ok("Reserve update ok");
 	}
 	
 	// 修改訂位狀態的ajax

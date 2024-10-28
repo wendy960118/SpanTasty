@@ -4,6 +4,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.eatspan.SpanTasty.dto.order.TogoDto;
 import com.eatspan.SpanTasty.entity.order.TogoEntity;
 import com.eatspan.SpanTasty.entity.reservation.Restaurant;
 import com.eatspan.SpanTasty.service.order.TogoService;
@@ -72,14 +74,37 @@ public class TogoController {
 	}
 	
 	@GetMapping("/togo")
-	public String getAllTogo(Model model) {
-		List<TogoEntity> togoList = togoService.getAllTogo();
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-	    for (TogoEntity togo : togoList) {
-	        togo.setFormattedDate(togo.getTogoCreateTime().format(formatter)); // 將日期格式化為字串
-	    }
-		model.addAttribute("togoList", togoList);
+	public String getAllTogo(
+			Model model,
+			@RequestParam(defaultValue = "0") Integer page,
+			@RequestParam(required = false) Integer restaurantId) {
+		if (restaurantId == null) {
+			Page<TogoEntity> togoList = togoService.getAllTogoPage(page+1, null);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+			for (TogoEntity togo : togoList) {
+				togo.setFormattedDate(togo.getTogoCreateTime().format(formatter)); // 將日期格式化為字串
+			}
+			
+			TogoDto togoDto = new TogoDto();
+			togoDto.setTogoList(togoList);
+
+			model.addAttribute("togoList", togoDto);
+			return "spantasty/order/getAllTogo";
+		} else {
+			Page<TogoEntity> togoList = togoService.getTogoByRestaurantId(page+1, null, restaurantId);
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+			for (TogoEntity item : togoList) {
+				item.setFormattedDate(item.getTogoCreateTime().format(formatter));
+			}
+			TogoDto togoDto = new TogoDto();
+			togoDto.setTogoList(togoList);
+			togoDto.setSelectedId(restaurantId);
+			
+			model.addAttribute("togoList", togoDto);
+			
+		}
 		return "spantasty/order/getAllTogo";
+		
 	}
 	
 	@GetMapping("/togo/{togoId}")
@@ -95,6 +120,19 @@ public class TogoController {
 	@ResponseBody
 	public ResponseEntity<List<TogoEntity>> getTogoByPhone(@RequestParam String tgPhone) {
 		List<TogoEntity> togoList = togoService.getTogoByPhone(tgPhone);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		for (TogoEntity item : togoList) {
+			item.setFormattedDate(item.getTogoCreateTime().format(formatter));
+		}
+		return ResponseEntity.ok(togoList);
+	}
+	
+	@GetMapping("/togo/restaurant/{restaurantId}")
+	@ResponseBody
+	public ResponseEntity<Page<TogoEntity>> getTogoByRestaurant(
+			@PathVariable Integer restaurantId,
+			@RequestParam(defaultValue = "0") Integer page) {
+		Page<TogoEntity> togoList = togoService.getTogoByRestaurantId(page+1, null, restaurantId);
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 		for (TogoEntity item : togoList) {
 			item.setFormattedDate(item.getTogoCreateTime().format(formatter));

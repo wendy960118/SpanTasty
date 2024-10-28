@@ -61,7 +61,7 @@
           <h2 class="breadcrumbs-custom-title">Cart Page</h2>
           <ul class="breadcrumbs-custom-path">
             <li><a href="/SpanTasty/StarCups">Home</a></li>
-            <li><a href="shop.html">Order Online</a></li>
+            <li><a href="/SpanTasty/StarCups/order">Order Online</a></li>
             <li class="active">Cart Page</li>
           </ul>
         </div>
@@ -118,17 +118,7 @@
           </table>
         </div>
         <div class="group-xl group-lg-justify">
-          <div>
-            <!-- RD Mailform-->
-            <form class="rd-form rd-mailform rd-form-inline rd-form-coupon">
-              <div class="form-wrap">
-                <input class="form-input form-input-inverse" id="coupon-code" type="text" name="email">
-                <label class="form-label" for="coupon-code">Coupon code</label>
-              </div>
-              <div class="form-button">
-                <button class="button button-secondary button-pipaluk" type="submit">Apply coupon</button>
-              </div>
-            </form>
+          <div>            
           </div>
           <div>
             <div class="group-xmd group-middle">
@@ -138,8 +128,8 @@
                   <h3 class="cart-product-price"><sup>$</sup>524</h3>
                 </div>
               </div>
-              <a class="button button-md button-default-outline button-wapasha" th:href="@{/StarCups/order/checkout}">checkout</a>
-              <a class= "button button-md button-primary button-pipaluk" th:href="@{/StarCups/order}">continue shopping</a>
+              <a class="button button-md button-default-outline button-wapasha" th:href="@{/StarCups/order}">continue shopping</a>
+              <a class="button button-md button-primary button-pipaluk" th:href="@{/StarCups/order/checkout}">checkout</a>      
             </div>
           </div>
         </div>

@@ -32,6 +32,31 @@
     html.lt-ie-10 .ie-panel {
       display: block;
     }
+
+    .point{
+          letter-spacing: .1em;
+          color: #9b9b9b;
+        }
+
+        .pointText{
+          font-size: 20px;
+        }
+        
+        .box-sportlight-badge {
+          top: 0 !important;
+          font-size: 15px !important;
+        }
+        
+    .addBtn{
+          width: 60px;
+          height: 36px;
+          border: 0;
+          background-color: #efc4a3;
+          border-radius: 3px;
+    }
+    .cantUse {
+          filter: opacity(50%) grayscale(100%);
+    }
   </style>
 </head>
 
@@ -81,7 +106,7 @@
     <section class="section novi-bg novi-bg-img section-xl bg-default text-md-start">
       <div class="container">
         <div class="group-xmd group-middle">
-          <h4 class="text-spacing-50">Your shopping cart</h4>
+          <h4 class="text-spacing-50">購物車資訊</h4>
           <div style="display: flex; align-items: center; margin-left: auto; margin-bottom: 10px;">
             <h6 class="text-gray-500" style="margin-right: 10px;">Total</h6>
             <h3 class="cart-product-price"><sup>$</sup>524</h3>
@@ -92,10 +117,10 @@
           <table class="table-custom table-cart">
             <thead>
               <tr>
-                <th>Product name</th>
-                <th>Price</th>
-                <th>Quantity</th>
-                <th>Total</th>
+                <th>品項</th>
+                <th>單價</th>
+                <th>數量</th>
+                <th>小計</th>
               </tr>
             </thead>
             <!-- 購物車資訊 -->
@@ -118,9 +143,91 @@
               </tr>
             </tbody>
           </table>
+          <!-- discount -->
+          <div class="table-custom-responsive border p-3">
+            <!-- coupon -->
+            <div class="row p-3">
+              <span class="point" style="font-size: 16px;">優惠券</span>
+              <div class="col-7">
+                <div class="form-wrap">
+                  <input class="form-input form-input-inverse" id="coupon-code" type="text" name="email" disabled>
+                  <label class="form-label" for="coupon-code" id="coupon-code-label">Coupon code</label>
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="form-button">
+                  <button class="button button-secondary button-pipaluk" type="submit" id="selectCoupon">新增優惠券</button>
+                </div>
+              </div>
+              <div class="col"></div>
+            </div>
+            <!-- point -->
+            <div class="row mt-3 p-3">
+              <div class="col-7">
+                <span class="point" style="font-size: 16px;" id="pointItem">點數折抵</span>
+                <div class="form-wrap text-align-center" id="pointItem">
+                  <input class="form-input form-input-inverse pointText" id="pointInput" type="text" name="email" style="font-size: 20px;">
+                  <label class="form-label" for="pointInput">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Point</label>
+                </div>
+              </div>
+              <div class="col-4 d-flex align-items-end">
+                <ul class="point" id="pointInfo">
+                  <li class="active" style="font-size: 16px;" >可用點數 : 910點(1點折抵1元)</li>
+                  <li class="active" style="font-size: 16px;" >您有 45點將於 2024/13/31到期</li>
+                </ul>  
+              </div>
+              <div class="col"></div>
+            </div>       
+          </div>
         </div>
       </div>
     </section>
+     <!-- Modal click select coupon jump out by hao-->
+     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">選擇優惠券</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <div class="row ms-1 me-1 " style="background-color: #F7F7F7;height: 70px;">
+                <div class="col-3 d-flex justify-content-end align-items-center">新增優惠券</div>       
+                <div class="col-6 d-flex align-items-center"><input type="text" class="form-control" id="modelCouponCode"></div>       
+                <div class="col-3 d-flex align-items-center"><button class="addBtn" id="add">新增</button></div>       
+              </div>
+                <!--  -->
+              <div id="couponDiv" class="mt-2">
+                <!-- <div class="row">
+                  <div class="col d-flex mb-3">
+                    <div class="d-flex" style="background-color: rgb(232, 208, 192);"><img src="/SpanTasty/starcups/images/coupon/couponhead.png" width="87" height="87" alt=""></div>
+                    <div class="border w-100 d-flex justify-content-between">
+                      <div class="ms-1 mt-1">                                                        
+                        <ul class="">
+                          <li><span>歡慶三周年</span><span></span></li>
+                          <li><span>低消 </span><span>$100</span></li>
+                          <li><span>最多折抵 </span><span>$10</span></li>
+                          <li><span>有效日期: </span><span>2024/12/31</span><a href="#" class="ms-2 rule" data-couponid=${coupon.coupon.couponId}>使用規則</a></li>
+                        </ul>
+                      </div>
+                      <div class="d-flex align-items-center me-3">
+                        <input type="radio"  name="selectCoupon">  
+                      </div>                                                       
+                      <div class="box-sportlight-badge box-sportlight-sale mb-3">x 3</div>      
+                    </div>
+                  </div> -->
+                </div>                  
+            
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary" id="useCoupon" data-bs-dismiss="modal">使用</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
 
     <!-- Section payment-->
     <section class="section novi-bg novi-bg-img section-xl bg-default text-md-start">
@@ -128,7 +235,7 @@
         <div class="row row-50 justify-content-center">
           <!-- 取餐資訊 -->
           <div class="col-md-10 col-lg-6">
-            <h4 class="text-spacing-50">Pickup Location</h4>
+            <h4 class="text-spacing-50">取餐門市</h4>
             <div class="row row-14 row-fix gutters-14" style="margin-top: 25px;">
               <!--Select 2-->
 
@@ -153,46 +260,32 @@
                 </select>
               </div>
             </div>
-            <h4 class="text-spacing-50" style="margin-top: 30px;">Pickup Information</h4>
+            <h4 class="text-spacing-50" style="margin-top: 30px;">顧客資料</h4>
             <form class="rd-form rd-mailform">
               <div class="row row-14 row-fix gutters-14">
                 <div class="col-sm-6">
                   <div class="form-wrap">
-                    <input class="form-input" id="tgName" type="text" name="tgName" data-constraints="@Required" />
-                    <label class="form-label" for="tgName">Name</label>
+                    <input class="form-input" id="tgName" type="text" name="tgName" data-constraints="@Required" placeholder="姓名"/>
+                    <label class="form-label" for="tgName"></label>
                   </div>
                 </div>
-                <!-- <div class="col-sm-6">
-                  <div class="form-wrap">
-                    <input class="form-input" id="checkout-last-name-1" type="text" name="name"
-                      data-constraints="@Required" />
-                    <label class="form-label" for="checkout-last-name-1">Last Name</label>
-                  </div>
-                </div> -->
-                <!-- <div class="col-sm-6">
-                  <div class="form-wrap">
-                    <input class="form-input" id="checkout-email-1" type="email" name="email"
-                      data-constraints="@Email @Required" />
-                    <label class="form-label" for="checkout-email-1">E-Mail</label>
-                  </div>
-                </div> -->
                 <div class="col-sm-6">
                   <div class="form-wrap">
-                    <input class="form-input" id="tgPhone" type="text" name="tgPhone" data-constraints="@Numeric" />
-                    <label class="form-label" for="tgPhone">Phone</label>
+                    <input class="form-input" id="tgPhone" type="text" name="tgPhone" data-constraints="@Required" placeholder="電話"/>
+                    <label class="form-label" for="tgPhone"></label>
                   </div>
                 </div>
                 <div class="col-sm-12">
                   <div class="form-wrap">
-                    <label class="form-label" for="togoMemo">Memo</label>
-                    <textarea class="form-input" name="togoMemo" id="togoMemo"></textarea>
+                    <label class="form-label" for="togoMemo"></label>
+                    <textarea class="form-input" name="togoMemo" id="togoMemo" placeholder="餐點備註"></textarea>
                   </div>
                 </div>
               </div>
             </form>
           </div>
           <div class="col-md-10 col-lg-6">
-            <h4 class="text-spacing-50">Payment methods</h4>
+            <h4 class="text-spacing-50">付款方式</h4>
             <div class="box-radio">
               <div class="radio-panel">
                 <label class="radio-inline active">
@@ -202,24 +295,8 @@
                   <p>僅供門市現金支付</p>
                 </div>
               </div>
-              <!-- <div class="radio-panel">
-                <label class="radio-inline">
-                  <input name="input-group-radio" value="checkbox-1" type="radio">PayPal
-                </label>
-                <div class="radio-panel-content">
-                  <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal account.</p>
-                </div>
-              </div>
-              <div class="radio-panel">
-                <label class="radio-inline">
-                  <input name="input-group-radio" value="checkbox-1" type="radio">Cheque Payment
-                </label>
-                <div class="radio-panel-content">
-                  <p>Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.</p>
-                </div>
-              </div> -->
             </div>
-            <h4 class="text-spacing-50" style="margin-top: 30px;">Cart totals</h4>
+            <h4 class="text-spacing-50" style="margin-top: 30px;">購物車金額</h4>
             <div class="table-custom-responsive">
               <table class="table-custom table-custom-primary table-checkout">
                 <tbody>
@@ -228,8 +305,12 @@
                     <td id="subtotal">$524</td>
                   </tr>
                   <tr>
-                    <td>Discount</td>
-                    <td id="discount"></td>
+                    <td>Coupon Discount</td>
+                    <td id="couponDiscountTd" data-discount="">-</td>
+                  </tr>
+                  <tr>
+                    <td>Point Discount</td>
+                    <td id="pointDiscountTd" data-discount="">-</td>
                   </tr>
                   <tr>
                     <td>Total</td>
@@ -257,14 +338,30 @@
   <!-- footer th:replace -->
   <div th:replace="~{starcups/display/footer}"></div>
   <script>
+    function countSubtotal(){
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let subtotal=0;
+        cart.forEach(item => {
+          const itemTotalPrice = item.foodPrice * item.quantity;
+          subtotal+= itemTotalPrice
+          })
+        return  subtotal ;
+      }
+    let memberId;
+    let conponCode;
+    let couponId;
+    let discountAmount;
+    let finalAmount=countSubtotal();
+
+
     document.addEventListener("DOMContentLoaded", function () {
       loadCartIntoTable(); // 頁面加載時調用
-
+      getProfile();
+      
 
 
       //訂單提交
       document.getElementById("submitTogoBtn").addEventListener("click", function () {
-        getProfile();
         const cart = JSON.parse(localStorage.getItem('cart')) || [];
         // 如果購物車是空的，則提醒用戶
         if (cart.length === 0) {
@@ -284,7 +381,12 @@
       const restaurantId = document.getElementById("restaurantSelect").value;
       const tgName = document.getElementById("tgName").value;
       const tgPhone = document.getElementById("tgPhone").value;
-
+      const couponDiscount = document.getElementById('couponDiscountTd').dataset.discount ? document.getElementById('couponDiscountTd').dataset.discount:0//edit by hao
+      const pointDiscount = document.getElementById('pointDiscountTd').dataset.discount ? document.getElementById('pointDiscountTd').dataset.discount:0//edit by hao
+      const discoutAmount = Number(couponDiscount)+Number(pointDiscount)//edit by hao
+      const finalTotal = finalAmount-discoutAmount//edit by hao
+      
+      
       if (!restaurantId) {
         alert("請選擇餐廳");
         return;
@@ -297,6 +399,8 @@
         tgName,
         restaurantId,
         togoMemo,
+        discoutAmount,
+        finalTotal
       };
       // 發送 axios 請求來建立訂單
       axios.post('http://localhost:8080/SpanTasty/order/togo', togoData)
@@ -306,6 +410,7 @@
             console.log('togoId ' + togoId)
             // 接著建立訂單明細
             createOrderItems(togoId);
+            // use(togoId);
           } else {
             console.log('無法建立訂單');
           }
@@ -338,8 +443,28 @@
             alert('訂單已送出')
             // 清除 localStorage 中的購物車資料
             localStorage.removeItem('cart');
-            // 跳轉到成功頁面
-            window.location.href = `/SpanTasty/StarCups/order/togo/information?id=${togoId}`;
+            
+            /* 使用優惠券、累積點數 */
+            const couponDiscount = document.getElementById('couponDiscountTd').dataset.discount
+            const pointDiscount = document.getElementById('pointDiscountTd').dataset.discount
+            console.log(finalAmount);
+            
+            axios.post('/SpanTasty/StarCups/coupon/allDiscount/togo',{
+              couponDiscount:Number(couponDiscount),
+              pointDiscount:Number(pointDiscount),
+              shoppingId:togoId,
+              couopnId:couponId,
+              memberId:memberId,
+              finalAmount:finalAmount
+            })
+            .then(res=>{
+              // 跳轉到成功頁面
+              window.location.href = `/SpanTasty/StarCups/order/togo/information?id=${togoId}`;
+            })
+            .catch(err=>{         
+              alert("請稍後再試")
+            })
+
           } else {
             console.log('訂單明細建立失敗');
           }
@@ -480,11 +605,19 @@
             if (response.data.success) {
               const member = response.data.data;
               // 取得 memberId
-              const memberId = member.memberId;
+              var memberId = member.memberId;
               localStorage.setItem('memberId', memberId); // 儲存至 localStorage
-              // memberId.textContent = member.memberId;
-              // memberName.textContent = member.memberName;
-              // phone.textContent = member.phone;
+              // 自動填入顧客資料
+              // document.getElementById("tgName").value = member.memberName || ''; 
+              // document.getElementById("tgPhone").value = member.phone || '';
+              // 自動填入資料到輸入框中
+              if (document.getElementById('tgName').value.trim() === '') {
+                document.getElementById('tgName').value = member.memberName || '';
+              }
+
+              if (document.getElementById('tgPhone').value.trim() === '') {
+                document.getElementById('tgPhone').value = member.phone || '';
+              }
             } else {
               alert('無法獲取個人資訊');
             }
@@ -496,6 +629,206 @@
         alert('請先登入')
       }
     }
+
+  </script>
+  <script>
+    //折扣
+    
+    
+
+    document.addEventListener('DOMContentLoaded',function(){
+
+
+      const token = localStorage.getItem('token');
+        if(!token){
+          console.error('Notoken found')
+          alert('需要登入才能繼續')
+          window.location.href='/SpanTasty/StarCups/loginRegister'
+          return;
+        }
+      
+      axios.get('/SpanTasty/member/profile',{
+          headers:{
+            'Authorization':`${token}`
+          }
+        })
+        .then(response=>{
+          if(response.data.success){
+            const memberData = response.data.data
+            memberId = memberData.memberId
+            console.log('會員資訊:',memberData);
+            discountInfo(memberId)
+          }    
+        })
+        .catch(err=>{
+          throw new Error('無法獲取會員資訊')
+        })
+        
+        
+        let maxPointUse;
+        function discountInfo(memberId){
+          axios.get('/SpanTasty/StarCups/togo/checkout',{
+            headers:{
+                    'Content-Type':'application/json'
+            },
+            params:{
+              memberId:memberId
+            }
+          })
+          .then(res=>{
+            console.log(res.data);
+            maxPointUse=res.data.pointMemberTotalPoint
+            pointHtmlMaker(res.data)
+
+          })
+          .catch(err=>{
+            console.error(err);                       
+          })
+      }
+
+      
+
+
+      function pointHtmlMaker(data){
+        document.getElementById('pointInfo').innerHTML=`
+        <li class="active" style="font-size: 16px;" >可用點數 : ${data.pointMemberTotalPoint}點(1點折抵1元)</li>
+        <li class="active" style="font-size: 16px;" >您有 ${data.pointMember.expiringPoints}點將於 ${data.pointMember.expiryDate}到期</li>`
+
+      }
+      let totalAmount;
+      document.getElementById('selectCoupon').addEventListener('click',()=>{
+        var myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+        myModal.show();
+
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let totalPrice = count(cart);
+        totalAmount=totalPrice
+        function count(cart){
+          let totalPrice=0;
+          cart.forEach(item => {
+          const itemTotalPrice = item.foodPrice * item.quantity;
+          totalPrice += itemTotalPrice;}) 
+          return totalPrice
+        }
+        console.log(cart);
+        
+        
+        
+        axios.post('http://localhost:8080/SpanTasty/StarCups/coupon/checkout/togo',{
+                    togoItems: cart,
+                    totalAmount: totalPrice,
+                    memberId: memberId
+                })
+                .then(res=>{
+                  console.log('123');
+                  
+                    console.log(res.data);
+                    HtmlMaker(res.data)
+                    // let coupons = res.data
+                })
+
+
+      })
+      
+      function HtmlMaker(data){
+        const couponDiv =document.getElementById('couponDiv')
+        couponDiv.innerHTML=''
+        data.forEach(coupon => {
+          couponDiv.innerHTML +=`
+            <div class="row mt-1 ${coupon.canUse? '':'cantUse'}">
+              <div class="col d-flex mb-3">
+                <div class="d-flex" style="background-color: rgb(232, 208, 192);"><img src="/SpanTasty/starcups/images/coupon/couponhead.png" width="87" height="87" alt=""></div>
+                <div class="border w-100 d-flex justify-content-between">
+                  <div class="ms-1 mt-1">                                                        
+                    <ul class="">
+                      <li class="text-start"><span>${coupon.coupon.rulesDescription}</span><span></span></li>
+                      <li class="text-start"><span>低消: </span><span>$${coupon.coupon.minOrderDiscount?coupon.coupon.minOrderDiscount:'-'}</span></li>
+                      <li class="text-start"><span>最多折抵: </span><span>$${coupon.coupon.maxDiscount?coupon.coupon.maxDiscount:'-'}</span></li>
+                      <li class="text-start"><span>數量: </span><span>${coupon.usageAmount}</span></li>
+                      <li class="text-start"><span>有效日期: </span><span>${coupon.coupon.couponEndDate}</span><a href="#" class="ms-2 rule" data-couponid=${coupon.coupon.couponId}>使用規則</a></li>
+                    </ul>
+                  </div>
+                  <div class="d-flex align-items-center me-3">
+                    <input type="radio"  name="radioCoupon" ${coupon.canUse? '':'disabled'}  data-couponcode="${coupon.coupon.couponCode}" data-couponid="${coupon.coupon.couponId}">  
+                  </div>                                                       
+                </div>
+              </div>
+            </div>`  
+        });
+      }
+
+          //使用優惠券
+          document.getElementById('useCoupon').addEventListener('click',()=>{
+        let couponCode = document.querySelector('input[name="radioCoupon"]:checked').dataset.couponcode
+        couponId = document.querySelector('input[name="radioCoupon"]:checked').dataset.couponid
+        document.getElementById('coupon-code').value=couponCode
+        document.getElementById('coupon-code-label').textContent=''
+
+        axios.get("/SpanTasty/StarCups/coupon/discount",{
+          params: {
+            totalAmount:totalAmount,
+            couponCode:couponCode
+          }
+        })
+        .then(res=>{
+          console.log(res.data);
+          couponDiscountHmtlMaker(res.data)
+          changeTotal()
+        }
+
+        )
+      })
+
+      function couponDiscountHmtlMaker(data){
+        document.getElementById('couponDiscountTd').textContent=`-${data}`
+        document.getElementById('couponDiscountTd').dataset.discount=data
+      }
+      
+
+      //變更點數
+      document.getElementById('pointInput').addEventListener('change',(e)=>{
+        console.log('touch');
+        
+        
+        if(Number(e.target.value)>maxPointUse){
+          alert('超過點數上限')
+          e.target.value=''
+          document.getElementById('pointDiscountTd').textContent=`-${e.target.value}`
+          changeTotal()
+          return
+        }
+        document.getElementById('pointDiscountTd').textContent=`-${e.target.value}`
+        document.getElementById('pointDiscountTd').dataset.discount=e.target.value
+        changeTotal()
+
+      })
+
+      //計算最終金額
+      function changeTotal(){
+        const couponDiscount = document.getElementById('couponDiscountTd').dataset.discount
+        const pointDiscount = document.getElementById('pointDiscountTd').dataset.discount
+        
+        document.getElementById('total').textContent=`$${totalAmount-couponDiscount-pointDiscount}`
+        document.getElementById('total').setAttribute('data-value',totalAmount-couponDiscount-pointDiscount)
+        finalAmount=totalAmount-couponDiscount-pointDiscount
+        return totalAmount-couponDiscount-pointDiscount
+      }
+
+
+      //使用規則
+      document.addEventListener('click', function (event) {
+        if (event.target.classList.contains('rule')) {
+          event.preventDefault();
+          const couponId = event.target.dataset.couponid
+          window.open(`/SpanTasty/StarCups/coupon/${couponId}`)
+        }
+      })
+
+      
+
+     
+
+    })
 
   </script>
   <!-- Javascript-->

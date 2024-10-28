@@ -19,6 +19,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
@@ -37,7 +39,6 @@ public class Reserve {
 	
 	@Id @Column(name = "reserve_id") @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer reserveId;
-	
 	
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "UTC+8")
@@ -61,16 +62,10 @@ public class Reserve {
 	private Integer reserveStatus;
 	
 	@Column(name = "table_id")
-	private Integer tableId;
+	private String tableId;
 	
 	@Column(name = "reserve_note")
 	private String reserveNote;
-	
-	
-	@ManyToOne //預設(fetch = FetchType.EAGER)
-	@JoinColumn(name = "table_type_id")
-	//@JoinColumn(name = "table_type_id", insertable = false, updatable = false)
-	private TableType tableType;
 	
 	@ManyToOne //預設(fetch = FetchType.EAGER)
     @JoinColumn(name = "restaurant_id")
@@ -82,10 +77,17 @@ public class Reserve {
 	//@JoinColumn(name = "member_id", insertable = false, updatable = false)
     private Member member; // 與 Member 的關聯	
 	
-//	// 10/25 test
-//	@JsonIgnore //該屬性不要做JSON序列化避免無線迴圈 //預設lazy
-//	@OneToMany(fetch = FetchType.LAZY, mappedBy = "reserve", cascade = CascadeType.ALL)
-//	private List<RestaurantTable> restaurantTables = new ArrayList<RestaurantTable>();
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+        name = "reserve_table",
+        joinColumns = @JoinColumn(name = "reserve_id"),
+        inverseJoinColumns = {
+            @JoinColumn(name = "table_id"),
+            @JoinColumn(name = "restaurant_id"),
+            @JoinColumn(name = "table_type_id"),
+        }
+    )
+    private List<RestaurantTable> restaurantTables = new ArrayList<>();
 	
 	
 	@PrePersist //當物件轉換成persist時先做該方法
@@ -103,6 +105,14 @@ public class Reserve {
 	     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 	     return reserveTime != null ? reserveTime.format(formatter) : null;
 	 }
+
+
+	@Override
+	public String toString() {
+		return "Reserve [reserveId=" + reserveId + ", reserveCreateTime=" + reserveCreateTime + ", reserveSeat="
+				+ reserveSeat + ", reserveTime=" + reserveTime + ", finishedTime=" + finishedTime + ", reserveStatus="
+				+ reserveStatus + ", reserveNote=" + reserveNote + ", restaurantTables=" + restaurantTables + "]";
+	}
 	
 	
 

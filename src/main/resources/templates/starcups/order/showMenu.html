@@ -71,7 +71,7 @@
     <!-- Grid Gallery-->
     <section class="section novi-bg novi-bg-img section-xl bg-default text-center isotope-wrap">
       <div class="container">
-        <div class="isotope-filters isotope-filters-horizontal">
+        <div class="isotope-filters isotope-filters-horizontal" style="overflow: visible;">
           <button
             class="isotope-filters-toggle button button-md button-icon button-icon-right button-default-outline button-wapasha"
             data-custom-toggle="#isotope-1" data-custom-toggle-hide-on-blur="true"><span
@@ -87,7 +87,7 @@
           <div class="col-md-6 col-lg-4 isotope-item" th:attr="data-filter='Type ' + ${food.foodKind.foodKindId}"  th:each="food : ${foodList}">
             <!-- Thumbnail Modern-->
             <article class="thumbnail thumbnail-modern thumbnail-sm">
-              <a  th:href="${food.foodPicture}" data-lightgallery="item">
+              <a th:href="${food.foodPicture}" data-lightgallery="item">
                 <img th:src="${food.foodPicture}" th:alt="${food.foodName}" width="300px" />
               </a>
               <div class="thumbnail-modern-caption">
@@ -100,9 +100,6 @@
               </div>
             </article>
           </div>
-        </div>
-        <div class="button-wrap">
-          <button class="button button-md button-default-outline button-wapasha">Load More</button>
         </div>
       </div>
     </section>

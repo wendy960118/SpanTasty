@@ -81,7 +81,7 @@
 				            <th>會員電話</th>
 				            <th>餐廳名稱</th>
 				            <th>訂位人數</th>
-				            <th>桌位種類</th>
+				            <th>桌位編號</th>
 				            <th>用餐時段</th>
 				            <th>訂位狀態</th>
 				            <th>備註</th>
@@ -554,6 +554,7 @@
 		    axios.get('http://localhost:8080/SpanTasty/reserve/getList', { params })
 		        .then(function (response) {
 		            allReservations = response.data; // 儲存所有訂位資料
+		            console.log(allReservations);
 		            renderReservations(currentPage); // 根據當前頁碼顯示資料
 		            generatePagination(allReservations.length); // 根據資料數量生成分頁按鈕
 		        })
@@ -591,6 +592,10 @@
 		            statusText = '已取消';
 		        }
                 
+                // 組合 tableTypeId 和 tableId
+                // const tableIds = reserve.restaurantTables.map(table => table.id.tableTypeId + table.id.tableId).join(', ');
+
+
 		        const row = document.createElement('tr');
 		        row.innerHTML = `
 		            <td>${reserve.reserveId}</td>
@@ -598,7 +603,7 @@
 		            <td>${reserve.member.phone}</td>
 		            <td>${reserve.restaurant.restaurantName}</td>
 		            <td>${reserve.reserveSeat}</td>
-		            <td>${reserve.tableType.tableTypeName} 人桌</td>
+		            <td>${reserve.tableId}</td>
 		            <td>${reserve.reserveTime} - ${finishedTime}</td>
 		            <td><span class="${statusClass}">${statusText}</span></td>
 		            <td>

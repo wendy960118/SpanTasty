@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.eatspan.SpanTasty.entity.order.TogoEntity;
+import com.eatspan.SpanTasty.entity.rental.Rent;
 import com.eatspan.SpanTasty.entity.rental.TablewareStock;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -84,6 +85,9 @@ public class Restaurant {
 	@Column(name = "reserve_max")
 	private Integer reserveMax;
 	
+	@Column(name = "reserve_combinable")
+	private Integer reserveCombinable;
+	
 	
 	@JsonIgnore //該屬性不要做JSON序列化避免無線迴圈 //預設lazy
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant", cascade = CascadeType.ALL)
@@ -94,8 +98,12 @@ public class Restaurant {
 	private List<Reserve> reserves = new ArrayList<Reserve>();
 
 	@JsonIgnore //該屬性不要做JSON序列化避免無線迴圈 //預設lazy
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant", cascade = CascadeType.ALL) // 'restaurant' 是 `TablewareStock` 中的字段名
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant", cascade = CascadeType.ALL) 
     private List<TablewareStock> stocks = new ArrayList<>();
+	
+	@JsonIgnore //該屬性不要做JSON序列化避免無線迴圈 //預設lazy
+	@OneToMany(mappedBy = "restaurant") 
+	private List<Rent> rents = new ArrayList<>();
 	
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant", cascade = CascadeType.ALL)
@@ -119,6 +127,9 @@ public class Restaurant {
 		}
 		if(this.reserveMax == null) {
 			this.reserveMax = 10; // 訂位的區間(預設為30分鐘)
+		}
+		if(this.reserveCombinable == null) {
+			this.reserveCombinable = 1; // 可接受組合桌位(1=不可, 2=可)
 		}
 	}
 	
