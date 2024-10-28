@@ -12,12 +12,14 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @NoArgsConstructor
 @Getter
 @Setter
 @Table(name = "togo_item")
+@ToString
 public class TogoItemEntity {
 	
 	@EmbeddedId

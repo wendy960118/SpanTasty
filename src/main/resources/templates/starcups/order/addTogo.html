@@ -337,7 +337,7 @@
     function addToCartById(foodId) {
       axios.get(`http://localhost:8080/SpanTasty/order/menu/${foodId}`)
         .then(function (response) {
-          // console.log(response.data)
+          console.log(response.data)
           const foodData = response.data;
           // 建立新的購物車項目
           const cartItem = {
@@ -345,6 +345,8 @@
             foodName: foodData.foodName,
             foodPicture: foodData.foodPicture,
             foodPrice: foodData.foodPrice,
+            //edit by hao
+            foodKindName: foodData.foodKind.foodKindName,
             quantity: 1 // 默認數量為 1
           };
           // 保存到 localStorage
