@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <title>歸還環保用具</title>
 </head>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.5/dist/sweetalert2.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.5/dist/sweetalert2.all.min.js"></script>
 <style>
 .h {
 	text-align: center;
@@ -66,30 +68,31 @@ form {
 <div class="table-responsive">
         <table class="table table-striped" id="table1">
             <tr>
-                <th>用具編號</th>
+                <th>用具名稱</th>
                 <th>品項數量</th>
-                <th>歸還備註</th>
+                <th>歸還數量</th>
+                <th>損壞數量</th>
             </tr>
             <tr th:each=" rentItemDTO, index: ${rentItemsDTO}">
-                <td th:text="${rentItemDTO.tablewareId}" th:value="${rentItemDTO.tablewareId}"  ></td>
+                <td th:text="${rentItemDTO.tablewareName}" th:value="${rentItemDTO.tablewareId}"  ></td>
                 <td th:text="${rentItemDTO.rentItemQuantity}" th:value="${rentItemDTO.rentItemQuantity}" ></td>
+                <td><input type="number" id="returnedQuantity" class="tableware-input" th:name="'rentItemsDTO[' + ${index.index} + '].returnedQuantity'" min="0" th:max="${rentItemDTO.rentItemQuantity}" required style="width:30%;"/></td>
+			    <td><input type="number" id="damagedQuantity" class="tableware-input" th:name="'rentItemsDTO[' + ${index.index} + '].damagedQuantity'" min="0" th:max="${rentItemDTO.rentItemQuantity}" required style="width:30%;"/></td>
                 <td>
-			        歸還數量: <input type="number" class="tableware-input" th:name="'rentItemsDTO[' + ${index.index} + '].returnedQuantity'" min="0" th:max="${rentItemDTO.rentItemQuantity}" required style="width:15%;"/>
-			        損壞數量: <input type="number" class="tableware-input" th:name="'rentItemsDTO[' + ${index.index} + '].damagedQuantity'" min="0" th:max="${rentItemDTO.rentItemQuantity}" required style="width:15%;"/>
-			    </td>
-                 <td>
-			        <input type="hidden" th:name="'rentItemsDTO[' + ${index.index} + '].rentId'" th:value="${rentItemDTO.rentId}" />
-			        <input type="hidden" th:name="'rentItemsDTO[' + ${index.index} + '].tablewareId'" th:value="${rentItemDTO.tablewareId}" />
-			        <input type="hidden" th:name="'rentItemsDTO[' + ${index.index} + '].rentItemQuantity'" th:value="${rentItemDTO.rentItemQuantity}" />
-			        <input type="hidden" th:name="'rentItemsDTO[' + ${index.index} + '].rentItemDeposit'" th:value="${rentItemDTO.rentItemDeposit}" />
-			        <input type="hidden" th:name="'rentItemsDTO[' + ${index.index} + '].returnStatus'" th:value="${rentItemDTO.returnStatus}" />
-			        <input type="hidden" th:name="'rentItemsDTO[' + ${index.index} + '].returnMemo'" th:value="${rentItemDTO.returnMemo}" />
+			        <input type="hidden" id="rentId" th:name="'rentItemsDTO[' + ${index.index} + '].rentId'" th:value="${rentItemDTO.rentId}" />
+			        <input type="hidden" id="tablewareId" th:name="'rentItemsDTO[' + ${index.index} + '].tablewareId'" th:value="${rentItemDTO.tablewareId}" />
+			        <input type="hidden" id="rentItemQuantity" th:name="'rentItemsDTO[' + ${index.index} + '].rentItemQuantity'" th:value="${rentItemDTO.rentItemQuantity}" />
+			        <input type="hidden" id="rentItemDeposit" th:name="'rentItemsDTO[' + ${index.index} + '].rentItemDeposit'" th:value="${rentItemDTO.rentItemDeposit}" />
+			        <input type="hidden" id="returnStatus" th:name="'rentItemsDTO[' + ${index.index} + '].returnStatus'" th:value="${rentItemDTO.returnStatus}" />
+			        <input type="hidden" id="returnMemo" th:name="'rentItemsDTO[' + ${index.index} + '].returnMemo'" th:value="${rentItemDTO.returnMemo}" />
 			    </td>
             </tr>
         </table>
 	 </div>
 <span id="disabledMsg" style="color:red; display: none">訂單已完全歸還，無法再更改。</span>
-<input type="submit" id="submitBtn" value="確定歸還"/>
+<input type="submit" id="submitBtn" class="btn btn-sm btn-success" value="確定歸還"/>
+<button type="button" onclick="autoFillInputs()" class="btn-warning btn btn-sm">一鍵輸入</button>
+
 <input type="hidden" name="rentDeposit" th:value="${rent.rentDeposit}"/>
 <input type="hidden" name="rentDate" th:value="${rent.rentDate}">
 <input type="hidden" name="restaurantId" th:value="${rent.restaurantId}">
@@ -100,6 +103,35 @@ form {
 </form>
 </div>
 <script>
+// 一鍵(完全歸還)
+function autoFillInputs() {
+    const rentItemQuantities = document.querySelectorAll('#rentItemQuantity');
+    const returnedQuantities = document.querySelectorAll('#returnedQuantity');
+    const damagedQuantities = document.querySelectorAll('#damagedQuantity');
+
+    // 遍歷每一項 rentItemQuantity
+    rentItemQuantities.forEach((item, index) => {
+        const rentItemQuantity = parseInt(item.value, 10); // 確保 rentItemQuantity 是數字型別
+
+        if (index === 0) {
+            returnedQuantities[index].value = rentItemQuantity;
+            damagedQuantities[index].value = 0;
+        } else if (index === 1) {
+            returnedQuantities[index].value = rentItemQuantity;
+            damagedQuantities[index].value = 1;
+        } else if (index === 2) {
+            returnedQuantities[index].value = rentItemQuantity - 1;
+            damagedQuantities[index].value = 0;
+        } else if (index === 3) {
+            returnedQuantities[index].value = rentItemQuantity - 1;
+            damagedQuantities[index].value = 1;
+        } else {
+        	returnedQuantities[index].value = rentItemQuantity;
+            damagedQuantities[index].value = 0;
+        }
+    });
+}
+
 window.onload = function() {
 	const rentStatus = document.getElementById('rentStatus');
 	const returnRestaurantId = document.getElementById('returnRestaurantId');
@@ -110,6 +142,65 @@ window.onload = function() {
 		document.getElementById('disabledMsg').style.display = 'block';
 	}
 };
+
+const url = 'http://localhost:8080/SpanTasty/rent/setPut3';
+const submitBtn = document.getElementById('submitBtn');
+submitBtn.addEventListener('click', (e)=>{
+
+	e.preventDefault(); // 防止表單默認提交
+    
+    // 收集 Rent 的基本信息
+    const rent = {
+        rentId: document.querySelector('input[name="rentId"]').value,
+        returnDate: document.querySelector('input[name="returnDate"]').value,
+        returnRestaurantId: document.querySelector('select[name="returnRestaurantId"]').value,
+        rentDeposit: document.querySelector('input[name="rentDeposit"]').value,
+        rentDate: document.querySelector('input[name="rentDate"]').value,
+        restaurantId: document.querySelector('input[name="restaurantId"]').value,
+        memberId: document.querySelector('input[name="memberId"]').value,
+        dueDate: document.querySelector('input[name="dueDate"]').value,
+        rentStatus: document.querySelector('input[name="rentStatus"]').value,
+        rentMemo: document.querySelector('input[name="rentMemo"]').value
+    };
+    
+    const rentItemsDTO = Array.from(document.querySelectorAll('#tablewareId')).map((_, index) => ({
+        rentId: document.querySelectorAll('#rentId')[index].value,
+        tablewareId: document.querySelectorAll('#tablewareId')[index].value,
+        rentItemQuantity: document.querySelectorAll('#rentItemQuantity')[index].value,
+        rentItemDeposit: document.querySelectorAll('#rentItemDeposit')[index].value,
+        returnStatus: document.querySelectorAll('#returnStatus')[index].value,
+        returnMemo: document.querySelectorAll('#returnMemo')[index].value,
+        returnedQuantity: document.querySelectorAll('#returnedQuantity')[index].value,
+        damagedQuantity: document.querySelectorAll('#damagedQuantity')[index].value,
+    }));
+
+    
+    const rentRequestDTO = {
+        rent: rent,
+        rentItemsDTO: rentItemsDTO
+    };
+    
+    axios.post(url,rentRequestDTO)
+    .then(res => {
+       const totalExpense = res.data;
+       Swal.fire({
+           title: '歸還成功！',
+           text: `需再繳交金額: $${totalExpense}`,
+           icon: 'success',
+           confirmButtonText: '確定'
+       }).then((result) => {
+           if (result.isConfirmed) {
+               // 跳轉至金額頁面
+               window.location.href = `http://localhost:8080/SpanTasty/rent/expense?totalExpense=${totalExpense}`;
+           }
+       });
+    })
+    .catch(err => {
+        console.error(err); 
+    });
+})
+
+
 </script>
 <script>
 document.addEventListener("DOMContentLoaded", function() {

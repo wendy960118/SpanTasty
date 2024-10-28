@@ -114,7 +114,7 @@ public class RentService {
 	
 	//查詢所有訂單(Page)
 	public Page<Rent> findAllRentPages(Integer page){
-		Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.ASC, "rentId");
+		Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "rentId");
 		return rentRepository.findAll(pageable);
 	}
 	

@@ -12,6 +12,8 @@
 <link rel="stylesheet" href="/SpanTasty/starcups/css/bootstrap.css">
 <link rel="stylesheet" href="/SpanTasty/starcups/css/fonts.css">
 <link rel="stylesheet" href="/SpanTasty/starcups/css/style.css">
+ <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.5/dist/sweetalert2.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.5/dist/sweetalert2.all.min.js"></script>
 <style>
 .ie-panel{
     display: none;
@@ -95,8 +97,16 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
     const token = localStorage.getItem('token');
     
     if (!token) {
-      alert('請先登入');
-      window.location.href = '/SpanTasty/StarCups/loginRegister';
+      Swal.fire({
+        title: '尚未登入會員',
+        text: '請登入',
+        icon: 'error',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // 使用者按下「確定」按鈕後跳轉
+          window.location.href = '/SpanTasty/StarCups/loginRegister';
+        }
+      });
     } else {
       // 如果有 token，跳轉到租借頁面
       window.location.href = '/SpanTasty/StarCups/rental/rent';

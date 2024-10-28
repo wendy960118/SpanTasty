@@ -101,13 +101,14 @@ form {
 			</select>
 		</td>
 		<td class="stock-column">用具庫存: <input type="number" name="stock[0]" class="stock-input" /></td>
-		<td class="stock-column"><br/><button type="button" class="delete-button" onclick="removeStockEntry(this)">刪除</button></td>
+		<td class="stock-column"><br/><button type="button" class="delete-button btn-danger btn btn-sm" onclick="removeStockEntry(this)">刪除</button></td>
 	</tr>
 </table>
 </div>
 </div>
-<button type="button" id="add-stock-button" >添加庫存</button>
-<button type="submit">新增餐具</button>
+<button type="button" id="add-stock-button" class="btn-primary btn btn-sm" >添加庫存</button>
+<button type="submit" class="btn-success btn btn-sm">新增餐具</button>
+<button type="button" onclick="autoFillInputs()" class="btn-warning btn btn-sm">一鍵輸入</button>
 </form>
 </div>
 </div>
@@ -121,6 +122,12 @@ document.addEventListener("DOMContentLoaded", function() {
 	<option th:each="restaurant : ${restaurants}" th:value="${restaurant.restaurantId}" th:text="${restaurant.restaurantName}"></option>
 </script>
 <script>
+function autoFillInputs() {
+    document.querySelector('input[name="tablewareName"]').value = "環保杯";
+    document.querySelector('input[name="tablewareDeposit"]').value = "50";
+    document.querySelector('input[name="tablewareDescription"]').value = "這是一個環保杯，用於替代一次性塑膠杯。";
+}
+
 let stockIndex = 0; // 初始化庫存索引
 // 監聽「添加庫存」按鈕
 document.getElementById('add-stock-button').addEventListener('click', function() {
@@ -137,7 +144,7 @@ document.getElementById('add-stock-button').addEventListener('click', function()
 				</select>
 			</td>
 			<td class="stock-column">用具庫存: <input type="number" name="stock[${stockIndex}]" class="stock-input" /></td>
-			<td class="stock-column"><br/><button type="button" class="delete-button" onclick="removeStockEntry(this)">刪除</button></td>
+			<td class="stock-column"><br/><button type="button" class="delete-button btn-danger btn btn-sm" onclick="removeStockEntry(this)">刪除</button></td>
 		</tr>
 	</table>
 	</div>

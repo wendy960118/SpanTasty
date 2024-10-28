@@ -30,17 +30,23 @@
   <div class="row justify-content-center">
    <div class="col-5 text-align" style="font-size:15px">
     <div class="card shadow" id="card-warning" >
-	 <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
+	 <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center pb-4">
      <h3 class="mb-0">額外費用結算</h3>
-     <p>感謝您歸還用具。</p>
-    <p th:if="${totalExpense > 0}">
-        需再繳金額： <span th:text="${totalExpense}"></span> 元
-    </p>
-    <p th:if="${totalExpense == 0}">
-        無需再繳交任何金額，感謝您的使用。
-    </p>
-    <a th:href="@{/rent/getAll}">返回訂單列表</a>
+     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+      <a class="btn btn-sm btn-success" th:href="@{/rent/getAll}">返回訂單列表</a>
      </div>
+     </div>
+     <div class="table-responsive">
+      <table class="table table-striped" id="table">
+        <tr>
+	     	<th>感謝您歸還用具。</th>
+	    </tr>
+        <tr>
+	     	<td th:if="${totalExpense > 0}">需再繳金額： <span th:text="${totalExpense}"></span> 元</td>
+	     	<td th:if="${totalExpense == 0}">無需再繳交任何金額，感謝您的使用。</td>
+	    </tr>
+      </table>
+   	 </div>
     </div>
    </div>
   </div>

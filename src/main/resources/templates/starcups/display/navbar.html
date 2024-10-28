@@ -347,14 +347,22 @@
   });
   
     function checkTokenAndProceed() {
-    const token = localStorage.getItem('token');
-    
-    if (!token) {
-      alert('請先登入');
-      window.location.href = '/SpanTasty/StarCups/loginRegister';
-    } else {
-      // 如果有 token，跳轉到租借頁面
-      window.location.href = '/SpanTasty/StarCups/rental/rent';
-    }
-  }
+	    const token = localStorage.getItem('token');
+	    
+	    if (!token) {
+	      Swal.fire({
+	        title: '尚未登入會員',
+	        text: '請登入',
+	        icon: 'error',
+	      }).then((result) => {
+	        if (result.isConfirmed) {
+	          // 使用者按下「確定」按鈕後跳轉
+	          window.location.href = '/SpanTasty/StarCups/loginRegister';
+	        }
+	      });
+	    } else {
+	      // 如果有 token，跳轉到租借頁面
+	      window.location.href = '/SpanTasty/StarCups/rental/rent';
+	    }
+	  }
 </script>
