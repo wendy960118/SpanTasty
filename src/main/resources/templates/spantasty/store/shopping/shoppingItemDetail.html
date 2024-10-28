@@ -68,8 +68,10 @@
 											<td
 												th:text="${item.shoppingItemQuantity * item.product.productPrice}"></td>
 											<td>
+
 												<form method="post" th:action="@{/shoppingItem/updateItem}"
 													onsubmit="return confirmUpdate(event);">
+													<input type="hidden" name="_method" value="put"/>
 													<input type="hidden" name="shoppingId"
 														th:value="${item.id.shoppingId}"> <input
 														type="hidden" name="productId"
@@ -85,6 +87,7 @@
 											<td>
 												<form th:action="@{/shoppingItem/delItem}" method="post"
 													onsubmit="return confirmDelete(event);">
+													<input type="hidden" name="_method" value="delete"/>
 													<input type="hidden" name="shoppingId"
 														th:value="${item.id.shoppingId}"> <input
 														type="hidden" name="productId"

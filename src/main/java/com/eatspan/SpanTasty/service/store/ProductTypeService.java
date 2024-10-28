@@ -57,13 +57,9 @@ public class ProductTypeService {
 	}
 	
 	public ProductType findProductTypeById(Integer id) {
-		Optional<ProductType> optional = productTypeRepo.findById(id);
-		
-		if(optional.isPresent()) {
-			return optional.get();
-		}
-		return null;
+	    return productTypeRepo.findById(id).orElse(null);
 	}
+
 	
 	
 	public List<ProductType> findProductByProductName(String productName) {

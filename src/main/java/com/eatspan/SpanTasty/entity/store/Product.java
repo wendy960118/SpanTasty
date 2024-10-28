@@ -56,11 +56,15 @@ public class Product {
 		
 		@ManyToOne
 		@JoinColumn(name="product_type_id")
-		private ProductType productType;
+		public ProductType productType;
 		
 		@JsonIgnore
 	    @OneToMany(fetch= FetchType.LAZY, cascade=CascadeType.ALL, mappedBy = "product")
 	    private List<ShoppingItem> items;
+
+		public List<ProductType> getProducts() {
+			return null;
+		}
 	
 	
 

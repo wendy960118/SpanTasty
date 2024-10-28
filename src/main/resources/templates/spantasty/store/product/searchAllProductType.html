@@ -58,6 +58,7 @@
                                         <td th:text="${productType.productTypeName}"></td>
                                         <td>
                                             <form method="post" th:action="@{/productType/update/{id}(id=${productType.productTypeId})}">
+                                                <input type="hidden" name="_method" value="put"/>
                                                 <input type="text" name="productTypeName" placeholder="請輸入欲更新類別名稱" required>
                                                 <button type="submit" class="custom-button" onclick="return confirmUpdate(event);">
                                                     <i class="fa-regular fa-pen-to-square fa-xl"></i>

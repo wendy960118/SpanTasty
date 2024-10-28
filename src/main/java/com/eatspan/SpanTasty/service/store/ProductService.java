@@ -132,6 +132,16 @@ public class ProductService {
         return null;
     }
 	
+	@Transactional
+	public void updateProductStatus(Integer productId, Integer productStatus) {
+	    Optional<Product> optional = productRepo.findById(productId);
+	    if (optional.isPresent()) {
+	        Product product = optional.get();
+	        product.setProductStatus(productStatus);
+	        productRepo.save(product);
+	    }
+	}
+	
 	public Product findProductByIdU(Integer id) {
 		return productRepo.findById(id).orElse(null);
 	}
@@ -154,7 +164,7 @@ public class ProductService {
 	    return productRepo.findById(id);
 	}
 	
-	public List<Product> findProductsByCategory(Integer productTypeId) {
+	public List<Product> findProductsByProductType(Integer productTypeId) {
 	    return productRepo.findProductsByProductTypeId(productTypeId);
 	}
 

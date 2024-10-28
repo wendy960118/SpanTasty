@@ -109,7 +109,7 @@ public class ShoppingItemController {
 
 
     // 刪除商品項目
-    @PostMapping("/delItem")
+    @DeleteMapping("/delItem")
     public String deleteShoppingItem(@RequestParam Integer shoppingId, @RequestParam Integer productId) {
         ShoppingItemId shoppingItemId = new ShoppingItemId(shoppingId, productId);
         ShoppingOrder shopping = shoppingOrderService.findShoppingOrderById(shoppingId);
@@ -120,14 +120,14 @@ public class ShoppingItemController {
     }
 
     // 刪除所有商品項目
-    @PostMapping("/deleteAll")
+    @DeleteMapping("/deleteAll")
     public String deleteAllShoppingItems(@RequestParam Integer shoppingId) {
         shoppingItemService.deleteAllShoppingItems(shoppingId);
         return "redirect:/shoppingItem/details?shoppingId=" + shoppingId;
     }
     
     // 更新商品項目
-    @PostMapping("/updateItem")
+    @PutMapping("/updateItem")
     public String updateShoppingItem(@RequestParam Integer shoppingId,
                                       @RequestParam Integer productId,
                                       @RequestParam Integer shoppingItemQuantity,

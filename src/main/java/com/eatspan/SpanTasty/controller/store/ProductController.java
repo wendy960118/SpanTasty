@@ -103,6 +103,7 @@ public class ProductController {
 	}
 	
 
+
 	
 	@PutMapping("/updatePut")
 	public String updateProduct(@ModelAttribute Product updateProduct, 
@@ -147,6 +148,15 @@ public class ProductController {
 
 		return "redirect:/product/findAll";
 	}
+
+	
+	@PutMapping("/updateStatus/{id}")
+	public ResponseEntity<?> updateProductStatus(@PathVariable("id") Integer productId, @RequestParam Integer productStatus) {
+	    System.out.println("Product ID: " + productId + ", Status: " + productStatus);
+	    productService.updateProductStatus(productId, productStatus);
+	    return ResponseEntity.ok().build();
+	}
+
 
 
 	@GetMapping("/find/{id}")

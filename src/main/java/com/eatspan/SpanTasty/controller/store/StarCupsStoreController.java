@@ -72,22 +72,69 @@ public class StarCupsStoreController {
 	
 	@GetMapping("/allProduct")
 	public String findAllProduct(@RequestHeader(value = "Authorization", required = false) String token,
-			@RequestParam(value = "page", defaultValue = "1") int page, Model model) {
+	        @RequestParam(value = "page", defaultValue = "1") int page, Model model) {
 
-		List<ProductType> productTypes = productTypeService.findAllProductType();
-		model.addAttribute("productTypes", productTypes);
+	    List<ProductType> productTypes = productTypeService.findAllProductType();
+	    model.addAttribute("productTypes", productTypes);
 
-		List<Product> products = productService.findProductsByPage(page, 12);
-		model.addAttribute("products", products);
+	    List<Product> products = productService.findProductsByPage(page, 12);
+	    model.addAttribute("products", products);
 
-		int totalProducts = productService.countAllProducts();
-		int totalPages = (int) Math.ceil((double) totalProducts / 12);
-		model.addAttribute("totalPages", totalPages);
-		model.addAttribute("currentPage", page);
+	    int totalProducts = productService.countAllProducts();
+	    int totalPages = (int) Math.ceil((double) totalProducts / 12);
+	    model.addAttribute("totalPages", totalPages);
+	    model.addAttribute("currentPage", page);
 
-		return "starcups/store/allProduct";
+	    model.addAttribute("allProductCount", totalProducts); // 新增這行
+
+	    for (ProductType productType : productTypes) {
+	        int count = productType.getProducts().size(); 
+	        model.addAttribute("productCount_" + productType.getProductTypeId(), count);
+	    }
+
+	    return "starcups/store/allProduct";
 	}
 
+	
+	   @GetMapping("/productsByProductType/{productTypeId}")
+	    public String searchProductsByProductType(@PathVariable Integer productTypeId,
+	    		@RequestParam(value = "page", defaultValue = "1") int page, Model model) {
+	        List<Product> products = productService.findProductsByProductType(productTypeId);
+	        List<ProductType> productTypes = productTypeService.findAllProductType();
+	        
+
+			int totalProducts = productService.countAllProducts();
+			int totalPages = (int) Math.ceil((double) totalProducts / 12);
+			model.addAttribute("totalPages", totalPages);
+			model.addAttribute("currentPage", page);
+	        
+	        model.addAttribute("products", products);
+	        model.addAttribute("productTypes", productTypes);
+	        model.addAttribute("totalProducts", products.size());
+	        System.out.println("ProductTypeId: " + productTypeId);
+
+	        
+	        return "starcups/store/allProduct"; 
+	    }
+	
+
+
+//	@GetMapping("/productsByProductType/{productTypeId}")
+//	@ResponseBody
+//	public ResponseEntity<List<Product>> searchProductsByProductType(@PathVariable Integer productTypeId) {
+//	    // 查找產品
+//	    List<Product> products = productService.findProductsByProductType(productTypeId);
+//	    
+//	    // 檢查是否有產品
+//	    if (products.isEmpty()) {
+//	        return ResponseEntity.noContent().build(); // 若無內容，返回204
+//	    }
+//
+//	    // 返回找到的產品列表
+//	    return ResponseEntity.ok(products); 
+//	}
+
+ 
 	
 	
 	@PostMapping("/addPost")
@@ -152,7 +199,6 @@ public class StarCupsStoreController {
 	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("購物項目未找到");
 	        }
 	    } catch (Exception e) {
-	        // 日誌記錄錯誤
 	        e.printStackTrace();
 	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("發生錯誤：" + e.getMessage());
 	    }
@@ -218,24 +264,8 @@ public class StarCupsStoreController {
 		return shoppingItemService.findShoppingItemById(shoppingId);
 	}
 	
-	@GetMapping("/productType")
-	public String shop(Model model) {
-	    List<ProductType> productType =productTypeService.findAllProductType(); 
-	    model.addAttribute("productType", productType);
-	    return "productType"; 
-	}
 
-    @GetMapping("/productsByCategory/{productTypeId}")
-    public String getProductsByCategory(@PathVariable Integer productTypeId, Model model) {
-        List<Product> products = productService.findProductsByCategory(productTypeId);
-        List<ProductType> productTypes = productTypeService.findAllProductType();
-        model.addAttribute("products", products);
-        model.addAttribute("productTypes", productTypes);
-        model.addAttribute("totalProducts", products.size());
-        return "shop"; // 返回的视图
-    }
-
-
+    
 	@PostMapping("/ecpayCheckout")
 	@ResponseBody
 	public String ecpayCheckout(Model model) {
