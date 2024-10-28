@@ -40,7 +40,6 @@ public class Reserve {
 	@Id @Column(name = "reserve_id") @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer reserveId;
 	
-	
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
 	@JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "UTC+8")
 	@Column(name = "reserve_create_time")
@@ -62,17 +61,11 @@ public class Reserve {
 	@Column(name = "reserve_status")
 	private Integer reserveStatus;
 	
-//	@Column(name = "table_id")
-//	private Integer tableId;
+	@Column(name = "table_id")
+	private String tableId;
 	
 	@Column(name = "reserve_note")
 	private String reserveNote;
-	
-	
-//	@ManyToOne //預設(fetch = FetchType.EAGER)
-//	@JoinColumn(name = "table_type_id")
-//	//@JoinColumn(name = "table_type_id", insertable = false, updatable = false)
-//	private TableType tableType;
 	
 	@ManyToOne //預設(fetch = FetchType.EAGER)
     @JoinColumn(name = "restaurant_id")
@@ -84,13 +77,7 @@ public class Reserve {
 	//@JoinColumn(name = "member_id", insertable = false, updatable = false)
     private Member member; // 與 Member 的關聯	
 	
-	// 10/25 test
-//	@JsonIgnore //該屬性不要做JSON序列化避免無線迴圈 //預設lazy
-//	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "restaurantTable", cascade = CascadeType.ALL)
-//	private List<RestaurantTable> restaurantTables = new ArrayList<RestaurantTable>();
-	
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
         name = "reserve_table",
         joinColumns = @JoinColumn(name = "reserve_id"),
@@ -118,6 +105,14 @@ public class Reserve {
 	     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 	     return reserveTime != null ? reserveTime.format(formatter) : null;
 	 }
+
+
+	@Override
+	public String toString() {
+		return "Reserve [reserveId=" + reserveId + ", reserveCreateTime=" + reserveCreateTime + ", reserveSeat="
+				+ reserveSeat + ", reserveTime=" + reserveTime + ", finishedTime=" + finishedTime + ", reserveStatus="
+				+ reserveStatus + ", reserveNote=" + reserveNote + ", restaurantTables=" + restaurantTables + "]";
+	}
 	
 	
 

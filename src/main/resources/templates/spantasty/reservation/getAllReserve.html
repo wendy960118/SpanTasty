@@ -81,7 +81,7 @@
 				            <th>會員電話</th>
 				            <th>餐廳名稱</th>
 				            <th>訂位人數</th>
-				            <th>桌位種類</th>
+				            <th>桌位編號</th>
 				            <th>用餐時段</th>
 				            <th>訂位狀態</th>
 				            <th>備註</th>
@@ -592,6 +592,10 @@
 		            statusText = '已取消';
 		        }
                 
+                // 組合 tableTypeId 和 tableId
+                // const tableIds = reserve.restaurantTables.map(table => table.id.tableTypeId + table.id.tableId).join(', ');
+
+
 		        const row = document.createElement('tr');
 		        row.innerHTML = `
 		            <td>${reserve.reserveId}</td>
@@ -599,7 +603,7 @@
 		            <td>${reserve.member.phone}</td>
 		            <td>${reserve.restaurant.restaurantName}</td>
 		            <td>${reserve.reserveSeat}</td>
-		            <td> 人桌</td>
+		            <td>${reserve.tableId}</td>
 		            <td>${reserve.reserveTime} - ${finishedTime}</td>
 		            <td><span class="${statusClass}">${statusText}</span></td>
 		            <td>

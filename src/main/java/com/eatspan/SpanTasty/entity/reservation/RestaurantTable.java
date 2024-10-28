@@ -42,11 +42,6 @@ public class RestaurantTable {
     @JoinColumn(name = "table_type_id", insertable = false, updatable = false)
     private TableType tableType; // 與 TableType 的關聯
     
-    // 10/25 test
-//	@JsonIgnore //該屬性不要做JSON序列化避免無線迴圈 //預設lazy
-//	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "reserve", cascade = CascadeType.ALL)
-//	private List<Reserve> restaurantTables = new ArrayList<Reserve>();
-    
     @JsonIgnore
     @ManyToMany(mappedBy = "restaurantTables", fetch = FetchType.LAZY)
     private List<Reserve> reserves = new ArrayList<>();
@@ -63,7 +58,15 @@ public class RestaurantTable {
 	public RestaurantTable(RestaurantTableId id) {
 		this.id = id;
 	}
+
+
+	@Override
+	public String toString() {
+		return "RestaurantTable [id=" + id + ", tableStatus=" + tableStatus + "]";
+	}
     
+	
+	
 	
 
 }

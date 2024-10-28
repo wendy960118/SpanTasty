@@ -19,6 +19,10 @@ public interface RestaurantTableRepository extends JpaRepository<RestaurantTable
 	@Query("SELECT rt FROM RestaurantTable rt WHERE rt.id.restaurantId = :restaurantId AND rt.id.tableTypeId = :tableTypeId AND rt.tableStatus = 1")
 	List<RestaurantTable>  findTableByRestaurantAndTypeAndStatus(@Param("restaurantId") Integer restaurantId, @Param("tableTypeId") String tableTypeId);
 	
+	// 查詢RestaurantTable by restaurantId tableStatus
+	@Query("SELECT rt FROM RestaurantTable rt WHERE rt.id.restaurantId = :restaurantId AND rt.tableStatus = 1")
+	List<RestaurantTable>  findTableByRestaurantAndStatus(@Param("restaurantId") Integer restaurantId);
+	
 	// 查詢RestaurantTableId
 	@Query("SELECT MAX(CAST(rt.id.tableId AS int)) FROM RestaurantTable rt WHERE rt.id.restaurantId = :restaurantId AND rt.id.tableTypeId = :tableTypeId")
     Integer findMaxTableIdByRestaurantAndType(@Param("restaurantId") Integer restaurantId, @Param("tableTypeId") String tableTypeId);

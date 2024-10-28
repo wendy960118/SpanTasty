@@ -162,6 +162,19 @@
                             <input type="number" class="form-control" id="reserveMax" name="reserveMax" th:value="${restaurant.reserveMax}" min="1" max="12" required />
                         </div>
                         
+						<!-- 是否開放組合桌位之訂位 -->
+						<div class="mb-3 d-flex align-items-center">
+						    <label for="reserveCombinable" class="form-label">是否開放組合桌位之訂位: </label>
+						    <div class="form-check form-switch d-flex justify-content-center ms-5">
+						        <input class="form-check-input large-switch" type="checkbox" role="switch"
+						               id="reserveCombinableSwitch" name="reserveCombinableSwitch"
+						               th:checked="${restaurant.reserveCombinable == 2}">
+						        <!-- 隱藏的輸入框，用於提交 reserveCombinable 的實際值 -->
+						        <input type="hidden" id="reserveCombinable" name="reserveCombinable" 
+						               th:value="${restaurant.reserveCombinable}">
+						    </div>
+						</div>
+                        
                         <button id="setRestaurantReserveBtn" type="submit" class="btn btn-primary">確定</button>
                     </form>
                     
@@ -180,6 +193,15 @@
         showSidebar('reservation');
 		document.getElementById('setRestaurantReserveBtn').addEventListener('click',setRestaurantReserve);
     });
+    
+    
+    // 更新 reserveCombinableSwitch 的 change 事件處理器
+	document.getElementById("reserveCombinableSwitch").addEventListener("change", function() {
+	    // 取得開關狀態並更新隱藏欄位的值
+	    const reserveCombinableSwitch = document.getElementById("reserveCombinableSwitch");
+	    const reserveCombinable = document.getElementById("reserveCombinable");
+	    reserveCombinable.value = reserveCombinableSwitch.checked ? "2" : "1";
+	});
     
     
 	function confirmDelete(button) {
