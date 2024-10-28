@@ -56,7 +56,16 @@ public class RestaurantTableService {
 	}
 	
 	
+	// 查詢餐廳(id)所有某種類(tableType)桌位(可被預訂)
+	public List<RestaurantTable> findTableByRestaurantAndTypeAndStatus(Integer restaurantId, String tableTypeId) {
+		return restaurantTableRepository.findTableByRestaurantAndTypeAndStatus(restaurantId, tableTypeId);
+	}
 	
+	
+	// 查詢餐廳(id)所有桌位(可被預訂)
+	public List<RestaurantTable> findTableByRestaurantAndStatus(Integer restaurantId) {
+		return restaurantTableRepository.findTableByRestaurantAndStatus(restaurantId);
+	}
 	
 
 	

@@ -85,6 +85,9 @@ public class Restaurant {
 	@Column(name = "reserve_max")
 	private Integer reserveMax;
 	
+	@Column(name = "reserve_combinable")
+	private Integer reserveCombinable;
+	
 	
 	@JsonIgnore //該屬性不要做JSON序列化避免無線迴圈 //預設lazy
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant", cascade = CascadeType.ALL)
@@ -124,6 +127,9 @@ public class Restaurant {
 		}
 		if(this.reserveMax == null) {
 			this.reserveMax = 10; // 訂位的區間(預設為30分鐘)
+		}
+		if(this.reserveCombinable == null) {
+			this.reserveCombinable = 1; // 可接受組合桌位(1=不可, 2=可)
 		}
 	}
 	

@@ -3,7 +3,6 @@ package com.eatspan.SpanTasty.service.reservation;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.Year;
@@ -13,11 +12,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -31,10 +30,11 @@ import com.eatspan.SpanTasty.dto.reservation.TimeSlotDTO;
 import com.eatspan.SpanTasty.entity.account.Member;
 import com.eatspan.SpanTasty.entity.reservation.Reserve;
 import com.eatspan.SpanTasty.entity.reservation.Restaurant;
+import com.eatspan.SpanTasty.entity.reservation.RestaurantTable;
+import com.eatspan.SpanTasty.entity.reservation.RestaurantTableId;
 import com.eatspan.SpanTasty.entity.reservation.TableType;
 import com.eatspan.SpanTasty.repository.reservation.ReserveRepository;
 import com.eatspan.SpanTasty.repository.reservation.RestaurantRepository;
-import com.eatspan.SpanTasty.repository.reservation.TableTypeRepository;
 import com.eatspan.SpanTasty.service.account.MemberService;
 
 import freemarker.core.ParseException;
@@ -51,8 +51,6 @@ public class ReserveService {
 	private ReserveRepository reserveRepository;
 	@Autowired
 	private RestaurantRepository restaurantRepository;
-	@Autowired
-	private TableTypeRepository tableTypeRepository;
 	
 	@Autowired
 	private MemberService memberService;
@@ -60,6 +58,8 @@ public class ReserveService {
 	private RestaurantService restaurantService;
 	@Autowired
 	private TableTypeService tableTypeService;
+	@Autowired
+	private RestaurantTableService restaurantTableService;
 	
 	@Autowired
 	private MailConfig mailConfig;// javaMail
@@ -70,31 +70,280 @@ public class ReserveService {
 	@Autowired
 	private freemarker.template.Configuration freemarkerConfig; // javaMail
 	
+	
+	
 	// 新增訂位
 	public Reserve addReserve(ReserveDTO reserveDTO) {
-		
-	    Reserve reserve = new Reserve();
 	    
-	    reserve.setReserveSeat(reserveDTO.getReserveSeat());
-	    reserve.setReserveTime(reserveDTO.getCheckDate().atTime(reserveDTO.getStartTime()));
-	    // 設定member外鍵關聯
-	    Member member = memberService.findMemberById(reserveDTO.getMemberId()).get();
-	    reserve.setMember(member);
-	    // 設定restaurant外鍵關聯
-	    Restaurant restaurant = restaurantService.findRestaurantById(reserveDTO.getRestaurantId());
-	    reserve.setRestaurant(restaurant);
+	    Reserve reserve = new Reserve();
+		setReserveByReserveDTO(reserve, reserveDTO);
+	    
 	    // 根據reserveSeat取得訂位桌子種類
 	    String tableTypeId = getTableTypeIdByReserveSeat(reserve.getReserveSeat());
-	    // 設定tableType外鍵關聯
-	    TableType tableType = tableTypeService.findTableTypeById(tableTypeId);
-	    reserve.setTableType(tableType);
-	    reserve.setReserveNote(reserveDTO.getReserveNote());
-		reserve.setFinishedTime(reserve.getReserveTime().plusMinutes(reserve.getRestaurant().getEattime()));
+	    
+	    // 取得該餐廳想預定的桌子種類所有桌子(只有可預訂的)
+	    List<RestaurantTable> availableTables = restaurantTableService.findTableByRestaurantAndTypeAndStatus(reserveDTO.getRestaurantId(), tableTypeId);
+	    
+	    // 該訂位時段所有訂位訂單
+	    List<Reserve> reservations = reserveRepository.getReservationsInTimeSlot(
+	        reserveDTO.getRestaurantId(), 
+	        reserveDTO.getCheckDate(), 
+	        reserveDTO.getStartTime(), 
+	        reserveDTO.getStartTime().plusMinutes(reserve.getRestaurant().getEattime())
+	    );
+
+	    // 收集所有已被預訂的桌子
+	    Set<RestaurantTableId> reservedTableIds = reservations.stream()
+	            .flatMap(reservation -> reservation.getRestaurantTables().stream().map(RestaurantTable::getId))
+	            .collect(Collectors.toSet());
+	    
+	    // 過濾掉已被預訂的桌子
+	    List<RestaurantTable> finalAvailableTables = availableTables.stream()
+	        .filter(table -> !reservedTableIds.contains(table.getId()))
+	        .collect(Collectors.toList());
+
+	    // 如果沒有可用的桌子，可以處理錯誤或返回特定的響應
+	    if (finalAvailableTables.isEmpty()) {
+	    	System.out.println("沒有符合的單一桌位，將進入組合桌位訂定");
+	    	return null;
+	    }
+	    
+	    // 選擇第一張可用桌子（或根據需求選擇）
+	    RestaurantTable selectedTable = finalAvailableTables.get(0);
+	    
+	    reserve.setRestaurantTables(new ArrayList<>(List.of(selectedTable)));
+	    selectedTable.setReserves(new ArrayList<>(List.of(reserve)));
+	    reserve.setTableId(selectedTable.getId().getTableTypeId()+selectedTable.getId().getTableId());
+	    return reserveRepository.save(reserve);
+	}
+
+	
+//	// 新增訂位(組合)
+	public Reserve addCombinedReserve(ReserveDTO reserveDTO) {
+	    Reserve reserve = new Reserve();
+	    setReserveByReserveDTO(reserve, reserveDTO);
+
+	    // 將 remainingSeats 包裝在一個陣列中
+	    final int[] remainingSeats = {reserveDTO.getReserveSeat()};
+
+	    // 取得該餐廳所有可預訂的桌子，按座位數降序排列
+	    List<RestaurantTable> availableTables = restaurantTableService.findTableByRestaurantAndStatus(reserveDTO.getRestaurantId())
+	        .stream()
+	        .sorted((t1, t2) -> Integer.compare(t2.getTableType().getTableTypeName(), t1.getTableType().getTableTypeName()))
+	        .collect(Collectors.toList());
+
+	    // 該訂位時段已預訂的桌子Id集合
+	    Set<RestaurantTableId> reservedTableIds = reserveRepository.getReservationsInTimeSlot(
+	            reserveDTO.getRestaurantId(),
+	            reserveDTO.getCheckDate(),
+	            reserveDTO.getStartTime(),
+	            reserveDTO.getStartTime().plusMinutes(reserve.getRestaurant().getEattime()))
+	        .stream()
+	        .flatMap(reservation -> reservation.getRestaurantTables().stream().map(RestaurantTable::getId))
+	        .collect(Collectors.toSet());
+
+	    // 過濾掉已被預訂的桌子
+	    List<RestaurantTable> filteredTables = availableTables.stream()
+	        .filter(table -> !reservedTableIds.contains(table.getId()))
+	        .collect(Collectors.toList());
+
+	    List<RestaurantTable> selectedTables = new ArrayList<>();
+
+	    // 循環選擇符合需求的桌子
+	    while (remainingSeats[0] > 0 && !filteredTables.isEmpty()) {
+	        // 找到剛好符合剩餘需求的桌子
+	        Optional<RestaurantTable> exactMatchTable = filteredTables.stream()
+	            .filter(table -> table.getTableType().getTableTypeName() == remainingSeats[0]||table.getTableType().getTableTypeName() == remainingSeats[0]+1)
+	            .findFirst();
+
+	        if (exactMatchTable.isPresent()) {
+	            RestaurantTable table = exactMatchTable.get();
+	            selectedTables.add(table);
+	            remainingSeats[0] -= table.getTableType().getTableTypeName(); // 更新剩餘需求
+	            filteredTables.remove(table); // 從可選桌子中移除該桌子
+	            break; // 座位需求已滿足，結束迴圈
+	        }
+
+	        // 否則，選擇座位數大於需求或最大桌子
+	        RestaurantTable bestFitTable = filteredTables.stream()
+	            .filter(table -> table.getTableType().getTableTypeName() >= remainingSeats[0])
+//		        .sorted((t1, t2) -> Integer.compare(t1.getTableType().getTableTypeName(), t2.getTableType().getTableTypeName()))
+	            .findFirst()
+	            .orElse(filteredTables.get(0)); // 若無符合大小，選擇最大桌子
+
+	        selectedTables.add(bestFitTable);
+	        remainingSeats[0] -= bestFitTable.getTableType().getTableTypeName(); // 更新剩餘需求
+	        filteredTables.remove(bestFitTable);
+	    }
+
+	    // 無法滿足訂位需求
+	    if (remainingSeats[0] > 0) {
+	        System.out.println("無法找到足夠的桌位");
+	        return null;
+	    }
+
+	    // 設定訂單的桌位資訊
+	    reserve.setRestaurantTables(selectedTables);
+	    selectedTables.forEach(table -> table.getReserves().add(reserve));
+
+	    // 拼接所有桌子的ID以作為訂單的桌子ID
+	    reserve.setTableId(selectedTables.stream()
+	        .map(table -> table.getId().getTableTypeId() + table.getId().getTableId())
+	        .collect(Collectors.joining(", ")));
+
+	    return reserveRepository.save(reserve);
+	}
+
+
+
+
+	
+	// 修改訂位
+	@Transactional
+	public Reserve updateReservebyDto(ReserveDTO reserveDTO) {
 		
-		return reserveRepository.save(reserve);
+		Reserve reserve = findReserveById(reserveDTO.getReserveId());
+	    
+		setReserveByReserveDTO(reserve, reserveDTO);
+		
+	    // 根據reserveSeat取得訂位桌子種類
+	    String tableTypeId = getTableTypeIdByReserveSeat(reserve.getReserveSeat());
+	    
+	    // 取得該餐廳想預定的桌子種類所有桌子(只有可預訂的)
+	    List<RestaurantTable> availableTables = restaurantTableService.findTableByRestaurantAndTypeAndStatus(reserveDTO.getRestaurantId(), tableTypeId);
+	    
+	    // 該訂位時段所有訂位訂單
+	    List<Reserve> reservations = reserveRepository.getReservationsInTimeSlot(
+	        reserveDTO.getRestaurantId(), 
+	        reserveDTO.getCheckDate(), 
+	        reserveDTO.getStartTime(), 
+	        reserveDTO.getStartTime().plusMinutes(reserve.getRestaurant().getEattime())
+	    );
+	    
+	    // 收集所有已被預訂的桌子Id
+	    Set<RestaurantTableId> reservedTableIds = reservations.stream()
+            .flatMap(reservation -> reservation.getRestaurantTables().stream().map(RestaurantTable::getId))
+            .collect(Collectors.toSet());
+	    
+	    // 過濾掉已被預訂的桌子
+	    List<RestaurantTable> finalAvailableTables = availableTables.stream()
+	        .filter(table -> !reservedTableIds.contains(table.getId()))
+	        .collect(Collectors.toList());
+	    
+	    
+	    // 如果沒有可用的桌子，可以處理錯誤或返回特定的響應
+	    if (finalAvailableTables.isEmpty()) {
+	    	System.out.println("沒有符合的單一桌位，將進入組合桌位訂定");
+	    	return null;
+	    }
+	    
+	    // 選擇第一張可用桌子（或根據需求選擇）
+	    RestaurantTable selectedTable = finalAvailableTables.get(0);
+	    reserve.setRestaurantTables(new ArrayList<>(List.of(selectedTable)));
+	    selectedTable.setReserves(new ArrayList<>(List.of(reserve)));
+	    reserve.setTableId(selectedTable.getId().getTableTypeId()+selectedTable.getId().getTableId());
+	    return reserveRepository.save(reserve);
 	}
 	
+	
+	
+	// 修改訂位
+	@Transactional
+	public Reserve updateCombinedReservebyDto(ReserveDTO reserveDTO) {
+		
+		Reserve reserve = findReserveById(reserveDTO.getReserveId());
+	    setReserveByReserveDTO(reserve, reserveDTO);
 
+	    // 將 remainingSeats 包裝在一個陣列中
+	    final int[] remainingSeats = {reserveDTO.getReserveSeat()};
+
+	    // 取得該餐廳所有可預訂的桌子，按座位數降序排列
+	    List<RestaurantTable> availableTables = restaurantTableService.findTableByRestaurantAndStatus(reserveDTO.getRestaurantId())
+	        .stream()
+	        .sorted((t1, t2) -> Integer.compare(t2.getTableType().getTableTypeName(), t1.getTableType().getTableTypeName()))
+	        .collect(Collectors.toList());
+	    
+	    // 該訂位時段已預訂的桌子Id集合
+	    Set<RestaurantTableId> reservedTableIds = reserveRepository.getReservationsInTimeSlot(
+	            reserveDTO.getRestaurantId(),
+	            reserveDTO.getCheckDate(),
+	            reserveDTO.getStartTime(),
+	            reserveDTO.getStartTime().plusMinutes(reserve.getRestaurant().getEattime()))
+	        .stream()
+	        .filter(reservation -> !reservation.getReserveId().equals(reserveDTO.getReserveId())) // 排除修改的訂單
+	        .flatMap(reservation -> reservation.getRestaurantTables().stream().map(RestaurantTable::getId))
+	        .collect(Collectors.toSet());
+	    
+	    // 過濾掉已被預訂的桌子
+	    List<RestaurantTable> filteredTables = availableTables.stream()
+	        .filter(table -> !reservedTableIds.contains(table.getId()))
+	        .collect(Collectors.toList());
+	    
+	    List<RestaurantTable> selectedTables = new ArrayList<>();
+
+	    // 循環選擇符合需求的桌子
+	    while (remainingSeats[0] > 0 && !filteredTables.isEmpty()) {
+	        // 找到剛好符合剩餘需求的桌子
+	        Optional<RestaurantTable> exactMatchTable = filteredTables.stream()
+	            .filter(table -> table.getTableType().getTableTypeName() == remainingSeats[0] || table.getTableType().getTableTypeName() == remainingSeats[0]+1) 
+	            .findFirst();
+
+	        if (exactMatchTable.isPresent()) {
+	            RestaurantTable table = exactMatchTable.get();
+	            selectedTables.add(table);
+	            remainingSeats[0] -= table.getTableType().getTableTypeName(); // 更新剩餘需求
+	            filteredTables.remove(table); // 從可選桌子中移除該桌子
+	            break; // 座位需求已滿足，結束迴圈
+	        }
+
+	        // 否則，選擇座位數大於需求或最大桌子
+	        RestaurantTable bestFitTable = filteredTables.stream()
+	            .filter(table -> table.getTableType().getTableTypeName() >= remainingSeats[0])
+//		        .sorted((t1, t2) -> Integer.compare(t1.getTableType().getTableTypeName(), t2.getTableType().getTableTypeName()))
+	            .findFirst()
+	            .orElse(filteredTables.get(0)); // 若無符合大小，選擇最大桌子
+
+	        selectedTables.add(bestFitTable);
+	        remainingSeats[0] -= bestFitTable.getTableType().getTableTypeName(); // 更新剩餘需求
+	        filteredTables.remove(bestFitTable);
+	    }
+
+	    // 無法滿足訂位需求
+	    if (remainingSeats[0] > 0) {
+	        System.out.println("無法找到足夠的桌位");
+	        return null;
+	    }
+
+	    // 設定訂單的桌位資訊
+	    reserve.setRestaurantTables(selectedTables);
+	    selectedTables.forEach(table -> table.getReserves().add(reserve));
+
+	    // 拼接所有桌子的ID以作為訂單的桌子ID
+	    reserve.setTableId(selectedTables.stream()
+	        .map(table -> table.getId().getTableTypeId() + table.getId().getTableId())
+	        .collect(Collectors.joining(", ")));
+
+	    return reserveRepository.save(reserve);
+	}
+	
+	
+	
+	
+	private Reserve setReserveByReserveDTO(Reserve reserve, ReserveDTO reserveDTO) {
+		
+	    reserve.setReserveSeat(reserveDTO.getReserveSeat());
+	    reserve.setReserveTime(reserveDTO.getCheckDate().atTime(reserveDTO.getStartTime()));
+	    reserve.setReserveNote(reserveDTO.getReserveNote());
+	    reserve.setMember(memberService.findMemberById(reserveDTO.getMemberId()).get());
+	    reserve.setRestaurant(restaurantService.findRestaurantById(reserveDTO.getRestaurantId()));
+	    reserve.setFinishedTime(reserve.getReserveTime().plusMinutes(reserve.getRestaurant().getEattime()));
+	    reserve.setReserveStatus(reserveDTO.getReserveStatus());
+		
+	    return reserve;
+	}
+	
+	
+	
 	
 	// 後台新增訂位檢查傳入參數
 	public String validateAddReserveDto(ReserveDTO reserveDTO) {
@@ -143,33 +392,6 @@ public class ReserveService {
 		return null;
 	}
 	
-	// 更新訂位
-	@Transactional
-	public Reserve updateReservebyDto(ReserveDTO reserveDTO) {
-		
-	    Reserve reserve = findReserveById(reserveDTO.getReserveId());
-	    
-	    reserve.setReserveSeat(reserveDTO.getReserveSeat());
-	    reserve.setReserveTime(reserveDTO.getCheckDate().atTime(reserveDTO.getStartTime()));
-	    
-	    // 設定member外鍵關聯
-	    Member member = memberService.findMemberById(reserveDTO.getMemberId()).get();
-	    reserve.setMember(member);
-	    // 設定restaurant外鍵關聯
-	    Restaurant restaurant = restaurantService.findRestaurantById(reserveDTO.getRestaurantId());
-	    reserve.setRestaurant(restaurant);
-	    // 根據reserveSeat取得訂位桌子種類
-	    String tableTypeId = getTableTypeIdByReserveSeat(reserve.getReserveSeat());
-	    // 設定tableType外鍵關聯
-	    TableType tableType = tableTypeService.findTableTypeById(tableTypeId);
-	    reserve.setTableType(tableType);
-	    reserve.setReserveNote(reserveDTO.getReserveNote());
-	    reserve.setReserveStatus(reserveDTO.getReserveStatus());
-		
-	    reserve.setFinishedTime(reserve.getReserveTime().plusMinutes(reserve.getRestaurant().getEattime()));
-		return reserveRepository.save(reserve);
-	}
-	
 	
 	
 	// 更新訂位
@@ -215,10 +437,6 @@ public class ReserveService {
 	}
 	
 	
-	
-	
-	
-	
 	// 查詢餐廳該天所有時段特定桌位種類的預約狀況
     public List<ReserveCheckDTO> getReserveCheck(Integer restaurantId, String tableTypeId, LocalDate checkDate) {
     	
@@ -231,7 +449,14 @@ public class ReserveService {
 
         for (TimeSlotDTO timeSlot : timeSlots) {
             // 使用自定義的查詢方法，查詢每個時間段的預訂數量與總桌數
-            Integer reservedTableCount = reserveRepository.countReservationsInTimeSlot(restaurantId, tableTypeId, checkDate, timeSlot.getSlotStar(), timeSlot.getSlotEnd());
+            List<Reserve> reservationsInTimeSlot = reserveRepository.getReservationsInTimeSlot(restaurantId, checkDate, timeSlot.getSlotStar(), timeSlot.getSlotEnd());
+            
+            // 計算該時間段已預訂的特定桌子種類的數量
+            Integer reservedTableCount = (int) reservationsInTimeSlot.stream()
+                .flatMap(reservation -> reservation.getRestaurantTables().stream())
+                .filter(table -> table.getTableType().getTableTypeId().equals(tableTypeId))
+                .count();
+            
             Integer totalTableCount = reserveRepository.countAvailableTables(restaurantId, tableTypeId);
             if(totalTableCount==null) totalTableCount=0;
             // 設定開放訂位的桌數比例
@@ -241,6 +466,57 @@ public class ReserveService {
         }
 
         return reserveChecks;
+    }
+    
+    
+    // 查詢餐廳該天所有時段特定桌位種類的預約狀況
+    public List<ReserveCheckDTO> getCombinedReserveCheck(Integer restaurantId, Integer reserveSeat, LocalDate checkDate) {
+    	
+    	Restaurant restaurant = restaurantRepository.findById(restaurantId)
+    			.orElseThrow(() -> new IllegalArgumentException("Invalid restaurant ID"));
+    	
+    	// 根據餐廳的營業時間與每個時間段的用餐限制，計算出時間段
+    	List<TimeSlotDTO> timeSlots = generateTimeSlots(restaurant);
+    	List<ReserveCheckDTO> reserveChecks = new ArrayList<>();
+    	
+    	for (TimeSlotDTO timeSlot : timeSlots) {
+    		
+    		// 取得該餐廳想預定的桌子種類所有桌子(只有可預訂的)
+    		List<RestaurantTable> availableTables = restaurantTableService.findTableByRestaurantAndStatus(restaurantId);
+    		
+    		// 該訂位時段所有訂位訂單
+    		List<Reserve> reservations = reserveRepository.getReservationsInTimeSlot(
+    		    restaurantId,
+    		    checkDate,
+    		    timeSlot.getSlotStar(),
+    		    timeSlot.getSlotEnd()
+    		);
+
+    		// 收集所有已被預訂的桌子Id
+    		Set<RestaurantTableId> reservedTableIds = reservations.stream()
+    		    .flatMap(reservation -> reservation.getRestaurantTables().stream().map(RestaurantTable::getId))
+    		    .collect(Collectors.toSet());
+
+    		// 過濾掉已被預訂的桌子
+    		List<RestaurantTable> finalAvailableTables = availableTables.stream()
+    		    .filter(table -> !reservedTableIds.contains(table.getId())) // 排除已被預訂的桌子
+    		    .filter(table -> table.getTableType().getTableTypeName() < reserveSeat + 2) // 排除大於訂位人數+2的桌子
+    		    .collect(Collectors.toList());
+    		
+    		
+    		// 計算剩餘桌子的可容納人數
+    		Integer totalCapacity = finalAvailableTables.stream()
+    		    .mapToInt(table -> table.getTableType().getTableTypeName()) // 取得桌子座位數
+    		    .sum();
+    		
+    		// 設定開放訂位的桌數比例
+    		totalCapacity = (Integer) (totalCapacity * restaurant.getReservePercent() / 100);
+    		ReserveCheckDTO bean = new ReserveCheckDTO(timeSlot.getSlotStar(), timeSlot.getSlotEnd(), totalCapacity, reserveSeat);
+    		
+    		reserveChecks.add(bean);
+    	}
+    	
+    	return reserveChecks;
     }
 
     
@@ -265,7 +541,7 @@ public class ReserveService {
     // 依照預定人數查詢訂位的桌位種類ID
     public String getTableTypeIdByReserveSeat(Integer reserveSeat) {
 		
-    	List<TableType> tableTypes = tableTypeRepository.findAll();
+    	List<TableType> tableTypes = tableTypeService.findAllTableType();
     	
     	for(TableType tableType : tableTypes) {
     		if(reserveSeat == tableType.getTableTypeName()) {

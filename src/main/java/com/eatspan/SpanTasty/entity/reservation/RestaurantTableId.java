@@ -55,7 +55,13 @@ public class RestaurantTableId implements Serializable {
 		return Objects.equals(restaurantId, other.restaurantId) && Objects.equals(tableId, other.tableId)
 				&& Objects.equals(tableTypeId, other.tableTypeId);
 	}
-	
 
+	@Override
+	public String toString() {
+		return "RestaurantTableId [restaurantId=" + restaurantId + ", tableTypeId=" + tableTypeId + ", tableId="
+				+ tableId + "]";
+	}
+	
+	
 	
 }
