@@ -30,6 +30,7 @@ import com.eatspan.SpanTasty.dto.discount.CouponDTO;
 import com.eatspan.SpanTasty.dto.discount.CouponDistributeDTO;
 import com.eatspan.SpanTasty.dto.discount.TagDTO;
 import com.eatspan.SpanTasty.dto.discount.couponOptionDTO;
+import com.eatspan.SpanTasty.dto.order.MenuDTO;
 import com.eatspan.SpanTasty.entity.account.Member;
 import com.eatspan.SpanTasty.entity.discount.Coupon;
 import com.eatspan.SpanTasty.entity.discount.CouponMember;
@@ -383,9 +384,9 @@ public class CouponService {
 					.collect(Collectors.toList());
 		}
 
-		if (cartItems.get(0) instanceof TogoItemEntity) {
+		if (cartItems.get(0) instanceof MenuDTO) {
 			return cartItems.stream()
-					.map(obj -> ((TogoItemEntity)obj).getMenu().getFoodKind().getFoodKindName())
+					.map(obj -> ((MenuDTO)obj).getFoodKindName())
 					.collect(Collectors.toList());
 		}
 		
@@ -442,6 +443,57 @@ public class CouponService {
 
 		return couponMembers;
 	}
+	
+	public List<CouponMember> couponCanUseTogo(List<?> shoppingItems, Integer totalAmount, Integer memberId) {
+		// 購物車明細的種類 productNames
+//		List<String> productNames = shoppingItems.stream()
+//				.map(shoppingItem->shoppingItem.getProduct().getProductType().getProductTypeName())
+//				.collect(Collectors.toList());
+		List<String> productNames = getCartItemNames(shoppingItems);
+
+		// 取得會員擁有優惠券 coupons (可使用數量>0)
+		List<CouponMember> couponMembers = couponMemberRepo.findByMemberId(memberId).stream()
+				.filter(couponMember -> couponMember.getUsageAmount() > 0).collect(Collectors.toList());
+
+		// 判斷每個優惠券是否可以使用
+		couponMembers.stream().forEach(couponMember -> {
+			Coupon coupon = couponMember.getCoupon();
+
+			// 1.低消判斷(null表示無限制)
+			// 2.下架不能用
+			// 3.過期
+			Integer minOrderDiscount = coupon.getMinOrderDiscount() == null ? 0 : coupon.getMinOrderDiscount();
+			if ((totalAmount <= minOrderDiscount && minOrderDiscount != null) || coupon.getCouponStatus() == "下架"
+					|| coupon.getCouponEndDate().isBefore(LocalDate.now())) {
+				couponMember.setCanUse(false);
+				return;
+			}
+
+			// 去得優惠券的tags
+			List<String> couponTagNames = coupon.getTags().stream()
+					.filter(tag -> "togo".equals(tag.getTagId().getTagType()))
+					.map(tag -> tag.getTagId().getTagName()).collect(Collectors.toList());
+
+			// 有標籤>是否包含一種購物車明細的種類>true 可折扣
+			boolean canUseCoupon = couponTagNames.stream().anyMatch(productNames::contains);
+			if (canUseCoupon) {
+				couponMember.setCanUse(true);
+				return;
+			}
+			// 無標籤>無折扣限制
+			if (coupon.getTags().isEmpty()) {
+				couponMember.setCanUse(true);
+				return;
+			}
+			couponMember.setCanUse(false);
+		});
+
+		List<CouponMember> couponMemberCanUse = couponMembers.stream()
+				.filter(couponMember -> couponMember.getCanUse() == true).collect(Collectors.toList());
+
+		return couponMembers;
+	}
+	
 
 	public Integer coculateCouponDiscount(String couponCode, Integer shoppingItemsAmount) {
 		Coupon coupon = CouponRepo.findByCouponCode(couponCode);

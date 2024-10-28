@@ -1,6 +1,7 @@
 package com.eatspan.SpanTasty.controller.discount;
 
 
+import java.awt.Menu;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,10 +24,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.eatspan.SpanTasty.dto.discount.CouponDTO;
+import com.eatspan.SpanTasty.dto.order.MenuDTO;
+import com.eatspan.SpanTasty.dto.order.TogoItemDTO;
 import com.eatspan.SpanTasty.dto.store.ShoppingItemDTO;
 import com.eatspan.SpanTasty.entity.discount.Coupon;
 import com.eatspan.SpanTasty.entity.discount.CouponMember;
 import com.eatspan.SpanTasty.entity.discount.Point;
+import com.eatspan.SpanTasty.entity.order.TogoItemEntity;
 import com.eatspan.SpanTasty.entity.store.ShoppingItem;
 import com.eatspan.SpanTasty.service.discount.CouponMemberService;
 import com.eatspan.SpanTasty.service.discount.CouponService;
@@ -89,17 +94,18 @@ public class StarCupsCouponController {
         return couponService.couponCanUse(cartItems, totalAmount, memberId);
 	}
 	
-//	@PostMapping("/coupon/checkout/togo")
-//	@ResponseBody
-//	public List<CouponMember> togoCheckout(@RequestBody ShoppingItemDTO shoppingItemDTO) {
-//		Integer memberId = shoppingItemDTO.getMemberId();
-//		Integer totalAmount = shoppingItemDTO.getTotalAmount();
-//		List<ShoppingItem> shoppingItems = shoppingItemDTO.getShoppingItems();
-//
-//		
-//        return couponService.couponCanUse(shoppingItems, totalAmount, memberId,"togo");
-//
-//	}
+	@PostMapping("/coupon/checkout/togo")
+	@ResponseBody
+	public List<CouponMember> togoCheckout(@RequestBody TogoItemDTO togItemDTO) {
+		System.out.println(togItemDTO);
+		Integer memberId = togItemDTO.getMemberId();
+		Integer totalAmount = togItemDTO.getTotalAmount();
+		List<MenuDTO> shoppingItems = togItemDTO.getTogoItems();
+
+		
+        return couponService.couponCanUseTogo(shoppingItems, totalAmount, memberId);
+
+	}
 	
 	
 	@GetMapping("/coupon/discount")
@@ -147,6 +153,46 @@ public class StarCupsCouponController {
 			}
 			//集點更新
 			pointService.collectPoint(finalAmount, memberId, shoppingId,"商城");
+									
+			return ResponseEntity.ok("新增成功!");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("處理請求時發生錯誤，請稍後再試。");
+		}
+	}
+	
+	@PostMapping("/coupon/allDiscount/togo")
+	@Transactional
+	public ResponseEntity<?> postMethodNameTogo(@RequestBody Map<String,Integer> jsonMap) {
+		System.out.println("touch123");
+		Integer couponDiscount =jsonMap.get("couponDiscount")!= null? jsonMap.get("couponDiscount") : 0 ;
+		Integer pointDiscount =jsonMap.get("pointDiscount")!= null? jsonMap.get("pointDiscount") : 0 ;
+		Integer shoppingId =jsonMap.get("shoppingId") ;
+		Integer memberId =jsonMap.get("memberId") ;
+		Integer couopnId =jsonMap.get("couopnId") ;
+		Integer finalAmount =jsonMap.get("finalAmount") ;
+		Integer totalDiscount = couponDiscount+pointDiscount;
+		
+		try {
+			//使用優惠券
+			if(couponDiscount != 0) couponService.useCoupon(couopnId, memberId);
+			System.out.println("2");
+			//使用點數
+			if(pointDiscount != 0) {
+				//使用點數
+				pointService.usePoint(pointDiscount, memberId);
+				//新增點數紀錄
+				Point point = new Point();
+				point.setMemberId(memberId);
+				point.setPointChange(pointDiscount*-1);
+				point.setTransactionType("訂餐");
+				point.setTransactionId(shoppingId);
+				point.setCreateDate(new Date());
+				pointService.insertOneRecord(point);				
+			}
+			System.out.println("3");
+			//集點更新
+			pointService.collectPoint(finalAmount, memberId, shoppingId,"訂餐");
+			System.out.println("4");
 									
 			return ResponseEntity.ok("新增成功!");
 		} catch (Exception e) {

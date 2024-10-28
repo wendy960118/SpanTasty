@@ -5,10 +5,12 @@ import com.eatspan.SpanTasty.entity.order.MenuEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @NoArgsConstructor
 @Getter
 @Setter
+@ToString
 public class MenuDTO {
 	private Integer foodId;
     private String foodName;
