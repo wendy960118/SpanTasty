@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.eatspan.SpanTasty.entity.rental.Tableware;
 import com.eatspan.SpanTasty.entity.rental.TablewareStock;
+import com.eatspan.SpanTasty.repository.rental.TablewareRepository;
 import com.eatspan.SpanTasty.repository.rental.TablewareStockRepository;
 
 
@@ -21,6 +22,8 @@ public class TablewareStockService {
 	
 	@Autowired
 	private TablewareStockRepository tablewareStockRepository;
+	@Autowired
+	private TablewareRepository tablewareRepository;
 
 	
 	//新增餐具庫存
@@ -71,6 +74,19 @@ public class TablewareStockService {
 	//
 	public List<TablewareStock> findStockByRestaurantId(Integer restaurantId) {
 		return tablewareStockRepository.findByRestaurantId(restaurantId);
+	}
+	
+	
+	// 新增庫存(By餐廳編號)
+	public void addStockByRestaurantId(Integer restaurantId) {
+		List<Tableware> tablewares = tablewareRepository.findAll();
+		for(Tableware tableware : tablewares) {
+			TablewareStock tablewareStock = new TablewareStock();
+			tablewareStock.setTablewareId(tableware.getTablewareId());
+			tablewareStock.setRestaurantId(restaurantId);
+			tablewareStock.setStock(10);
+			tablewareStockRepository.save(tablewareStock);
+		}
 	}
 
 	
