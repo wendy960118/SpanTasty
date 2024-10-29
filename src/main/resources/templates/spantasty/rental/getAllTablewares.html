@@ -86,11 +86,11 @@
 		<tbody>
 		<th:block th:each=" tableware : ${tablewarePages.content}">
 		<tr>
-			<td th:text="${tableware.tablewareId}">用具編號</td>
-			<td th:text="${tableware.tablewareName}">用具名稱</td>
-			<td th:text="${tableware.tablewareDeposit}">押金金額</td>
-			<td><img width="50px" th:src="${tableware.tablewareImage}" /></td>
-			<td th:text="${tableware.tablewareDescription}">用具描述</td>
+			<td class="align-middle" th:text="${tableware.tablewareId}">用具編號</td>
+			<td class="align-middle" th:text="${tableware.tablewareName}">用具名稱</td>
+			<td class="align-middle" th:text="${tableware.tablewareDeposit}">押金金額</td>
+			<td class="align-middle"><img width="55px" height="60px" th:src="${tableware.tablewareImage}" /></td>
+			<td class="align-middle" th:text="${tableware.tablewareDescription}">用具描述</td>
 			<td class="align-middle">
 				<span th:switch="${tableware.tablewareStatus}">
 				  <span th:case="1" class="badge bg-success text-white">上架中</span>

@@ -96,7 +96,7 @@ form {
 	<tr>
 		<td class="stock-column">餐廳名稱:
 			<select name="restaurantId[0]" class="restaurant-select" onchange="handleSelectChange(this)" required>
-				<option value="" selected disabled>請選擇租借餐廳</option>
+				<option value="" selected disabled>請選擇要增加庫存餐廳</option>
 				<option th:each="restaurant : ${restaurants}" th:value="${restaurant.restaurantId}" th:text="${restaurant.restaurantName}"></option>
 			</select>
 		</td>
@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>
 <script type="text/template" id="restaurant-options-template">
-	<option value="" selected disabled>請選擇租借餐廳</option>
+	<option value="" selected disabled>請選擇要增加庫存餐廳</option>
 	<option th:each="restaurant : ${restaurants}" th:value="${restaurant.restaurantId}" th:text="${restaurant.restaurantName}"></option>
 </script>
 <script>

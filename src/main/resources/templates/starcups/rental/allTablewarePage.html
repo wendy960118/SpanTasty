@@ -64,7 +64,7 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
                 <!-- Product-->
                 <article  class="product">
                     <div class="product-figure">
-                        <img th:src="${tableware.tablewareImage != null ? tableware.tablewareImage : 'https://via.placeholder.com/450x400'}" alt="" width="255" height="255" />
+                        <img th:src="${tableware.tablewareImage != null ? tableware.tablewareImage : 'https://via.placeholder.com/450x400'}" alt="" width="255" height="255" style="height:300px;"/>
                         <div class="product-button">
                             <a class="button button-bt button-md button-white button-ujarak" th:href="@{/StarCups/rental/single/{id}(id=${tableware.tablewareId})}">查看</a></div>
                         </div>
@@ -151,7 +151,7 @@ function htmlMaker(tablewares) {
         <!-- Product-->
         <article class="product">
           <div class="product-figure">
-            <img src="${tableware.tablewareImage ? tableware.tablewareImage : 'https://via.placeholder.com/450x400'}" alt="" width="255" height="255" />
+            <img src="${tableware.tablewareImage ? tableware.tablewareImage : 'https://via.placeholder.com/450x400'}" alt="" width="255" height="255" style="height:255px;"/>
             <div class="product-button">
               <a class="button button-bt button-white button-ujarak" th:href="@{/StarCups/rental/single/{id}(id=${tableware.tablewareId})}">查看</a>
             </div>

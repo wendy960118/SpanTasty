@@ -229,7 +229,7 @@
 			        </thead>
 			        <tbody th:each="rentItem : ${rent.rentItems}">
 			        <tr>
-                     <td class="pb-0 pt-0"><img th:src="${rentItem.tableware.tablewareImage != null ? rentItem.tableware.tablewareImage : 'https://via.placeholder.com/450x400'}" alt="" width="80" height="80"/></td>
+                     <td class="pb-0 pt-0"><img th:src="${rentItem.tableware.tablewareImage != null ? rentItem.tableware.tablewareImage : 'https://via.placeholder.com/450x400'}" alt="" width="80" height="80" style="height:100px;"/></td>
                      <td class="pb-0 pt-0" th:text="${rentItem.tableware.tablewareName}"></td>
 				     <td class="pb-0 pt-0" th:text="${rentItem.rentItemQuantity}"></td>
 				     <td class="pb-0 pt-0" th:text="${rentItem.rentItemDeposit}"></td>

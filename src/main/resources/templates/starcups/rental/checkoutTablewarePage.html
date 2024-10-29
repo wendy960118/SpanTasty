@@ -160,7 +160,7 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
               </thead>
               <tbody>
                 <tr th:each="rentItem : ${rentItems}" th:data-tablewareId="${rentItem.tableware.tablewareId}">
-                  <td style="padding-top:12px; padding-bottom:12px;"><div class="table-cart-figure me-2" style="max-width:60px;"><img th:src="${rentItem.tableware.tablewareImage != null ? rentItem.tableware.tablewareImage : 'https://via.placeholder.com/450x400'}" alt="" width="60" height="60" /></div> <div class="table-cart-link fs-5" th:text="${rentItem.tableware.tablewareName}"></div></td>
+                  <td style="padding-top:0px; padding-bottom:12px; height:100px;"><div class="table-cart-figure me-2" style="max-width:70px; height:80px;"><img th:src="${rentItem.tableware.tablewareImage != null ? rentItem.tableware.tablewareImage : 'https://via.placeholder.com/450x400'}" alt="" width="70" height="60" style="height:80px;"/></div> <div class="table-cart-link fs-5" th:text="${rentItem.tableware.tablewareName}"></div></td>
                   <td><span th:text="${rentItem.tableware.tablewareDeposit}"></span></td>
                   <td>
                   <span th:text="${rentItem.rentItemQuantity}"></span>

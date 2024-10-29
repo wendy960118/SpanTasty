@@ -162,7 +162,7 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
 							            </tr>
 							        <th:block th:each=" rentItem : ${rentItems}">
 							            <tr>
-							                <td><img th:src="${rentItem.tableware.tablewareImage != null ? rentItem.tableware.tablewareImage : 'https://via.placeholder.com/450x400'}" alt="" width="80" height="80"/></td>
+							                <td><img th:src="${rentItem.tableware.tablewareImage != null ? rentItem.tableware.tablewareImage : 'https://via.placeholder.com/450x400'}" alt="" width="80" height="80" style="height:90px;"/></td>
 							                <td><span th:text="${rentItem.tableware.tablewareName}"></span></td>
 							                <td th:text="${rentItem.rentItemQuantity}"></td>
 							                <td th:text="${rentItem.rentItemDeposit}"></td>
