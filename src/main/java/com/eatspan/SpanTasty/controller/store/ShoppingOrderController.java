@@ -61,16 +61,6 @@ public class ShoppingOrderController {
     }
 	
 	
-//    @PostMapping("/addPost")
-//    public String addOrder(@RequestParam Integer memberId,
-//                           @RequestParam Integer productId,
-//                           @RequestParam Integer shoppingItemQuantity,
-//                           Model model) {
-//        
-//        ShoppingOrder order = shoppingOrderService.addShoppingOrder(memberId, productId, shoppingItemQuantity);
-//
-//        return "redirect:/shoppingOrder/findAll";
-//    }
 
     
     
@@ -84,6 +74,16 @@ public class ShoppingOrderController {
         return "redirect:/shoppingOrder/findAll";
     }
 
+//    @PostMapping("/addPost")
+//    public String addOrder(@RequestParam Integer memberId,
+//                           @RequestParam Integer productId,
+//                           @RequestParam Integer shoppingItemQuantity,
+//                           Model model) {
+//        
+//        ShoppingOrder order = shoppingOrderService.addShoppingOrder(memberId, productId, shoppingItemQuantity);
+//
+//        return "redirect:/shoppingOrder/findAll";
+//    }
 	
 	@DeleteMapping("/del/{id}")
 	public String deleteShoppingOrder(@PathVariable("id") Integer shoppingOrderId){

@@ -13,60 +13,41 @@
     <link rel="stylesheet" href="/SpanTasty/starcups/css/style.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
-        .hidden {
-            display: none;
+        .hidden { 
+        	display: none; 
         }
-
         .button {
-            opacity: 0;
-            transition: opacity 0.3s ease;
+	        opacity: 0; 
+	        transition: opacity 0.3s ease; 
         }
-
-        .visible {
-            opacity: 1;
+        .visible { 
+        	opacity: 1; 
         }
-
-        .add-to-cart {
-            display: none; 
+        .add-to-cart { 
+        	display: none; 
         }
-
         .product-figure img {
-            width: 269px; 
-            height: 269px; 
-            object-fit: cover;
+	        width: 269px; 
+	        height: 269px; 
+        object-fit: cover; 
         }
-
-        .ie-panel {
-            display: none;
-            background: #212121;
-            padding: 10px 0;
-            box-shadow: 3px 3px 5px 0 rgba(0, 0, 0, .3);
-            clear: both;
-            text-align: center;
-            position: relative;
-            z-index: 1;
+        .cart-icon { 
+	        position: fixed; 
+	        bottom: 90px; 
+	        right: 45px; 
+	        z-index: 1000; 
+	        font-size: 2rem; 
+	        cursor: pointer; 
+	        color: #AD5A5A; 
         }
-
-        html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
-            display: block;
+        .out-of-stock img { 
+        	opacity: 0.1; 
         }
-
-        .cart-icon {
-            position: fixed;
-            bottom: 90px;
-            right: 45px;
-            z-index: 1000;
-            font-size: 2rem;
-            cursor: pointer;
-            color: #AD5A5A;
+        .out-of-stock .add-to-cart { 
+        	pointer-events: none; 
         }
-
-        .out-of-stock img {
-            opacity: 0.2;
-        }
-
-        .out-of-stock .add-to-cart {
-            pointer-events: none;
+        .allCount{
+        	color:#976F55
         }
     </style>
 </head>
@@ -76,7 +57,8 @@
     <!-- Cart Icon -->
     <form th:action="@{/StarCups/cartDetail(shoppingId=${session['shoppingId']})}" method="post" style="display: inline;">
         <button type="submit" style="border: none; background: none;">
-            <i class="fa-solid fa-cart-plus cart-icon"></i> <span id="cart-count" style="position: fixed; bottom: 120px; right: 25px; background: #613030; color: white; border-radius: 100%; padding: 5px 10px;">0</span>
+            <i class="fa-solid fa-cart-plus cart-icon"></i> 
+            <span id="cart-count" style="position: fixed; bottom: 120px; right: 25px; background: #613030; color: white; border-radius: 100%; padding: 5px 10px;">0</span>
         </button>
     </form>
 
@@ -90,31 +72,30 @@
                     <li class="active">Shop</li>
                 </ul>
             </div>
-            <div class="box-position novi-bg novi-bg-img" style="background-image: url(images/bg-breadcrumbs.jpg);"></div>
+            <div class="box-position novi-bg novi-bg-img" style="background-image: url('/SpanTasty/StarCups/images/bg-breadcrumbs.jpg');"></div>
         </div>
     </section>
 
     <!-- Shop -->
-    <section class="section novi-bg novi-bg-img section-xl bg-default">
-        <div class="container">
+    <section class="section novi-bg novi-bg-img section-l mt-5 bg-default">
+        <div class="container d-flex justify-center">
             <div class="row row-90 row-fix justify-content-center">
                 <div class="col-lg-8 col-xl-9">
-                    <div class="product-top-panel group-lg">
-                        <div class="product-top-panel-title">
+                  <div class="product-top-panel group-lg">
+                       
+                       <!-- <div class="product-top-panel-title">
                             Showing 1–12 of <span th:text="${totalProducts}"></span> results
                         </div>
                         <form th:action="@{/StarCups/orderHistory(shoppingId=${session['shoppingId']})}" method="get" id="checkoutForm">
                             <button type="submit" class="button button-secondary button-pipaluk" id="checkoutBtn">His</button>
-                        </form>
-                        <div class="product-top-panel-select">
-                            <select class="form-input select-filter" data-minimum-results-for-search="Infinity" data-constraints="@Required" onchange="location = this.value;">
-                                <option value="/StarCups/allProduct">Sort All</option>
-                                <option th:each="productType : ${productTypes}" th:value="@{/StarCups/productsByCategory(productType=${productType.productTypeId})}" th:text="${productType.productTypeName}"></option>
-                            </select>
-                        </div>
+                        </form> --> 
+                        
+
+                        
+                        
                     </div>
                     <div class="row row-lg row-40">
-                        <div class="col-sm-6 col-md-4" th:each="product : ${products}">
+                        <div class="col-sm-6 col-md-4" th:each="product : ${products}" th:data-producttype="${product.productType.productTypeId}">
                             <article class="product" th:classappend="${product.productStatus == 2} ? 'out-of-stock'" th:data-productstatus="${product.productStatus}">
                                 <div class="product-figure">
                                     <img th:src="${product.productPicture}" alt="" />
@@ -156,33 +137,99 @@
                         </nav>
                     </div>
                 </div>
-                <div class="col-sm-10 col-md-12 col-lg-4 col-xl-3">
-                    <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h1 class="modal-title fs-5" id="productModalLabel">商品資訊</h1>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <img id="modalProductPicture" src="" alt="Product Image" style="width: 100%; height: auto;" />
-                                        </div>
-                                        <div class="col-md-6 position-relative">
-                                            <ul class="list list-description position-absolute top-50 start-50 translate-middle fs-5" style="align-items: center; white-space: nowrap">
-                                                <li><span>商品名稱:</span> <span id="modalProductName"></span></li>
-                                                <li><span>商品金額:</span> <span id="modalProductPrice"></span></li>
-                                                <li><span>商品描述:</span> <span id="modalProductDescription"></span></li>
-                                                <li><span>商品庫存:</span> <span id="modalProductStock"></span></li>
-                                                <li><span>商品狀態:</span> <span id="modalProductStatus"></span></li>
-                                            </ul>
-                                        </div>
+                <div class="col-sm-10 col-md-12 col-lg-4 col-xl-3 ml-3">
+                    <br><br><h5 class="mb-3">PRODUCT CATEGORY</h5>
+                    <ul class="list list-shop-filter">
+                        <li>
+                            <label class="checkbox-inline" onclick="filterProducts('all')">
+                                <input type="radio" name="input-group-radio" value="all"> 
+                                <a href="/SpanTasty/StarCups/allProduct"><span>所有商品</span>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            </a>
+                          <!--   <span class="allCount list-shop-filter-number" th:text="${allProductCount}">
+                            </span> 顯示所有商品的數量 -->
+                            </label>
+                        </li>
+                        <li th:each="productType : ${productTypes}">
+                            <label class="checkbox-inline">
+                                <a th:href="@{/StarCups/productsByProductType/{productTypeId}(productTypeId=${productType.productTypeId})}"> 
+                                <span th:text="${productType.productTypeName}"></span></a>
+                            </label>
+                            <span class="list-shop-filter-number" th:text="${#lists.size(productType.products)}"></span>
+                        </li>
+                    </ul><br><br><br>
+                     <div class="col-md-6 col-lg-12">
+                  <h5>Popular products</h5>
+                  <div class="list-popular-product">
+                    <div class="list-popular-product-item">
+                      <!-- Product Minimal-->
+                      <article class="product-minimal unit unit-spacing-md">
+                        <div class="unit-left"><a class="product-minimal-figure" href="single-product.html"><img src="images/product-mini-1-108x100.png" alt="" width="108" height="100"/></a></div>
+                        <div class="unit-body">
+                          <h6 class="product-minimal-title"><a href="single-product.html">Burdur pearl</a></h6>
+                          <div class="product-minimal-price">$235.00</div>
+                        </div>
+                      </article>
+                    </div>
+                    <div class="list-popular-product-item">
+                      <!-- Product Minimal-->
+                      <article class="product-minimal unit unit-spacing-md">
+                        <div class="unit-left"><a class="product-minimal-figure" href="single-product.html"><img src="images/product-mini-2-108x100.png" alt="" width="108" height="100"/></a></div>
+                        <div class="unit-body">
+                          <h6 class="product-minimal-title"><a href="single-product.html">Old World Acacia</a></h6>
+                          <div class="product-minimal-price">$290.00</div>
+                        </div>
+                      </article>
+                    </div>
+                    <div class="list-popular-product-item">
+                      <!-- Product Minimal-->
+                      <article class="product-minimal unit unit-spacing-md">
+                        <div class="unit-left"><a class="product-minimal-figure" href="single-product.html"><img src="images/product-mini-3-108x100.png" alt="" width="108" height="100"/></a></div>
+                        <div class="unit-body">
+                          <h6 class="product-minimal-title"><a href="single-product.html">Bastille Gray</a></h6>
+                          <div class="product-minimal-price">$200.00</div>
+                        </div>
+                      </article>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+                </div>
+	
+
+
+
+                <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="productModalLabel">商品資訊</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <img id="modalProductPicture" src="" alt="Product Image" style="width: 100%; height: auto;" />
+                                    </div>
+                                    <div class="col-md-6 position-relative">
+                                        <ul class="list list-description position-absolute top-50 start-50 translate-middle fs-5" style="align-items: center; white-space: nowrap">
+                                            <li><span>商品名稱:</span> <span id="modalProductName"></span></li>
+                                            <li><span>商品金額:</span> <span id="modalProductPrice"></span></li>
+                                            <li><span>商品描述:</span> <span id="modalProductDescription"></span></li>
+                                            <li><span>商品庫存:</span> <span id="modalProductStock"></span></li>
+                                            <li><span>商品狀態:</span> <span id="modalProductStatus"></span></li>
+                                        </ul>
                                     </div>
                                 </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">關閉</button>
-                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">關閉</button>
                             </div>
                         </div>
                     </div>
@@ -190,7 +237,6 @@
             </div>
         </div>
     </section>
-
     <div class="snackbars" id="form-output-global"></div>
 
     <div th:replace="~{starcups/display/footer}"></div>
@@ -200,6 +246,7 @@
     <script>
         const productLinks = document.querySelectorAll('.product-title a');
         const addButtons = document.querySelectorAll('.add-to-cart');
+        const productArticles = document.querySelectorAll('.product');
         let cartItemCount = 0;
 
         window.onload = function() {
@@ -233,13 +280,11 @@
         addButtons.forEach(button => {
             button.addEventListener('click', function() {
                 const productStatus = this.closest('.product').getAttribute('data-productstatus');
-                console.log('Product Status:', productStatus); 
                 if (productStatus == 2) {
                     Swal.fire({
                         icon: 'warning',
                         title: '商品已完售',
                         showConfirmButton: false,
-                        text: '  ',
                         timer: 1000
                     });
                     return; 
@@ -256,16 +301,16 @@
                         showConfirmButton: false,
                         timer: 1500
                     });
-                    return; // 如果未登入，跳出函数
+                    return;
                 }
 
-                axios.post(`http://localhost:8080/SpanTasty/StarCups/addPost`, null, {
+                axios.post("http://localhost:8080/SpanTasty/StarCups/addPost", null, {
                     params: {
                         productId: productId,
                         shoppingItemQuantity: quantity
                     },
                     headers: {
-                        'Authorization': `${token}`,
+                        'Authorization': token,
                         'Content-Type': 'application/json'
                     }
                 })
@@ -276,7 +321,6 @@
                         Swal.fire({
                             icon: 'success',
                             title: '商品已加入購物車',
-                            text: '  ',
                             showConfirmButton: false,
                             timer: 1500
                         });
@@ -284,7 +328,6 @@
                         Swal.fire({
                             icon: 'error',
                             title: '商品已完售',
-                            text: '  ',
                             showConfirmButton: false,
                             timer: 1000
                         });
@@ -295,12 +338,14 @@
                     Swal.fire({
                         icon: 'error',
                         title: '錯誤',
-                        text: '發生錯誤，請檢察Console',
+                        text: '發生錯誤，請檢查Console',
                         confirmButtonText: '確定'
                     });
                 });
             });
         });
+
+
     </script>
 
     <script src="/SpanTasty/starcups/js/core.min.js"></script>

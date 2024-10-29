@@ -63,7 +63,7 @@ public class ProductTypeController {
 	}
 	
 	
-	@PostMapping("/update/{id}")
+	@PutMapping("/update/{id}")
 	public String updateProductType(@PathVariable("id") Integer productTypeId,
 									@RequestParam String productTypeName,Model model) {
 		productTypeService.updateProductType(productTypeId, productTypeName);
