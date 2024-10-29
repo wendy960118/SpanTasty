@@ -283,6 +283,43 @@ public class StarCupsStoreController {
 	    return aioCheckOutALLForm;
 	}
 
+	@PostMapping("/orderConfirmP")
+		public String checkOutFinishP(Model model) {
+		
+		Integer shoppingId = (Integer) session.getAttribute("shoppingId");
+		ShoppingOrder shopping = shoppingOrderService.findShoppingOrderById(shoppingId);
+		
+		
+		System.out.println("shoppingId "+shoppingId );
+		
+		model.addAttribute("shopping", shopping);
+		List<ShoppingItem> items = shoppingItemService.findShoppingItemById(shoppingId);
+		model.addAttribute("items", items);
+		List<Product> productList = productService.findAllProduct();
+		model.addAttribute("productList", productList);
+		Integer totalAmount = shoppingOrderService.calculateTotalAmount(shoppingId);
+		model.addAttribute("totalAmount", totalAmount);
+	    Integer discountAmount = shopping.getDiscountAmount();
+	    if (discountAmount == null) {
+	        discountAmount = 0;
+	    }
+	    model.addAttribute("discountAmount", discountAmount);
+		
+	    shopping.setShoppingStatus(2);
+	    shoppingOrderService.updateShoppingOrder(shopping);
+	    
+        try {
+        	shoppingOrderService.sendMail(shopping);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+        
+	    
+	    session.removeAttribute("shoppingId");
+	    
+		return "starcups/store/OrderConfirm";
+	}
+	
 	
 	@GetMapping("/orderConfirm")
 //	public String checkOutFinish(@RequestParam Map<String, String>map, Model model) {
