@@ -15,7 +15,8 @@
             <div class="row justify-content-center">
                 <div class="col-11">
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                        <button id="addTogoItemBtn" class="btn btn-primary" onclick="showAddTogoItemModal()">新增明細</button>
+                        <button id="addTogoItemBtn" class="btn btn-primary"
+                            onclick="showAddTogoItemModal()">新增明細</button>
                     </div>
                     <div class="table-responsive mt-3">
                         <table id="demoData" class="table table-secondary table-striped table-hover text-center">
@@ -47,13 +48,15 @@
                         </table>
                     </div>
                     <div class="col-12 d-flex justify-content-center">
-                        <a href="http://localhost:8080/SpanTasty/order/togo" class="btn btn-secondary ms-2">返回訂單</a>
+                        <!-- <button type="button" class="btn btn-secondary" id="returnBtn">返回查詢結果</button> -->
+                        <a href="#" id="returnBtn" class="btn btn-secondary ms-2">返回查詢結果</a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="modal fade" id="addTogoItemModal" tabindex="-1" role="dialog" aria-labelledby="addTogoItemModalLabel" aria-hidden="true">
+        <div class="modal fade" id="addTogoItemModal" tabindex="-1" role="dialog"
+            aria-labelledby="addTogoItemModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -63,30 +66,36 @@
                         <!-- 更新的表單 -->
                         <form id="addItemForm">
                             <div class="form-group mb-3">
-                                <label for="memberId">會員編號</label>
-                                <input type="text" class="form-control" id="memberId" placeholder="輸入會員編號">
-                            </div>
-                            <div class="form-group mb-3">
-                                <label for="tgPhone">訂購人電話</label>
-                                <input type="text" class="form-control" id="tgPhone" placeholder="輸入電話">
-                            </div>
-                            <div class="form-group mb-3">
-                                <label for="togoStatus">取餐狀態</label>
-                                <select class="form-control" id="togoStatus">
+                                <label for="foodKindId" class="form-label">餐點類別</label>
+                                <select class="form-select" name="foodKindId" id="foodKindId" onchange="getFoodItems()"
+                                    required>
                                     <option value="" selected>請選擇</option>
-                                    <option value="1">未取餐</option>
-                                    <option value="2">已取餐</option>
-                                    <option value="3">已取消</option>
+                                    <th:block th:each="foodKind : ${foodKindList}">
+                                        <option th:value="${foodKind.foodKindId}" th:text="${foodKind.foodKindName}">
+                                        </option>
+                                    </th:block>
                                 </select>
                             </div>
-
+                            <div class="form-group mb-3">
+                                <label for="foodId" class="form-label">餐點品項</label>
+                                <select class="form-select" id="foodId" name="foodId" required>
+                                    <option value="" selected>請選擇</option>
+                                    <!-- 動態顯示餐點品項 -->
+                                </select>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="amount">數量</label>
+                                <input type="text" class="form-control" id="amount" placeholder="輸入數量" required>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                    id="cancelChangesBtn">取消</button>
+                                <button type="submit" class="btn btn-primary" id="saveChangesBtn">新增品項</button>
+                            </div>
                         </form>
+
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal"
-                            id="cancelChangesBtn">取消</button>
-                        <button type="button" class="btn btn-primary" id="saveChangesBtn">保存修改</button>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -94,12 +103,110 @@
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             showSidebar('order');
+            
+        })
+
+        document.getElementById("returnBtn").addEventListener("click", function () {
+            event.preventDefault();
+            // 取得當前 URL
+            const currentUrl = window.location.href;
+            // 使用正則表達式來提取 togoId
+            const togoId = currentUrl.match(/\/togo\/(\d+)\/items/)[1];
+            const returnUrl = `http://localhost:8080/SpanTasty/order/togo/${togoId}`;
+            window.location.href = returnUrl;
 
         })
 
+        // 新增明細
+        document.getElementById("addItemForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            // 取得當前 URL
+            const currentUrl = window.location.href;
+            // 使用正則表達式來提取 togoId
+            const togoId = currentUrl.match(/\/togo\/(\d+)\/items/)[1];
+
+            const newTogoItems = [{
+                togoItemId: {
+                    togoId: togoId,
+                    foodId: document.getElementById("foodId").value
+                },
+                amount: document.getElementById("amount").value
+            }];
+
+            axios.post(`http://localhost:8080/SpanTasty/order/togo/${togoId}/items`, newTogoItems)
+                .then(response => {
+                    console.log("新增訂單項目成功:", response.data);
+                    alert("新增成功");
+                    // 更新頁面上的訂單項目資料
+                    const updatedTogoItems = response.data;
+                    // 清空原有的表格內容
+                    const tbody = document.querySelector("#demoData tbody");
+                    tbody.innerHTML = "";
+
+                    // 動態生成並插入新的表格內容
+                    updatedTogoItems.forEach(item => {
+                        const row = `
+                            <tr>
+                                <td class="align-middle">${item.togoItemId.togoId}</td>
+                                <td class="align-middle">${item.menu.foodName}</td>
+                                <td class="align-middle">${item.menu.foodPrice}</td>
+                                <td class="align-middle">${item.amount}</td>
+                                <td class="align-middle">${item.togoItemPrice}</td>
+                                <td><button class="btn btn-warning">修改</button></td>
+                                <td><button class="btn btn-danger">刪除</button></td>
+                            </tr>
+                        `;
+                        tbody.innerHTML += row;
+                    });
+                    $('#addTogoItemModal').modal('hide');
+
+                })
+                .catch(error => {
+                    console.log({error});
+                    console.error("新增訂單項目失敗:", error);
+                    alert("新增訂單項目失敗");
+                });
+        })
+
+
         function showAddTogoItemModal() {
-            console.log("成功調用")
+            // 顯示modal
+            $('#addTogoItemModal').modal('show');
         }
+
+        function getFoodItems() {
+            const foodKindId = document.getElementById("foodKindId").value;
+            const foodNameSelect = document.getElementById("foodId");
+            console.log(foodNameSelect)
+            // 清空食物品項的選擇框
+            foodNameSelect.innerHTML = '<option value="" selected>請選擇</option>';
+
+            if (foodKindId) {
+                axios.get(`/SpanTasty/order/menu/kinds/${foodKindId}`)
+                    .then(response => {
+                        const foodItems = response.data;
+                        console.log(foodItems)
+
+                        foodItems.forEach(item => {
+                            const option = document.createElement("option");
+                            option.value = item.foodId; // 假設食物的 ID 是 foodId
+                            option.textContent = item.foodName; // 假設食物的名稱是 foodName
+                            foodNameSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error("獲取食物品項失敗", error);
+                        alert("獲取食物品項失敗");
+                    });
+            }
+
+            document.getElementById("cancelChangesBtn").addEventListener("click", function () {
+                console.log("cancel")
+                // $('#addTogoItemModal').modal('hide');
+            });
+        }
+
 
 
     </script>

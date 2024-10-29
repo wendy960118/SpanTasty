@@ -1,75 +1,139 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org/">
-<head>
-<meta charset="UTF-8">
-<title>菜單</title>
-</head>
-<body>
-<div th:replace="~{spantasty/display/navbar}"></div>
-<!-- 主要內容區域 -->
-<div class="content">
-    <div class="container mt-2">
-        <h1 class="display-6">☕菜單資料☕</h1>
-        <div class="row justify-content-center">
-            <div class="col-11">
-                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <a th:href="@{/order/menu/add}" class="btn btn-primary btn-sm">新增菜單</a>
-                    <a th:href="@{/order/menu/get}" class="btn btn-primary btn-sm">查詢菜單</a>
-                </div>
-                
-                <div class="table-responsive mt-3">
-                    <table id="demoData" class="table table-secondary table-striped table-hover text-center">
-                        <thead class="thead-light">
-                            <tr>
-                                <th scope="col">餐點編號</th>
-                                <th scope="col">餐點名稱</th>
-                                <th scope="col">餐點照片</th>
-                                <th scope="col">餐點種類</th>
-                                <th scope="col">餐點庫存</th>
-                                <th scope="col">描述</th>
-                                <th scope="col">餐點狀態</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <th:block th:each="food : ${foodList}">
-                                <tr>
-                                    <td class="align-middle" th:text="${food.foodId}"></td>
-                                    <td class="align-middle" th:text="${food.foodName}"></td>
-                                    <td class="align-middle">
-    								<img th:src="${food.foodPicture}" th:alt="${food.foodName}" style="width: 100px; height: auto;">
-									</td>
-                                    <td class="align-middle" th:text="${food.foodKind.foodKindName}"></td>
-                                    <td class="align-middle" th:text="${food.foodStock}"></td>
-                                    <td class="align-middle" th:text="${food.foodDescription}"></td>
-                                    <td class="align-middle">
-                                        <span th:switch="${food.foodStatus}">
-                                            <span th:case="1" class="badge bg-success">正常供應</span>
-                                            <span th:case="2" class="badge bg-warning">停售</span>
-                                        </span>
-                                    </td>
 
+<head>
+    <meta charset="UTF-8">
+    <title>菜單</title>
+</head>
+
+<body>
+    <div th:replace="~{spantasty/display/navbar}"></div>
+    <!-- 主要內容區域 -->
+    <div class="content">
+        <div class="container mt-2">
+            <h1 class="display-6">☕菜單資料☕</h1>
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <select class="form-select" name="foodKindId" id="foodKindId" onchange="getFoodsByKind()"
+                                required>
+                                <option value="" selected>選擇種類</option>
+                                <th:block th:each="foodKind : ${foodKindList}">
+                                    <option th:value="${foodKind.foodKindId}" th:text="${foodKind.foodKindName}">
+                                    </option>
+                                </th:block>
+                            </select>
+                        </div>
+                        <div class="col-md-10 d-flex justify-content-end align-items-center">
+                            <a th:href="@{/order/menu/add}" class="btn btn-primary btn-sm me-2">新增菜單</a>
+                            <a th:href="@{/order/menu/get}" class="btn btn-primary btn-sm">查詢菜單</a>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive mt-3">
+                        <table id="demoData" class="table table-secondary table-striped table-hover text-center">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">餐點編號</th>
+                                    <th scope="col">餐點名稱</th>
+                                    <th scope="col">餐點照片</th>
+                                    <th scope="col">餐點種類</th>
+                                    <th scope="col">描述</th>
+                                    <th scope="col">餐點狀態</th>
                                 </tr>
-                            </th:block>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <th:block th:each="food : ${foodList}">
+                                    <tr>
+                                        <td class="align-middle" th:text="${food.foodId}"></td>
+                                        <td class="align-middle" th:text="${food.foodName}"></td>
+                                        <td class="align-middle">
+                                            <img th:src="${food.foodPicture}" th:alt="${food.foodName}"
+                                                style="width: 100px; height: auto;">
+                                        </td>
+                                        <td class="align-middle" th:text="${food.foodKind.foodKindName}"></td>
+                                        <td class="align-middle" th:text="${food.foodDescription}"></td>
+                                        <td class="align-middle">
+                                            <span th:switch="${food.foodStatus}">
+                                                <span th:case="1" class="badge bg-success">正常供應</span>
+                                                <span th:case="2" class="badge bg-warning">停售</span>
+                                            </span>
+                                        </td>
+
+                                    </tr>
+                                </th:block>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             showSidebar('order');
 
-          
         })
 
+        function getFoodsByKind() {
+            const foodKindId = document.getElementById('foodKindId').value;
+            // if (foodKindId) {
+            const url = foodKindId ? `http://localhost:8080/SpanTasty/order/menu/kinds/${foodKindId}` : '/SpanTasty/order/menu/kinds/all';
+            axios.get(url)
+                .then(response => {
+                    const foods = response.data;
+                    const tableBody = document.querySelector("#demoData tbody");
+                    const foodDescription = foods.foodDescription !== null ? foods.foodDescription : '';
+                    tableBody.innerHTML = ''; // 清空表格内容
+
+                    if (foods.length > 0) {
+                        foods.forEach(food => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td class="align-middle">${food.foodId}</td>
+                                <td class="align-middle">${food.foodName}</td>
+                                <td class="align-middle">
+                                    <img src="${food.foodPicture}" alt="${food.foodName}" style="width: 100px; height: auto;">
+                                </td>
+                                <td class="align-middle">${food.foodKind.foodKindName}</td>
+                                <td class="align-middle">${food.foodDescription || ''}</td>
+                                <td class="align-middle">
+                                    <span class="${food.foodStatus === 1 ? 'badge bg-success' : 'badge bg-warning'}">
+                                        ${food.foodStatus === 1 ? '正常供應' : '停售'}
+                                    </span>
+                                </td>
+                            `;
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        const emptyRow = document.createElement('tr');
+                        emptyRow.innerHTML = `
+                        <td colspan="6" class="text-center">無餐點可供選擇</td>
+                    `;
+                        tableBody.appendChild(emptyRow);
+                    }
+
+                })
+                .catch(error => {
+                    console.error('取得餐點失敗:', error);
+                    alert('取得餐點失敗，請稍後再試');
+                });
+            // } else {
+
+            // }
+
+        }
+
+
+
     </script>
-    
-<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
-<script th:src="@{/js/jquery-3.7.1.min.js}"></script>
-<script th:src="@{/js/axios.min.js}"></script>
+
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+    <script th:src="@{/js/jquery-3.7.1.min.js}"></script>
+    <script th:src="@{/js/axios.min.js}"></script>
 
 
 </body>
+
 </html>

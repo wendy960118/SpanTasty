@@ -35,9 +35,14 @@ public class FoodKindServiceImpl implements FoodKindService {
 	public FoodKindEntity addFoodKind(String foodKindName) {
 		try {
 			foodKindName = foodKindName.trim();
-			FoodKindEntity foodKind = new FoodKindEntity();
-			foodKind.setFoodKindName(foodKindName);
-			return foodKindRepositoroy.save(foodKind);
+			List<FoodKindEntity> res = foodKindRepositoroy.findByFoodKindName(foodKindName);
+			FoodKindEntity savedFoodKind = null;
+			if (res.size() == 0) {
+				FoodKindEntity foodKind = new FoodKindEntity();
+				foodKind.setFoodKindName(foodKindName);
+				savedFoodKind = foodKindRepositoroy.save(foodKind);
+			}
+			return savedFoodKind;			
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

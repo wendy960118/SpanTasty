@@ -2,6 +2,7 @@ package com.eatspan.SpanTasty.service.reservation;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -196,6 +197,17 @@ public class RestaurantService {
             }
         }
         return null;
+    }
+    
+    //取得營業結束時間
+    public LocalTime getClosingTimeById(Integer restaurantId) {
+    	Optional<Restaurant> optional = restaurantRepository.findById(restaurantId);
+    	if (optional.isPresent()) {
+    		Restaurant restaurant = optional.get();
+            return restaurant.getRestaurantClosetime();
+    	} else {
+			throw new RuntimeException("餐廳不存在");
+		}
     }
 
 }

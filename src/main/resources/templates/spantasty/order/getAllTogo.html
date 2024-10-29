@@ -51,12 +51,14 @@
                                     <th scope="col">訂單狀態</th>
                                     <th scope="col">餐廳名稱</th>
                                     <th scope="col">訂單備註</th>
+                                    <th scope="col">查看</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <th:block th:each="togo : ${togoList.togoList}">
                                     <tr>
-                                        <td class="align-middle" id="togoId" th:text="${togo.togoId}"></td>
+                                        <td class="align-middle" id="togoId" th:text="${togo.togoId}"
+                                            data-togo-id="${togo.togoId}"></td>
                                         <td class="align-middle" th:text="${togo.memberId}"></td>
                                         <td class="align-middle" th:text="${togo.tgName}"></td>
                                         <td class="align-middle" th:text="${togo.tgPhone}"></td>
@@ -71,6 +73,11 @@
                                         </td>
                                         <td class="align-middle" th:text="${togo.restaurant.restaurantName}"></td>
                                         <td class="align-middle" th:text="${togo.togoMemo}"></td>
+                                        <td class="align-middle">
+                                            <input type="hidden" class="togoId" id="togoId" th:value="${togo.togoId}" />
+                                            <button type="button" class="btn btn-info"
+                                                id="showDetailsBtn">查看</button>
+                                        </td>
                                     </tr>
                                 </th:block>
                             </tbody>
@@ -84,19 +91,56 @@
                             <!-- 前一頁 -->
                             <li class="page-item" th:classappend="${togoList.togoList.hasPrevious()} ? '' : 'disabled'">
 
-                                <a class="page-link" th:href="@{/order/togo(page=${togoList.togoList.number - 1})}+${togoList.selectedId == null? '': '&restaurantId='+ togoList.selectedId}">上一頁</a>
+                                <a class="page-link"
+                                    th:href="@{/order/togo(page=${togoList.togoList.number - 1})}+${togoList.selectedId == 0? '': '&restaurantId='+ togoList.selectedId}">上一頁</a>
                             </li>
                             <!-- 頁碼 -->
-                            <li class="page-item" th:each="i : ${#numbers.sequence(0, togoList.togoList.totalPages - 1)}"
+                            <li class="page-item"
+                                th:each="i : ${#numbers.sequence(0, togoList.togoList.totalPages - 1)}"
                                 th:classappend="${i == togoList.togoList.number} ? 'active' : ''">
-                                <a class="page-link" th:href="@{/order/togo(page=${i})}+${togoList.selectedId == null? '': '&restaurantId='+ togoList.selectedId}" th:text="${i + 1}">1</a>
+                                <a class="page-link"
+                                    th:href="@{/order/togo(page=${i})}+${togoList.selectedId == 0? '': '&restaurantId='+ togoList.selectedId}"
+                                    th:text="${i + 1}">1</a>
                             </li>
                             <!-- 下一頁 -->
                             <li class="page-item" th:classappend="${togoList.togoList.hasNext()} ? '' : 'disabled'">
-                                <a class="page-link" th:href="@{/order/togo(page=${togoList.togoList.number + 1})}+${togoList.selectedId == null? '': '&restaurantId='+ togoList.selectedId}">下一頁</a>
+                                <a class="page-link"
+                                    th:href="@{/order/togo(page=${togoList.togoList.number + 1})}+${togoList.selectedId == 0? '': '&restaurantId='+ togoList.selectedId}">下一頁</a>
                             </li>
                         </ul>
                     </nav>
+                </div>
+                <!-- 插入查詢 -->
+                <div class="modal fade" id="showDetailsModal" tabindex="-1" role="dialog"
+                    aria-labelledby="showDetailsModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="showDetailsModalLabel"># 訂單明細</h5>
+                            </div>
+                            <div class="modal-body">
+                                <table class="table table-secondary table-striped table-hover text-center">
+                                    <thead class="thead-light">
+                                        <tr>
+
+                                            <th scope="col">餐點品項</th>
+                                            <th scope="col">單價</th>
+                                            <th scope="col">數量</th>
+                                            <th scope="col">小計</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="detailsTableBody">
+                                        <!-- 查詢結果將插入在這裡 -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                                    id="cancelChangesBtn">關閉</button>
+                                <button type="button" class="btn btn-primary" id="saveChangesBtn">保存修改</button>
+                            </div> -->
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -115,23 +159,16 @@
                 }
             });
 
+            document.querySelectorAll("#showDetailsBtn").forEach(button => {
+                button.addEventListener("click", function () {
+                    // 找到與按鈕同一行的隱藏的 togoId 元素
+                    const togoId = this.closest("tr").querySelector(".togoId").value;
+                    console.log(togoId);
+                    showDetails(togoId);
+                });
+            });  
 
         })
-
-        // function showItemsPage() {
-        //     const togoId = button.getAttribute('data-togo-id');
-        //     // 獲取 togoId
-        //     console.log(togoId)
-        //     // 使用 Axios 發送請求
-        //     axios.get(`http://localhost:8080/SpanTasty/order/togo/${togoId}/items`)
-        //         .then(function (response) {
-        //             window.location.href = 'http://localhost:8080/SpanTasty/order/togo/{togoId}/items';
-        //         })
-        //         .catch(function (error) {
-        //             console.error("獲取訂單項目失敗:", error);
-        //             alert("獲取訂單項目失敗，請稍後再試。");
-        //         });
-        // }
 
         // 載入縣市列表
         function loadCities() {
@@ -199,7 +236,7 @@
         }
 
         function getTogoByRestaurantId(restaurantId) {
-            
+
             console.log("找的id " + restaurantId)
             axios.get(`http://localhost:8080/SpanTasty/order/togo/restaurant/${restaurantId}`)
                 .then(function (response) {
@@ -226,6 +263,9 @@
                                 </td>
                                 <td class="align-middle">${togo.restaurant.restaurantName}</td>
                                 <td class="align-middle">${togo.togoMemo}</td>
+                                <td  class="align-middle">
+                                    <button type="button" class="btn btn-info" id="shwoDetailsBtn" onclick="showDetails(${togo.togoId})">查看</button>
+                                </td>
                             </tr>
                             `;
                         tableBody.insertAdjacentHTML("beforeend", orderRow);
@@ -244,8 +284,8 @@
             const totalPages = togoData.totalPages;
             const restaurantId = document.querySelector("#restaurantSelect").value;
             console.log(togoData)
-            console.log("currentPage "+currentPage)
-            console.log("restaurantId "+restaurantId)
+            console.log("currentPage " + currentPage)
+            console.log("restaurantId " + restaurantId)
             pagination.innerHTML = ''; // 清空分頁
             // <li class="page-item" th:classappend="${togoList.hasPrevious()} ? '' : 'disabled'">
             //                     <a class="page-link" th:href="@{/order/togo(page=${togoList.number - 1})}">上一頁</a>
@@ -257,7 +297,7 @@
                 </li>
                 `;
             // 插入頁碼按鈕
-            console.log({totalPages})
+            console.log({ totalPages })
             for (let i = 0; i < totalPages; i++) {
                 pagination.innerHTML += `
                     <li class="page-item ${i === currentPage ? 'active' : ''}">
@@ -265,7 +305,7 @@
                             ${i + 1}</a>
                     </li>
                     `;
-            }            
+            }
             // <li class="page-item" th:each="i : ${#numbers.sequence(0, togoList.totalPages - 1)}"
             //                     th:classappend="${i == togoList.number} ? 'active' : ''">
             //                     <a class="page-link" th:href="@{/order/togo(page=${i})}" th:text="${i + 1}">1</a>
@@ -278,6 +318,40 @@
                 `;
         }
 
+        function showDetails(togoId) {
+            console.log("showdetail" + togoId)
+
+            // 更新 modal 標題
+            const modalTitle = document.getElementById("showDetailsModalLabel");
+            modalTitle.textContent = `#${togoId} 訂單明細`;
+            axios.get(`/SpanTasty/order/togo/items/${togoId}`)
+                .then(response => {
+                    // 成功時的處理邏輯
+                    console.log("取得訂單詳情成功", response.data);
+                    const togoItems = response.data;
+                    const detailsTableBody = document.getElementById("detailsTableBody");
+
+                    togoItems.forEach(item => {
+                        const row = `
+                        <tr>
+                            
+                            <td>${item.menu.foodName}</td>
+                            <td>${item.menu.foodPrice}</td>
+                            <td>${item.amount}</td>
+                            <td>${item.togoItemPrice}</td>                          
+                        </tr>
+                    `;
+                        detailsTableBody.innerHTML += row;
+                    })
+                    $('#showDetailsModal').modal('show');
+                })
+                .catch(error => {
+                    // 錯誤時的處理邏輯
+                    console.error("取得訂單詳情失敗", error);
+                    alert("取得訂單詳情失敗");
+                });
+
+        }
 
         //顯示togo狀態
         function getTogoStatusBadge(status) {

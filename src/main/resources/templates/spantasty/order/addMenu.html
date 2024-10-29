@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>菜單新增</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         .description {
             padding-left: 5px;
@@ -29,6 +30,7 @@
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                 <button class="btn btn-secondary btn-sm" id="autoFillBtn">一鍵填入</button>
             </div>
+
             <form id="menuForm" class="row g-3 mt-1">
                 <div class="col-md-4">
                     <label for="foodName" class="form-label">餐點名稱</label>
@@ -45,7 +47,11 @@
                     <span class="error text-danger" id="foodPriceError"></span>
                 </div>
                 <div class="col-md-4">
-                    <label for="foodKindId" class="form-label">餐點種類</label>
+                    <label for="foodKindId" class="form-label">餐點種類
+                        <span>
+                            <i class="fa-solid fa-circle-plus" id="addFoodKindBtn"></i>
+                        </span>
+                    </label>
                     <select name="foodKindId" id="foodKindId" class="form-select" required>
                         <option value="" selected>請選擇種類</option>
                         <th:block th:each="foodKind : ${foodKinds}">
@@ -53,11 +59,11 @@
                         </th:block>
                     </select>
                 </div>
-                <div class="col-md-4">
+                <!-- <div class="col-md-4">
                     <label for="foodStock" class="form-label">庫存</label>
                     <input type="text" class="form-control" id="foodStock" name="foodStock">
                     <span class="error text-danger" id="foodStockError"></span>
-                </div>
+                </div> -->
                 <div class="col-md-4">
                     <label for="foodStatus" class="form-label">餐點狀態</label>
                     <select class="form-select" id="foodStatus" name="foodStatus" aria-label="Default select example"
@@ -67,7 +73,7 @@
                         <option value="2">停售</option>
                     </select>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label for="foodDescription" class="form-label">餐點描述</label>
                     <textarea class="form-control" id="foodDescription" name="foodDescription" rows="3"></textarea>
                 </div>
@@ -76,6 +82,34 @@
                     <a href="http://localhost:8080/SpanTasty/order/menu" class="btn btn-secondary ms-2">返回全部</a>
                 </div>
             </form>
+            <!-- 新增種類modal -->
+            <div class="modal fade" id="addFoodKindModal" data-bs-backdrop="static" data-bs-keyboard="false"
+                tabindex="-1" role="dialog" aria-labelledby="addTogoItemModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addFoodKindModalLabel">新增種類</h5>
+                            <button type="button" class="btn-close" id="closeBtn" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <!-- 更新的表單 -->
+                            <form id="addFoodKindForm">
+                                <div class="form-group mb-3">
+                                    <label for="foodKindName"></label>
+                                    <input type="text" class="form-control" id="foodKindName" placeholder="請輸入種類名稱"
+                                        required>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                        id="cancelChangesBtn">取消</button>
+                                    <button type="submit" class="btn btn-primary" id="saveChangesBtn">新增</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
         </div>
@@ -116,13 +150,76 @@
             })
         })
 
+        //顯示新增種類modal
+        document.getElementById("addFoodKindBtn").addEventListener("click", function (event) {
+            event.preventDefault();
+            $('#addFoodKindModal').modal('show');
 
+        })
+
+        //新增種類
+        document.getElementById("addFoodKindForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            // 確認是否要新增
+            const isConfirmed = window.confirm("確定要新增這個種類嗎？");
+            if (!isConfirmed) {
+                // 用戶取消，直接返回
+                return;
+            }
+            // 獲取輸入的種類名稱
+            const foodKindName = {
+                foodKindName: document.getElementById("foodKindName").value
+            };
+            // const foodKindName = document.getElementById("foodKindName").value;
+            console.log(foodKindName)
+            axios.post("http://localhost:8080/SpanTasty/order/kinds", foodKindName)
+                .then(function (response) {
+                    // 如果新增成功
+                    console.log(response.data);
+                    updateFoodKindSelect(response.data);
+                    alert("新增種類成功");
+                    $('#addFoodKindModal').modal('hide');
+                    // 清空輸入框
+                    document.getElementById("foodKindName").value = "";
+
+                })
+                .catch(function (error) {
+                    console.error("新增種類失敗：", error);
+                });
+
+        })
+
+        function updateFoodKindSelect(foodKinds) {
+            const foodKindSelect = document.getElementById("foodKindId");
+
+            // 清空現有的選項
+            foodKindSelect.innerHTML = '<option value="" selected>請選擇種類</option>';
+
+            // 遍歷並添加新的種類
+            foodKinds.forEach(function (foodKind) {
+                const option = document.createElement("option");
+                option.value = foodKind.foodKindId;
+                option.textContent = foodKind.foodKindName;
+                foodKindSelect.appendChild(option);
+            });
+        }
+
+        // 監聽取消和關閉按鈕事件，清空輸入框
+        document.getElementById("cancelChangesBtn").addEventListener("click", clearFoodKindInput);
+        document.getElementById("closeBtn").addEventListener("click", clearFoodKindInput);
+
+        // 清空輸入框的函數
+        function clearFoodKindInput() {
+            document.getElementById("foodKindName").value = "";
+        }
+
+        // 一鍵輸入
         document.getElementById("autoFillBtn").addEventListener("click", function () {
             // 填入輸入框
             document.getElementById("foodName").value = "國慶蛋糕";
             document.getElementById("foodPrice").value = "10";
             document.getElementById("foodKindId").value = "5";
-            document.getElementById("foodStock").value = "16";
             document.getElementById("foodStatus").value = "2";
             document.getElementById("foodDescription").value = "雙十國慶限定";
 
@@ -180,7 +277,6 @@
         // 綁定 blur 事件來驗證輸入框
         const foodName = document.getElementById('foodName');
         const foodPrice = document.getElementById('foodPrice');
-        const foodStock = document.getElementById('foodStock');
 
         foodName.addEventListener('blur', function () {
             console.log("foodName blur triggered");
@@ -192,25 +288,25 @@
             validateField(this, 'foodPrice');
         });
 
-        foodStock.addEventListener('blur', function () {
-            console.log("foodStock blur triggered");
-            const value = foodStock.value;
+        // foodStock.addEventListener('blur', function () {
+        //     console.log("foodStock blur triggered");
+        //     const value = foodStock.value;
 
-            const regex = /^\d*$/;
-            // 驗證
-            if (value === '' || regex.test(value)) {
-                // 輸入有效
-                console.log("有效的foodStock值:", value);
-                // 清除錯誤訊息
-                document.getElementById('foodStockError').textContent = '';
-            } else {
-                // 輸入無效
-                console.log("無效的foodStock值:", value);
-                // 顯示錯誤訊息
-                document.getElementById('foodStockError').textContent = '庫存只能為數字或空白';
-            }
+        //     const regex = /^\d*$/;
+        //     // 驗證
+        //     if (value === '' || regex.test(value)) {
+        //         // 輸入有效
+        //         console.log("有效的foodStock值:", value);
+        //         // 清除錯誤訊息
+        //         document.getElementById('foodStockError').textContent = '';
+        //     } else {
+        //         // 輸入無效
+        //         console.log("無效的foodStock值:", value);
+        //         // 顯示錯誤訊息
+        //         document.getElementById('foodStockError').textContent = '庫存只能為數字或空白';
+        //     }
 
-        });
+        // });
 
 
     </script>

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.eatspan.SpanTasty.dto.order.FoodKindDto;
 import com.eatspan.SpanTasty.entity.order.FoodKindEntity;
 import com.eatspan.SpanTasty.service.order.FoodKindService;
 
@@ -26,10 +27,9 @@ public class FoodKindController {
 	}
 	
 	//新增
-	@PostMapping("/kinds")
-	public ResponseEntity<List<FoodKindEntity>> addFoodKind(@RequestBody String foodKindName) {
-		System.out.println(foodKindName);
-		foodKindService.addFoodKind(foodKindName);
+	@PostMapping("/order/kinds")
+	public ResponseEntity<List<FoodKindEntity>> addFoodKind(@RequestBody FoodKindDto foodKindDto) {
+		foodKindService.addFoodKind(foodKindDto.getFoodKindName());
 		return ResponseEntity.ok(foodKindService.getAllFoodKind());
 	}
 	

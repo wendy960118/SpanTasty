@@ -14,9 +14,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.eatspan.SpanTasty.entity.order.FoodKindEntity;
+import com.eatspan.SpanTasty.entity.order.MenuEntity;
 import com.eatspan.SpanTasty.entity.order.TogoItemEntity;
 import com.eatspan.SpanTasty.entity.order.TogoItemId;
+import com.eatspan.SpanTasty.service.order.FoodKindService;
+import com.eatspan.SpanTasty.service.order.MenuService;
 import com.eatspan.SpanTasty.service.order.TogoItemService;
 
 @Controller
@@ -24,34 +29,42 @@ import com.eatspan.SpanTasty.service.order.TogoItemService;
 public class TogoItemController {
 	
 	@Autowired
+	private MenuService menuService;
+	
+	@Autowired
 	private TogoItemService togoItemService;
+	
+	@Autowired
+	private FoodKindService foodKindService;
 	
 	@GetMapping("/togo/{togoId}/items")
 	public String getTogoItemPage(@PathVariable Integer togoId, Model model) {
 		List<TogoItemEntity> togoItems = togoItemService.getAllTogoItemByTogoId(togoId);
 		if (togoItems.isEmpty()) {
 			model.addAttribute("message", "未找到對應的訂單項目");
-	        return "spantasty/order/getTogoItems";
+		}else {
+			List<FoodKindEntity> foodKindList = foodKindService.getAllFoodKind();
+			List<MenuEntity> foodList = menuService.getAllFoods();
+			model.addAttribute("foodKindList", foodKindList);
+			model.addAttribute("foodList", foodList);
+			model.addAttribute("togoItems", togoItems);
 		}
-		for (TogoItemEntity item : togoItems) {
-		    System.out.println(item.getMenu().getFoodName());
-		    System.out.println(item.getMenu().getFoodPrice());
-		}
-		model.addAttribute("togoItems", togoItems);
 		return "spantasty/order/getTogoItems";
 	}
 	
-	//togoId查詢 
-//	@GetMapping("/togo/{togoId}/items")
-//	public ResponseEntity<List<TogoItemEntity>> getTogoItemsById(Integer togoId) {
-//		List<TogoItemEntity> togoItems = togoItemService.getAllTogoItemByTogoId(togoId);
-//		if (togoItems.isEmpty()) {
-//			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//		}
-//		return ResponseEntity.ok(togoItems);
-//	}
+	//ajax togoId查詢 
+	@GetMapping("/togo/items/{togoId}")
+	@ResponseBody
+	public ResponseEntity<List<TogoItemEntity>> getTogoItemsById(@PathVariable Integer togoId) {
+		List<TogoItemEntity> togoItems = togoItemService.getAllTogoItemByTogoId(togoId);
+		if (togoItems.isEmpty()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		return ResponseEntity.ok(togoItems);
+	}
 	
 	@PostMapping("/togo/{togoId}/items")
+	@ResponseBody
 	public ResponseEntity<List<TogoItemEntity>> addTogoItems(
 			@RequestBody List<TogoItemEntity> newTogoItems,
 			@PathVariable Integer togoId) {
