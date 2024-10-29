@@ -186,13 +186,13 @@
 		 <div class="row row-70 justify-content-center">
         <div class="col-12">
           <!-- Quote Creative-->
-          <article class="quote-creative"><a class="quote-creative-figure" href="#"><img class="img-circles"
+          <article class="quote-creative"><a class="quote-creative-figure" href="#" id="demoBtn"><img class="img-circles"
                 src="/SpanTasty/starcups/images/point/pointlogo.jpg" alt="" width="87" height="87" /></a>
             <div class="quote-creative-text">
               <form class="rd-form rd-mailform rd-form-inline rd-form-coupon quote-creative-cite">
                 <div class="form-wrap">
                   <input class="form-input form-input-inverse" id="coupon-code" type="text" name="email">
-                  <label class="form-label" for="coupon-code">輸入優惠代碼</label>
+                  <label class="form-label" for="coupon-code" id="coupon-label">輸入優惠代碼</label>
                 </div>
                 <div class="form-button">
                   <button class="button button-secondary button-pipaluk" type="submit" id="addCoupon">新增優惠券</button>
@@ -372,9 +372,15 @@
           })
         })
 
+    //demo
+		document.getElementById('demoBtn').addEventListener('click',function(e){
+			e.preventDefault()
+			document.getElementById('coupon-code').value="ANNIVCAKE"
+			document.getElementById('coupon-label').innerHTML=""
+		})
 
 
-
+    
 
 
        document.addEventListener('click', function (event) {
@@ -412,7 +418,7 @@
                 <li class="active">優惠代碼 : ${data.coupon.couponCode}</li>
                 <li class="active">優惠條件 : ${data.coupon.rulesDescription}</li>
                 <li class="${data.coupon.minOrderDiscount ? 'active' : ''}">低消 : $${data.coupon.minOrderDiscount ? data.coupon.minOrderDiscount : '不適用'}</li>
-                <li class="${data.couponperMaxCoupon ? 'active' : ''}">最高折抵 : $${data.coupon.perMaxCoupon ? data.coupon.perMaxCoupon : '不適用'}</li>
+                <li class="${data.couponperMaxCoupon ? 'active' : ''}">最高折抵 : $${data.coupon.maxDiscount ? data.coupon.maxDiscount : '不適用'}</li>
                 ${getTagTextFinal(data)}`
 
               var myModal = new bootstrap.Modal(document.getElementById('exampleModal'));

@@ -1,5 +1,7 @@
 package com.eatspan.SpanTasty.dto.discount;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -8,9 +10,12 @@ import lombok.NoArgsConstructor;
 public class CouponDistributeDTO {
 	
 	private Integer couponId;
+	@JsonIgnore
 	private String selectOption;
 	private Integer memberId;
+	@JsonIgnore
 	private String excuteStatus;
+	@JsonIgnore
 	private Integer maxCoupon;
 	private Integer receivedAmount;
 	private String distributeStatus;//for發放

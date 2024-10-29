@@ -170,6 +170,7 @@
                             <div class="form-floating mt-2">
                                 <textarea name="setDescription" th:text="${pointSet.setDescription}" class="form-control" placeholder="Leave a comment here" id="pointTextArea" style="height: 250px"></textarea>
                             </div>
+                            <i class="fa-regular fa-note-sticky ms-1 me-1" id="demo"></i>
                         </blockquote>
                         </div>
                     </div>
@@ -324,6 +325,11 @@ document.getElementById('preview').addEventListener('click',function(e){
         var myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
         myModal.show();
     })
+})
+
+//demo
+document.getElementById('demo').addEventListener('click',function(){
+    document.getElementById('pointTextArea').value="每次消費領 100 元即可累積 2 點 今年購得的點數到期日為隔年 12/31 就截止到期"
 })
 
 

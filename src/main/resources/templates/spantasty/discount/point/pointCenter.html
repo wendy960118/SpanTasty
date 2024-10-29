@@ -121,7 +121,7 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                       <span>會員點數紀錄</span>
                       <div>
-                        <button id="add" class="btn btn-info me-md- 2" data-bs-toggle="modal" data-bs-target="#staticBackdrop2"  type="button">新增點數</button>
+                        <!--  <button id="add" class="btn btn-info me-md- 2" data-bs-toggle="modal" data-bs-target="#staticBackdrop2"  type="button">新增點數</button>-->
                         <button id="batchAdd" class="btn btn-outline-primary me-md-2" type="button">新增點數<i class="fa-regular fa-circle-question ms-1 fa-sm" style="color: #74C0FC;"></i></button>
                       </div>
                     </div>
@@ -202,8 +202,8 @@
               </div>
               <!-- 1 -->
               <div class="row mt-2">
-                <div class="col-6">調整方式</div>  
-                <div class="col-6">
+                <div class="col-4">調整方式</div>  
+                <div class="col-8">
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="plusOrMinus" id="inlineRadio1" value="plus">
                     <label class="form-check-label" for="inlineRadio1">新增點數</label>
@@ -216,28 +216,28 @@
               </div>
               <!-- 2 -->
               <div class="row mt-2 align-items-center">
-                <div class="col">點數數量</div>
-                <div class="col"><input type="text" name="pointChange" class="form-control"></div>
+                <div class="col-4">點數數量</div>
+                <div class="col-8"><input type="text" name="pointChange" class="form-control"></div>
               </div>
               <!-- 3 -->
               <div class="row mt-2">
-                <div class="col align-items-center">開始日</div>
-                <div class="col"><input type="date" name="createDate" class="form-control"></div>
+                <div class="col-4 align-items-center">開始日</div>
+                <div class="col-8"><input type="date" name="createDate" class="form-control"></div>
               </div>
               <!-- 4 -->
               <div class="row mt-2">
-                <div class="col align-items-center">到期日*</div>
-                <div class="col"><input type="text" name="pointUsage" class="form-control" disabled placeholder="系統自動產生"></div>
+                <div class="col-4 align-items-center">到期日*</div>
+                <div class="col-8"><input type="text" name="pointUsage" class="form-control" disabled placeholder="系統自動產生"></div>
               </div>
               <!-- 5 -->
               <div class="row mt-2">
-                <div class="col align-items-center">交易來源*</div>
-                <div class="col"><input type="text" name="transactionId" class="form-control" placeholder="訂單訂餐編號、其他原因"></div>
+                <div class="col-4 align-items-center">訂單 / 系統編號</div>
+                <div class="col-8"><input type="text" name="transactionId" class="form-control" placeholder="訂單訂餐編號、其他原因"></div>
               </div>
               <!-- 6 -->
               <div class="row mt-2">
-                <div class="col align-items-center">交易類型</div>
-                <div class="col">
+                <div class="col-4 align-items-center">交易類型</div>
+                <div class="col-8">
                   <select class="form-select" name="transactionType">
                     <option value="商城">商城</option>
                     <option value="訂餐">訂餐</option>
@@ -247,7 +247,7 @@
               </div>
               <!-- 7 -->
               <div class="row mt-2">
-                <div class="col align-items-center">人工調整原因*</div>
+                <div class="col-4 align-items-center">人工調整原因</div>
               </div>
               <div class="row mt-1">
                 <div class="col"><input type="text" name="transactionDescription" class="form-control " placeholder="只會顯示在管理後台"></div>

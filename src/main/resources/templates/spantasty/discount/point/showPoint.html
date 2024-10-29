@@ -186,7 +186,7 @@
                 </div>
                 <!-- 4 -->
                 <div class="row mt-2 align-items-center">
-                  <div class="col-4 align-items-center">到期日*</div>
+                  <div class="col-4 align-items-center">到期日</div>
                   <div class="col-8"><input type="date" id="eddit_expiryDate" name="expiryDate" class="form-control" ></div>
                 </div>
                 <!-- 5 -->
@@ -196,12 +196,12 @@
                 </div>
                 <!-- 6 -->
                 <div class="row mt-2 align-items-center">
-                  <div class="col-4 align-items-center">交易來源*</div>
+                  <div class="col-4 align-items-center">交易來源</div>
                   <div class="col-8"><input type="text" id="eddit_transactionId" name="transactionId" class="form-control" placeholder="訂單訂餐編號、其他原因" required></div>
                 </div>
                 <!-- 7 -->
                 <div class="row mt-2">
-                  <div class="col-4 align-items-center">交易類型</div>
+                  <div class="col-4 align-items-center">訂單 / 系統編號</div>
                   <div class="col-8">
                     <select class="form-select" id="eddit_transactionType" name="transactionType">
                       <option value="商城">商城</option>
@@ -212,7 +212,7 @@
                 </div>
                 <!-- 7 -->
                 <div class="row mt-2">
-                  <div class="col align-items-center">人工調整原因*</div>
+                  <div class="col align-items-center" >人工調整原因*</div>
                 </div>
                 <div class="row mt-1">
                   <div class="col"><input type="text" id="eddit_transactionDescription" name="transactionDescription" class="form-control " placeholder="只會顯示在管理後台" required></div>
@@ -220,6 +220,7 @@
                 <!--------- 內容 End--------->
               </div>
               <div class="modal-footer">
+                <button type="button" class="btn btn-info" id="demoBtn">一鍵輸入</button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
                 <button id="eddit_submit" type="submit" class="btn btn-primary">確定</button>
               </form>
@@ -325,6 +326,12 @@
 
 
 		});
+
+    //demo
+    document.getElementById('demoBtn').addEventListener('click',function(){
+      document.getElementById('eddit_transactionDescription').value="點數活動截止時間調整"
+    })
+
 
       </script>
 
