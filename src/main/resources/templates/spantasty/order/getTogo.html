@@ -38,11 +38,10 @@
                             <th scope="col">訂購人電話</th>
                             <th scope="col">訂單金額</th>
                             <th scope="col">成立時間</th>
-                            <th scope="col">租借單號</th>
                             <th scope="col">訂單狀態</th>
                             <th scope="col">餐廳名稱</th>
                             <th scope="col">訂單備註</th>
-                            <th scope="col">查看明細</th>
+                            <th scope="col">查看</th>
                             <th scope="col">修改</th>
                             <th scope="col">刪除</th>
                         </tr>
@@ -53,7 +52,86 @@
                 </table>
             </div>
             <div class="col-12 d-flex justify-content-center">
-            	<a href="http://localhost:8080/SpanTasty/order/togo" class="btn btn-secondary ms-2">返回全部</a>
+                <a href="http://localhost:8080/SpanTasty/order/togo" class="btn btn-secondary ms-2">返回全部</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- modal for details -->
+    <div class="modal fade" id="showDetailsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        role="dialog" aria-labelledby="showDetailsModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="showDetailsModalLabel"># 訂單明細</h5>
+                    <button type="button" class="btn-close" id="closeDetailsBtn" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-secondary table-striped table-hover text-center">
+                        <thead class="thead-light">
+                            <tr>
+
+                                <th scope="col">餐點品項</th>
+                                <th scope="col">單價</th>
+                                <th scope="col">數量</th>
+                                <th scope="col">小計</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detailsTableBody">
+                            <!-- 查詢結果將插入在這裡 -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" data-bs-target="#addTogoItemModal"
+                        data-bs-toggle="modal">新增明細</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 新增明細modal -->
+    <div class="modal fade" id="addTogoItemModal" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true"
+        aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="addTogoItemModalLabel">新增明細</h1>
+                    <input type="hidden" id="hiddenTogoId" name="togoId">
+                    <button type="button" class="btn-close" id="closeAddItemsBtn" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addItemForm">
+                        <div class="form-group mb-3">
+                            <label for="foodKindId" class="form-label">餐點類別</label>
+                            <select class="form-select" name="foodKindId" id="foodKindId" onchange="getFoodItems()"
+                                required>
+                                <option value="" selected>請選擇</option>
+                                <th:block th:each="foodKind : ${foodKindList}">
+                                    <option th:value="${foodKind.foodKindId}" th:text="${foodKind.foodKindName}">
+                                    </option>
+                                </th:block>
+                            </select>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="foodId" class="form-label">餐點品項</label>
+                            <select class="form-select" id="foodId" name="foodId" required>
+                                <option value="" selected>請選擇</option>
+                                <!-- 動態顯示餐點品項 -->
+                            </select>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="amount">數量</label>
+                            <input type="text" class="form-control" id="amount" placeholder="輸入數量" required>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" id="saveItemsBtn">新增</button>
+                            <button type="button" class="btn btn-secondary" id="returnItemsBtn" data-bs-target="#showDetailsModal"
+                                data-bs-toggle="modal">返回</button>
+                        </div>
+                    </form>
+                </div>
+
             </div>
         </div>
     </div>
@@ -91,10 +169,6 @@
                             </select>
                         </div>
                         <div class="form-group mb-3">
-                            <label for="rentid">租借單號</label>
-                            <input type="text" class="form-control" id="rentId" placeholder="輸入租借單號">
-                        </div>
-                        <div class="form-group mb-3">
                             <label for="togoMemo">備註</label>
                             <textarea class="form-control" id="togoMemo" placeholder="輸入備註"></textarea>
                         </div>
@@ -122,7 +196,47 @@
 
         })
 
-         // id 查詢
+        //關閉明細新增modal取得最新明細
+        document.getElementById("returnItemsBtn").addEventListener("click", function () {
+            console.log("返回明細")
+            const togoId = document.getElementById("hiddenTogoId").value;
+            console.log("返回"+togoId)
+            showTogoItems(togoId);
+
+        })
+
+        //關閉明細新增modal取得最新訂單資訊
+        document.getElementById("closeAddItemsBtn").addEventListener("click", function () {
+            console.log("返回全部訂單2");
+            const togoId = document.getElementById("idSearch").value;
+            const tgPhone = document.getElementById("phoneSearch").value;
+
+            if (togoId) {
+                console.log("id被調用 "+togoId)
+                getTogoById();
+            } else if (tgPhone) {
+                console.log("phone被調用 "+tgPhone)
+                getTogoByPhone();
+            }
+        })
+
+        //關閉明細框取得最新訂單資訊
+        document.getElementById("closeDetailsBtn").addEventListener("click", function () {
+            console.log("返回全部訂單1");
+            const togoId = document.getElementById("idSearch").value;
+            const tgPhone = document.getElementById("phoneSearch").value;
+
+            if (togoId) {
+                console.log("id被調用 "+togoId)
+                getTogoById();
+            } else if (tgPhone) {
+                console.log("phone被調用 "+tgPhone)
+                getTogoByPhone();
+            }
+        })
+
+
+        // id 查詢
         function getTogoById() {
             const togoId = document.getElementById("idSearch").value;
             // 檢查是否為空以及是否符合數字格式
@@ -151,7 +265,6 @@
                     const row = document.createElement("tr");
                     row.setAttribute("data-id", togoData.togoId);
                     const memberId = togoData.memberId !== null ? togoData.memberId : '';
-                    const rentId = togoData.rentId !== null ? togoData.rentId : '';
                     const togoMemo = togoData.togoMemo !== null ? togoData.togoMemo : '';
 
                     row.innerHTML = `
@@ -161,7 +274,6 @@
                         <td>${togoData.tgPhone}</td>
                         <td>${togoData.totalPrice}</td>
                         <td>${togoData.formattedDate}</td>
-                        <td>${togoData.rentId || ''}</td>
                         <td>${getTogoStatusBadge(togoData.togoStatus)}</td>
                         <td>${togoData.restaurant.restaurantName}</td>
                         <td>${togoData.togoMemo || ''}</td>
@@ -216,7 +328,6 @@
                     // 動態生成表格內容
 
                     const memberId = togoList.memberId !== null ? togoList.memberId : '';
-                    const rentId = togoList.rentId !== null ? togoList.rentId : '';
                     const togoMemo = togoList.togoMemo !== null ? togoList.togoMemo : '';
 
                     togoList.forEach(togoData => {
@@ -229,7 +340,6 @@
                         <td>${togoData.tgPhone}</td>
                         <td>${togoData.totalPrice}</td>
                         <td>${togoData.formattedDate}</td>
-                        <td>${togoData.rentId || ''}</td>
                         <td>${getTogoStatusBadge(togoData.togoStatus)}</td>
                         <td>${togoData.restaurant.restaurantName}</td>
                         <td>${togoData.togoMemo || ''}</td>
@@ -282,7 +392,6 @@
                     document.getElementById('tgName').value = togoData.tgName;
                     document.getElementById('tgPhone').value = togoData.tgPhone;
                     document.getElementById('togoStatus').value = togoData.togoStatus;
-                    document.getElementById('rentId').value = togoData.rentId;
                     document.getElementById('togoMemo').value = togoData.togoMemo;
 
                     // 顯示modal
@@ -308,7 +417,6 @@
                 tgName: document.getElementById('tgName').value,
                 tgPhone: document.getElementById('tgPhone').value,
                 togoStatus: document.getElementById('togoStatus').value,
-                rentId: document.getElementById('rentId').value,
                 togoMemo: document.getElementById('togoMemo').value
             };
 
@@ -339,7 +447,6 @@
                     const togoData = response.data;
                     const row = document.querySelector(`tr[data-id="${togoId}"]`);
                     const memberId = togoData.memberId !== null ? togoData.memberId : '';
-                    const rentId = togoData.rentId !== null ? togoData.rentId : '';
                     const togoMemo = togoData.togoMemo !== null ? togoData.togoMemo : '';
                     const totalPrice = togoData.totalPrice !== null ? togoData.totalPrice : '';
 
@@ -351,7 +458,6 @@
                     <td>${togoData.tgPhone}</td>
                     <td>${togoData.totalPrice || ''}</td>
                     <td>${togoData.formattedDate}</td>
-                    <td>${togoData.rentId || ''}</td>
                     <td>${getTogoStatusBadge(togoData.togoStatus)}</td>
                     <td>${togoData.restaurant.restaurantName}</td>
                     <td>${togoData.togoMemo || ''}</td>
@@ -366,6 +472,108 @@
                 });
         }
 
+        // 查詢訂單明細
+        // function showTogoItems(togoId) {
+        //     window.location.href = `http://localhost:8080/SpanTasty/order/togo/${togoId}/items`;
+        // }
+
+        function showTogoItems(togoId) {
+            console.log("showdetail" + togoId)
+
+            // 更新 modal 標題
+            const modalTitle = document.getElementById("showDetailsModalLabel");
+            modalTitle.textContent = `#${togoId} 訂單明細`;
+
+            // 設置隱藏輸入框中的 togoId
+            document.getElementById("hiddenTogoId").value = togoId;
+            axios.get(`/SpanTasty/order/togo/items/${togoId}`)
+                .then(response => {
+                    // 成功時的處理邏輯
+                    console.log("取得訂單詳情成功", response.data);
+                    const togoItems = response.data;
+                    const detailsTableBody = document.getElementById("detailsTableBody");
+                    // 清空之前的內容
+                    detailsTableBody.innerHTML = "";
+                    togoItems.forEach(item => {
+                        const row = `
+                        <tr>
+                            
+                            <td>${item.menu.foodName}</td>
+                            <td>${item.menu.foodPrice}</td>
+                            <td>${item.amount}</td>
+                            <td>${item.togoItemPrice}</td>                          
+                        </tr>
+                    `;
+                        detailsTableBody.innerHTML += row;
+                    })
+                    $('#showDetailsModal').modal('show');
+                })
+                .catch(error => {
+                    // 錯誤時的處理邏輯
+                    console.error("取得訂單詳情失敗", error);
+                    alert("取得訂單詳情失敗");
+                });
+        }
+
+        function getFoodItems() {
+            const foodKindId = document.getElementById("foodKindId").value;
+            const foodNameSelect = document.getElementById("foodId");
+            console.log(foodNameSelect)
+            // 清空食物品項的選擇框
+            foodNameSelect.innerHTML = '<option value="" selected>請選擇</option>';
+
+            if (foodKindId) {
+                axios.get(`/SpanTasty/order/menu/kinds/${foodKindId}`)
+                    .then(response => {
+                        const foodItems = response.data;
+                        console.log(foodItems)
+
+                        foodItems.forEach(item => {
+                            const option = document.createElement("option");
+                            option.value = item.foodId; // 假設食物的 ID 是 foodId
+                            option.textContent = item.foodName; // 假設食物的名稱是 foodName
+                            foodNameSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error("獲取食物品項失敗", error);
+                        alert("獲取食物品項失敗");
+                    });
+            }
+        }
+
+        // 新增明細
+        document.getElementById("addItemForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const togoId = document.getElementById("hiddenTogoId").value;
+
+            const newTogoItems = [{
+                togoItemId: {
+                    togoId: togoId,
+                    foodId: document.getElementById("foodId").value
+                },
+                amount: document.getElementById("amount").value
+            }];
+
+            axios.post(`http://localhost:8080/SpanTasty/order/togo/${togoId}/items`, newTogoItems)
+                .then(response => {
+                    console.log("新增訂單項目成功:", response.data);
+                    alert("新增成功");
+                    // 更新頁面上的訂單項目資料
+                    const updatedTogoItems = response.data;
+                    // 清空表單欄位
+                    document.getElementById("foodKindId").value = "";
+                    document.getElementById("foodId").innerHTML = `<option value="" selected>請選擇</option>`; // 重置選項
+                    document.getElementById("amount").value = "";                    
+                })
+                .catch(error => {
+                    console.log({ error });
+                    console.error("新增訂單項目失敗:", error);
+                    alert("新增訂單項目失敗");
+                });
+        })
+
         //顯示togo狀態
         function getTogoStatusBadge(status) {
             if (status === 1) {
@@ -375,11 +583,6 @@
             } else if (status === 3) {
                 return '<span class="badge bg-danger">已取消</span>';
             }
-        }
-
-        // 查詢訂單明細
-        function showTogoItems(togoId) {
-            window.location.href = `http://localhost:8080/SpanTasty/order/togo/${togoId}/items`;
         }
 
     </script>

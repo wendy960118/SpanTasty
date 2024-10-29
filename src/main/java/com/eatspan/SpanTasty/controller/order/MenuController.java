@@ -72,7 +72,9 @@ public class MenuController {
 	@GetMapping("/menu")
 	public String getAllMenu(Model model) {
 		List<MenuEntity> foodList = menuService.getAllFoods();
+		List<FoodKindEntity> foodKindList = foodKindService.getAllFoodKind();
 		model.addAttribute("foodList", foodList);
+		model.addAttribute("foodKindList", foodKindList);
 		return "spantasty/order/getAllMenu";
 	}
 	
@@ -97,6 +99,12 @@ public class MenuController {
 	@ResponseBody
 	public ResponseEntity<List<MenuEntity>> getFoodsByKind(@PathVariable Integer foodKindId) {
 		return ResponseEntity.ok(menuService.getFoodsByKind(foodKindId));
+	}
+	
+	@GetMapping("/menu/kinds/all")
+	@ResponseBody
+	public ResponseEntity<List<MenuEntity>> getAllFoods() {
+	    return ResponseEntity.ok(menuService.getAllFoods());
 	}
 	
 	@PostMapping("/menu")

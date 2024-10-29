@@ -38,7 +38,6 @@
                             <th scope="col">餐點圖片</th>
                             <th scope="col">餐點價格</th>
                             <th scope="col">餐點種類</th>
-                            <th scope="col">庫存</th>
                             <th scope="col">描述</th>
                             <th scope="col">狀態</th>
                             <th scope="col">修改</th>
@@ -57,13 +56,13 @@
     </div>
 
     <!-- modal for update -->
-    <div class="modal fade" id="updateMenuModal" tabindex="-1" role="dialog" aria-labelledby="updateMenuModalLabel"
+    <div class="modal fade" id="updateMenuModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="updateMenuModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="updateMenuModalLabel">更新餐點資訊</h5>
-
+                    <button type="button" class="btn-close" id="closeUpdateBtn" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <!-- 更新的表單 -->
@@ -90,10 +89,6 @@
                                     </option>
                                 </th:block>
                             </select>
-                        </div>
-                        <div class="form-group mb-3">
-                            <label for="foodStock">庫存</label>
-                            <input type="text" class="form-control" id="foodStock" name="foodStock" placeholder="輸入庫存">
                         </div>
                         <div class="form-group mb-3">
                             <label for="foodStatus">狀態</label>
@@ -160,7 +155,6 @@
 
                     const row = document.createElement("tr");
                     row.setAttribute("data-id", menuData.foodId);
-                    const foodStock = menuData.foodStock !== null ? menuData.foodStock : '';
                     const foodDescription = menuData.foodDescription !== null ? menuData.foodDescription : '';
 
                     row.innerHTML = `
@@ -171,7 +165,6 @@
                         </td>
                         <td>${menuData.foodPrice}</td>
                         <td>${menuData.foodKind.foodKindName}</td>
-                        <td>${menuData.foodStock || ''}</td>
                         <td>${menuData.foodDescription || ''}</td>
                         <td>${getFoodStatusBadge(menuData.foodStatus)}</td>
                         <td><button class="btn btn-primary" onclick="showUpdateModal(${menuData.foodId})">修改</button></td>
@@ -214,7 +207,6 @@
                     tbody.innerHTML = "";
 
                     // 動態生成表格內容
-                    const foodStock = menuList.foodStock !== null ? menuList.foodStock : '';
                     const foodDescription = menuList.foodDescription !== null ? menuList.foodDescription : '';
 
                     menuList.forEach(menuData => {
@@ -228,7 +220,6 @@
                         </td>
                         <td>${menuData.foodPrice}</td>
                         <td>${menuData.foodKind.foodKindName}</td>
-                        <td>${menuData.foodStock || ''}</td>
                         <td>${menuData.foodDescription || ''}</td>
                         <td>${getFoodStatusBadge(menuData.foodStatus)}</td>
                         <td><button class="btn btn-primary" onclick="showUpdateModal(${menuData.foodId})">修改</button></td>
@@ -262,7 +253,6 @@
                     document.getElementById('foodName').value = foodData.foodName;
                     document.getElementById('foodPrice').value = foodData.foodPrice;
                     document.getElementById('foodKindId').value = foodData.foodKindId; 
-                    document.getElementById('foodStock').value = foodData.foodStock;
                     document.getElementById('foodStatus').value = foodData.foodStatus;
                     document.getElementById('foodDescription').value = foodData.foodDescription;
 
@@ -321,7 +311,6 @@
                 .then(function (response) {
                     const menuData = response.data;
                     const row = document.querySelector(`tr[data-id="${foodId}"]`);
-                    const foodStock = menuData.foodStock !== null ? menuData.foodStock : '';
                     const foodDescription = menuData.foodDescription !== null ? menuData.foodDescription : '';
 
                     if (row) {
@@ -333,7 +322,6 @@
                         </td>
                         <td>${menuData.foodPrice}</td>
                         <td>${menuData.foodKind.foodKindName}</td>
-                        <td>${menuData.foodStock || ''}</td>
                         <td>${menuData.foodDescription || ''}</td>
                         <td>${getFoodStatusBadge(menuData.foodStatus)}</td>
                         <td><button class="btn btn-primary" onclick="showUpdateModal(${menuData.foodId})">修改</button></td>

@@ -19,8 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.eatspan.SpanTasty.dto.order.TogoDto;
+import com.eatspan.SpanTasty.entity.order.FoodKindEntity;
 import com.eatspan.SpanTasty.entity.order.TogoEntity;
 import com.eatspan.SpanTasty.entity.reservation.Restaurant;
+import com.eatspan.SpanTasty.service.order.FoodKindService;
 import com.eatspan.SpanTasty.service.order.TogoService;
 import com.eatspan.SpanTasty.service.reservation.RestaurantService;
 
@@ -30,6 +32,9 @@ public class TogoController {
 	
 	@Autowired
 	private TogoService togoService;
+	
+	@Autowired
+	private FoodKindService foodKindService;
 	
 	@Autowired
 	private RestaurantService restaurantService;
@@ -62,7 +67,9 @@ public class TogoController {
 //	}
 	
 	@GetMapping("/togo/get")
-	public String getTogoPage() {
+	public String getTogoPage(Model model) {
+		List<FoodKindEntity> foodKindList = foodKindService.getAllFoodKind();
+		model.addAttribute("foodKindList", foodKindList);
 		return "spantasty/order/getTogo";
 	}
 	
