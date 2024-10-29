@@ -49,6 +49,12 @@
         .cantUse {
           filter: opacity(50%) grayscale(100%);
         }
+        .custom-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color:#976f55"
+        }
     </style>
 </head>
 <body>
@@ -224,6 +230,9 @@
           	<form th:action= "@{/StarCups/ecpayCheckout(shoppingId=${session['shoppingId']})}" method="post" id="checkoutForm">
           		<button type="submit" class="button button-secondary button-pipaluk" id="checkoutBtn">Proceed to checkout</button>
           	</form>
+			<form th:action="@{/StarCups/orderConfirmP(shoppingId=${session['shoppingId']})}" method="post" id="checkoutForm">
+			    <button type="submit" class="custom-button" id="checkoutBtn"><i class="fa-solid fa-star" style="color: #976f55;" id="confirmOrderIcon"></i></button>
+			</form>
        	 </div>
       </section>
       

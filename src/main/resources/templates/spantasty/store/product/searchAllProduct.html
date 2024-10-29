@@ -30,6 +30,7 @@
         th {
             background-color: #f2f2f2; 
             font-weight: bold;
+            white-space: nowrap !important;
         }
         tr:nth-child(even) {
             background-color: #f9f9f9; 
@@ -62,7 +63,7 @@
 <body>
 <div th:replace="~{spantasty/display/navbar}"></div>
 <div class="content">
-    <div class="container mt-5">
+    <div class="container mt-5 ">
         <div class="row justify-content-center">
             <div class="col-11">
                 <div class="card bg-light text-dark shadow">
@@ -73,10 +74,10 @@
                         </a>
                     </div>
                     <div class="table-responsive">
-                        <table id="productsTable" class="table table-striped table-hover text-center">
+                        <table id="productsTable" class="table table-striped table-hover text-center ">
                             <thead>
                                 <tr style="background-color: #9D9D9D">
-                                    <th style="text-align:center">商品編號</th>
+                                    <th style="text-align:center ">商品編號</th>
                                     <th style="text-align:center">商品名稱</th>
                                     <th style="text-align:center">商品金額</th>
                                     <th style="text-align:center">商品照片</th>
@@ -97,10 +98,8 @@
                                         <td><img th:src="${product.productPicture}" alt="No Image" width="100" height="100"/></td>
                                         <td th:text="${product.productStock}"></td>
                                         <td>
-                                            <span th:if="${product.productStatus == 1}">已上架</span>
-                                            <span th:if="${product.productStatus == 2}">已停售</span>
                                             <div class="form-check form-switch" style="display:inline-block; margin-left: 10px;">
-                                                <input class="form-check-input" type="checkbox" role="switch" id="statusSwitch_${product.productId}" th:checked="${product.productStatus == 1}" data-product-id="${product.productId}">
+                                                <input class="form-check-input" type="checkbox" role="switch" id="statusSwitch_${product.productId}" th:checked="${product.productStatus == 1}" th:data-product-id="${product.productId}">
                                                 <label class="form-check-label" for="statusSwitch_${product.productId}"></label>
                                             </div>
                                         </td>
@@ -148,10 +147,10 @@
         });
 
         // 監聽開關變更事件
-        $('.form-check-input').change(function() {
-            const productId = $(this).data('product-id'); // 使用 jQuery 獲取 productId
-            console.log('Product ID:', productId); // 輸出 productId
-            const newStatus = this.checked ? 1 : 2; // 1 表示上架，2 表示下架
+	    $('.form-check-input').change(function() {
+	        const productId = this.getAttribute('data-product-id'); 
+	        console.log('Product ID:', productId); // 輸出 productId
+	        const newStatus = this.checked ? 1 : 2; // 1 表示上架，2 表示下架
 
             // 發送 AJAX 請求更新商品狀態
             axios.put(`http://localhost:8080/SpanTasty/product/updateStatus/${productId}`, null, {
