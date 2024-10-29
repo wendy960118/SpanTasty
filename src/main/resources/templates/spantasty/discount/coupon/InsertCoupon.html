@@ -92,6 +92,16 @@
                             <!--  -->
                             <div class="row mb-3 me-auto">
                                 <div class="col-3">
+                                    優惠描述
+                                </div>
+                                <div class="col-9">
+                                    <input class="form-control" name="rulesDescription" type="text" placeholder=""
+                                        aria-label="default input example">
+                                </div>
+                            </div>
+                            <!--  -->
+                            <div class="row mb-3 me-auto">
+                                <div class="col-3">
                                     折扣種類
                                 </div>
                                 <div class="col-9">
@@ -113,16 +123,7 @@
                                         aria-label="default input example">
                                 </div>
                             </div>
-                            <!--  -->
-                            <div class="row mb-3 me-auto">
-                                <div class="col-3">
-                                    優惠描述
-                                </div>
-                                <div class="col-9">
-                                    <input class="form-control" name="rulesDescription" type="text" placeholder=""
-                                        aria-label="default input example">
-                                </div>
-                            </div>
+                           
 
                         </div>
                     </div>
@@ -270,6 +271,23 @@
     <script>
         document.getElementById('backBtn').addEventListener('click',()=>{
             window.location.href='/SpanTasty/coupon'
+        })
+
+
+        //one key enter 
+        document.getElementById('demo').addEventListener('click',function(){
+            document.querySelector('[name="couponCode"]').value='ANNIVCAKE'
+            document.querySelector('[name="couponDescription"]').value='歡慶三週年甜點任選八折'
+            document.querySelector('[name="couponStartDate"]').value='2024-10-01'
+            document.querySelector('[name="couponEndDate"]').value='2024-12-31'
+            document.querySelector('[name="couponStatus"]').value='上架'
+            document.querySelector('[name="discountType"]').value='百分比'
+            document.querySelector('[name="discount"]').value='80'
+            document.querySelector('[name="rulesDescription"]').value='訂餐甜點品項八折'
+            document.querySelector('[name="maxCoupon"]').value='100'
+            document.querySelector('[name="perMaxCoupon"]').value='2'
+            document.querySelector('[name="minOrderDiscount"]').value='100'
+            document.querySelector('[name="maxDiscount"]').value=''
         })
     </script>
 

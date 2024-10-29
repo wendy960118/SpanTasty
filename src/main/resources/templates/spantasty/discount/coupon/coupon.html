@@ -95,6 +95,9 @@
 									<input id="scheduleName" type="text" class="form-control" placeholder="請輸入發送原因、活動名稱等" required>
 								</div>
 							</div>
+							<div class="col-1 pt-2">
+								<i class="fa-regular fa-note-sticky ms-1 me-1 " id="demo"></i>
+							</div>
 							<div class="col-2">
 								<button id="scheduleBtn" class="btn btn-outline-primary me-md-2" type="button"><i class="fa-solid fa-list-check"></i>&nbsp;發送排程管理</button>
 							</div>
@@ -468,6 +471,11 @@
        document.getElementById('btnCancel').addEventListener('click',function(){
     	   window.location.reload();
        })
+
+	   //demo
+	   document.getElementById('demo').addEventListener('click',()=>{
+			document.getElementById('scheduleName').value="歡慶starcups三周年"
+	   })
 	</script>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.3/xlsx.full.min.js"></script>    <!--  EXCEL CDN -->
