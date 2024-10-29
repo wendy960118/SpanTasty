@@ -97,7 +97,7 @@ public class TablewareService {
 	
 	// 查詢所有餐具(Page)
 	public Page<Tableware> findAllTablewarePages(Integer page){
-		Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.ASC, "tablewareId");
+		Pageable pageable = PageRequest.of(page-1, 10, Sort.Direction.DESC, "tablewareId");
  		return tablewareRepository.findAll(pageable);
 	}
 	

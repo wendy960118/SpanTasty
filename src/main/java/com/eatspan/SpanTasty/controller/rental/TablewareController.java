@@ -123,7 +123,7 @@ public class TablewareController {
 		// 遍歷所有餐廳，對沒有輸入的庫存設為 0
 		for (Restaurant restaurant : allRestaurants) {
 		    Integer restaurantId = restaurant.getRestaurantId();
-		    Integer stock = restaurantStockMap.getOrDefault(restaurantId, 0);  // 如果沒有輸入庫存，則預設為 0
+		    Integer stock = restaurantStockMap.getOrDefault(restaurantId, 10);  // 如果沒有輸入庫存，則預設為 0
 		    System.out.println("餐廳ID: " + restaurantId + ", 庫存: " + stock);
 		    TablewareStock tablewareStock = new TablewareStock();
 		    tablewareStock.setRestaurantId(restaurantId);

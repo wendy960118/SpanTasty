@@ -3,18 +3,19 @@
 <head>
 <title>Order Online</title>
 <meta name="format-detection" content="telephone=no">
-<meta name="viewport"
-  content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta charset="utf-8">
 <link rel="icon" href="images/favicon.ico" type="image/x-icon">
 <!-- Stylesheets-->
 <!-- 更改樣式 -->
-<link rel="stylesheet" type="text/css"
-  href="https://fonts.googleapis.com/css?family=Poppins:400,500%7CTeko:300,400,500%7CMaven+Pro:500">
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Poppins:400,500%7CTeko:300,400,500%7CMaven+Pro:500">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="/SpanTasty/starcups/css/bootstrap.css">
 <link rel="stylesheet" href="/SpanTasty/starcups/css/fonts.css">
 <link rel="stylesheet" href="/SpanTasty/starcups/css/style.css">
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.5/dist/sweetalert2.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.5/dist/sweetalert2.all.min.js"></script>
 <style>
 .ie-panel {
   display: none;
@@ -46,7 +47,7 @@ html.lt-ie-10 .ie-panel {
 }
 
 .rd-navbar-basket {
-    padding-right: 16px !important;
+    padding-right: 14px !important;
 }
 
 .product-top-panel {
@@ -126,7 +127,7 @@ html.lt-ie-10 .ie-panel {
                   <div class="cart-inline-header" id="cartHeaderContainer">
                     <h5 class="cart-inline-title">In cart: <span id="showAmount">0</span> Products</h5>
                   </div>
-                  <div class="cart-inline-body">
+                  <div class="cart-inline-body pe-0 pb-0">
                     <!-- 動態插入購物車內容 -->
                     <div class="cart-inline-item" id="cartItemsContainer">
                       <div class="unit align-items-center">
@@ -150,7 +151,7 @@ html.lt-ie-10 .ie-panel {
 	                  <div class="cart-inline-footer pb-3 pt-3">
 	                    <div class="group-sm ">
 	                      <a class="button button-md button-primary button-pipaluk" onclick="submitCart()">結帳</a>
-	                      <h6 class="ms-5 ps-4  cart-inline-title position-absolute top-15 end-10">總金額: <span id="showTotalPrice">$524</span></h6>
+	                      <h6 class="ms-5 ps-5 pt-2 cart-inline-title position-absolute top-15 end-10">總金額: <span id="showTotalPrice">$524</span></h6>
 	                    </div>
 	                  </div>
                 </div>
@@ -171,7 +172,7 @@ html.lt-ie-10 .ie-panel {
           <div class="box-pricing pt-1 me-0 ms-0 ps-0 pe-0">
             <div class="box-pricing-body">
               <div class="box-pricing-caption">
-              <img th:src="${tableware.tablewareImage != null ? tableware.tablewareImage : 'https://via.placeholder.com/450x400'}" alt="" width="180" height="180" />
+              <img th:src="${tableware.tablewareImage != null ? tableware.tablewareImage : 'https://via.placeholder.com/450x400'}" alt="" width="180" height="180" style="height:180px;" />
                 <h5 class="box-pricing-title" th:text="${tableware.tablewareName}"></h5>
                 <h3 class="box-pricing-price"><span>NT$</span><span class="box-icon-classic-title" th:text="${tableware.tablewareDeposit}"></span></h3>
                 <div class="quantity-selector">
@@ -207,7 +208,6 @@ html.lt-ie-10 .ie-panel {
 document.addEventListener("DOMContentLoaded", function () {
   // 顯示購物車內容
   document.getElementById("cartIcon").addEventListener("click", function () {
-    console.log("購物車圖示被點擊");
     document.getElementById("cartContainer").classList.toggle("active");
   });
 
@@ -225,17 +225,11 @@ window.onload = function () {
 }
 
 function addToCart(button) {
-	const token = localStorage.getItem('token');
-	if (!token) {
-	    alert('請先登入才能結帳');
-	    window.location.href = "login.html"; // 跳轉到登入頁面
-	    return;
-	}
     const tablewareId = button.getAttribute('data-tablewareid'); // 正確獲取 tablewareId
     const rentItemQuantity = parseInt(document.getElementById(`rentItemQuantity${tablewareId}`).value, 10);
     // 檢查數量是否為 0，如果為 0 則不允許加入購物車
     if (rentItemQuantity === 0) {
-        alert('請選擇至少 1 件商品後再加入購物車');
+        Swal.fire('錯誤', '請至少選擇庫存1', 'error');
         return;
     }
     const restaurantId = document.getElementById("restaurantId").value;
@@ -280,12 +274,11 @@ function addToCart(button) {
             //stockElement.innerHTML = `剩${stock}件`;
             
             quantityInput.value = 0; 
-            alert('成功加入購物車');
+            Swal.fire('成功', '加入購物車', 'success');
             updateStock([{ tablewareId: tablewareId, stock: stock }]);
         })
         .catch(function (error) {
             console.error(error);
-            alert('無法獲取商品資料');
         });
 }
 
@@ -301,23 +294,25 @@ function updateCartUI(cartItems) {
     cartContainer.innerHTML = '';
 
     // 更新購物車顯示
-    cartItems.forEach(item => {
+    cartItems.forEach((item, index) => {
         const itemTotalPrice = parseInt(item.itemPrice) * parseInt(item.rentItemQuantity);
         totalPrice += itemTotalPrice;
 
         const cartItemHtml = `
         <div class="cart-inline-item">
-          <div class="unit align-items-center">
+          <div class="unit align-items-center border-bottom mb-0" style="height:85px">
             <div class="unit-left">
-              <img src="${item.itemImage}" alt="" width="100" height="100" />
+              <img src="${item.itemImage}" alt="" width="70" height="70" style="height:70px"/>
             </div>
-            <div class="unit-body">
-              <span class="fs-6">${item.itemName}</span>
+            <div class="unit-body ms-2 mb-0 pb-3" style="width:100px">
+              <span class="fs-7 ">${item.itemName}</span>
+              <br/>
+              <br/>
+              <span class="fs-7">${item.rentItemQuantity}</span><span> X </span> <span> NT$${itemTotalPrice}</span>
             </div>
-                  <span class="fs-5">${item.rentItemQuantity}</span>
-              <div class="unit-right">
-                  <h6 >金額: NT$${itemTotalPrice}</h6>
-                </div>
+              <div class="unit-right ms-1 mb-0 mt-4 pt-3" style="width:200px; text-align:right;">
+                  <button onclick="removeFromCart(${index})" style="font-size:18px;border:none; background-color:white;" class="pe-3"><i class="fa-solid fa-trash-can-arrow-up"></i></button>
+              </div>
           </div>
         </div>`;
         
@@ -335,7 +330,7 @@ function submitCart() {
     const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
 
     if (cartItems.length === 0) {
-        alert('購物車是空的');
+        Swal.fire('錯誤', '購物車是空的', 'error');
         return;
     }
 
@@ -347,18 +342,30 @@ function submitCart() {
     })
     .then(function (response) {
         if (response.status === 200) {
-            alert('購物車提交成功');
-            localStorage.removeItem('cartItems'); // 清空購物車
-            updateCartCount(0); // 重置購物車顯示
-            updateCartUI([]);
-            window.location.href = "/SpanTasty/StarCups/rental/cart"; 
+        	Swal.fire({
+			    icon: 'question',
+			    title: '確認提交購物車',
+			    text: '確認請按確定',
+			    showCancelButton: true,
+			    confirmButtonColor: "#3085d6",
+        		cancelButtonColor: "#d33",
+			    confirmButtonText: "確定",
+        		cancelButtonText: "取消"
+			}).then((result) => {
+			    console.log(result)
+			    if(result.isConfirmed){
+		            localStorage.removeItem('cartItems'); // 清空購物車
+		            updateCartCount(0); // 重置購物車顯示
+		            updateCartUI([]);
+		            window.location.href = "/SpanTasty/StarCups/rental/cart"; 
+			    }
+			})
         } else {
-            alert('提交購物車失敗');
+            Swal.fire('錯誤', '提交失敗', 'error');
         }
     })
     .catch(function (error) {
         console.log(error);
-        alert('提交購物車失敗');
     });
 }
       
@@ -368,6 +375,49 @@ function reloadCartItems() {
     updateCartCount(cartItems.length); // 更新購物車數量
 }
       
+function removeFromCart(index) {
+    // 從 localStorage 中讀取購物車資料
+    let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    
+    const removedItem = cartItems[index];
+    
+    // 刪除指定索引的商品
+    cartItems.splice(index, 1);
+    
+    // 更新 localStorage 中的購物車資料
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    
+    // 更新購物車顯示
+    updateCartUI(cartItems);
+    updateCartCount(cartItems.length);
+    
+    if (removedItem) {
+        const stockElement = document.getElementById(`stock${removedItem.tablewareId}`);
+        const linkElement = document.getElementById(`single${removedItem.tablewareId}`);
+        const quantityInput = document.getElementById(`rentItemQuantity${removedItem.tablewareId}`);
+        if (stockElement && linkElement && quantityInput) {
+            // 獲取當前庫存
+            let currentStock = parseInt(stockElement.innerHTML.replace('剩', '').replace('件', ''), 10);
+            
+            // 增加庫存數量
+            currentStock += removedItem.rentItemQuantity;
+            
+            // 更新庫存顯示
+            stockElement.innerHTML = `剩${currentStock}件`;
+            
+            // 更新輸入框最大值
+            quantityInput.max = currentStock;
+            
+            // 如果庫存大於 0，則恢復啟用選項
+            if (currentStock > 0) {
+                linkElement.classList.remove('disabled');
+                linkElement.style.pointerEvents = 'auto'; // 恢復點擊事件
+                linkElement.style.opacity = '1'; // 改回正常不透明度
+                quantityInput.disabled = false; // 啟用數量輸入框
+            }
+        }
+    }
+}
       
       
       
@@ -424,10 +474,10 @@ function reloadCartItems() {
 	          const value = parseInt(quantityInput.value, 10);
 	          
 	          if (value > max) {
-	            alert('超過庫存上限！');
+	            Swal.fire('錯誤', '已達最大庫存', 'warning');
 	            quantityInput.value = max; // 限制數值為最大值
 	          } else if (value < min) {
-	            alert('數量不能少於 0 件');
+	            Swal.fire('錯誤', '庫存已為0', 'warning');
 	            quantityInput.value = min; // 限制數值為最小值
 	          }
 	          
@@ -439,8 +489,8 @@ function reloadCartItems() {
 	        stepUpArrow.addEventListener('click', function () {
 	          const currentValue = parseInt(quantityInput.value, 10);
 	          const max = parseInt(quantityInput.max, 10);
-	          if (currentValue >= max) {
-	            alert('超過庫存上限！');
+	          if (currentValue > max) {
+	            Swal.fire('注意', '已達最大庫存', 'warning');
 	            quantityInput.value = max;
 	          }
 	          // 更新剩餘庫存
@@ -452,7 +502,7 @@ function reloadCartItems() {
 	          const currentValue = parseInt(quantityInput.value, 10);
 	          const min = parseInt(quantityInput.min, 10);
 	          if (currentValue < min) {
-	            alert('數量不能少於 0 件');
+	            Swal.fire('錯誤', '庫存已為0', 'warning');
 	            quantityInput.value = min;
 	          } 
 	          // 更新剩餘庫存

@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>租借訂單</title>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.5/dist/sweetalert2.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.5/dist/sweetalert2.all.min.js"></script>
 <style>
 #card-warning {
     background-color: #c8e6c9; 
@@ -38,7 +40,7 @@
             <input type="hidden" name="action" value="update"/>
         </form>
         <form th:action="@{/rent/del/{id}(id=${rent.rentId})}" th:method="delete">
-            <input type="submit" th:value="刪除訂單" class="btn bg-danger text-white btn-sm">
+            <input type="submit" th:value="要求取消" onclick="return deleteRent(event);" class="btn bg-danger text-white btn-sm">
         </form>
    	 </div>
      </div>
@@ -47,15 +49,15 @@
      <div class="table-responsive">
         <table class="table table-striped" id="table">
             <tr>
-                <th>用具編號</th>
+                <th>用具名稱</th>
                 <th>品項數量</th>
-                <th>項目押金</th>
+                <th>項目租金</th>
                 <th>歸還備註</th>
                 <th>歸還狀態</th>
             </tr>
         <th:block th:each=" rentItem : ${rentItems}">
             <tr>
-                <td th:text="${rentItem.tablewareId}"></td>
+                <td th:text="${rentItem.tableware.tablewareName}"></td>
                 <td th:text="${rentItem.rentItemQuantity}"></td>
                 <td th:text="${rentItem.rentItemDeposit}"></td>
                 <td th:text="${rentItem.returnMemo}"></td>
@@ -63,7 +65,9 @@
                     <span th:switch="${rentItem.returnStatus}">
                     <span th:case="1" class="badge bg-danger text-white">未歸還</span>
                     <span th:case="2" class="badge bg-success text-white">完全歸還</span>
-                    <span th:case="3" class="badge bg-primary text-white">部分歸還</span>
+                    <span th:case="3" class="badge bg-primary text-white">完全歸還(有破損)</span>
+                    <span th:case="4" class="badge bg-black text-white">部分歸還</span>
+                    <span th:case="5" class="badge bg-secondary text-white">部分歸還(有破損)</span>
                     </span>
                 </td>
             </tr>
@@ -76,6 +80,26 @@
   </div>
  </div>
 </div>
+<script>
+function deleteRent(event){
+	event.preventDefault(); // 防止表單提交
+    const form = event.target; // 獲取當前表單
+    Swal.fire({
+        title: "是否要取消該筆訂單",
+        text: "刪除後將無法復原",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "確定",
+        cancelButtonText: "取消"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            event.target.closest('form').submit();
+        }
+    });
+}
+</script>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     showSidebar('rental');

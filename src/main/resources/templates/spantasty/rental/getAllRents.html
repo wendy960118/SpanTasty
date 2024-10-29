@@ -108,21 +108,21 @@
       <tbody>
       <th:block th:each=" rent : ${rents}">
         <tr>
-            <td th:text="${rent.rentId}">訂單編號</td>
-            <td th:text="${rent.rentDeposit}">租借押金</td>
-            <td th:text="${#dates.format(rent.rentDate, 'yyyy年MM月dd日')}">租借日期</td>
-            <td th:text="${rent.restaurantName}">租借餐廳</td>
-            <td th:text="${rent.memberName}">租借會員</td>
-            <td th:text="${#dates.format(rent.dueDate, 'yyyy年MM月dd日')}">預定歸還</td>
-            <td th:text="${#dates.format(rent.returnDate, 'yyyy年MM月dd日')}">實際歸還</td>
+            <td class="align-middle" th:text="${rent.rentId}">訂單編號</td>
+            <td class="align-middle" th:text="${rent.rentDeposit}">租借押金</td>
+            <td class="align-middle" th:text="${#dates.format(rent.rentDate, 'yyyy年MM月dd日')}">租借日期</td>
+            <td class="align-middle" th:text="${rent.restaurantName}">租借餐廳</td>
+            <td class="align-middle" th:text="${rent.memberName}">租借會員</td>
+            <td class="align-middle" th:text="${#dates.format(rent.dueDate, 'yyyy年MM月dd日')}">預定歸還</td>
+            <td class="align-middle" th:text="${#dates.format(rent.returnDate, 'yyyy年MM月dd日')}">實際歸還</td>
             <td class="align-middle">
 				<span th:switch="${rent.rentStatus}">
 				  <span th:case="1" class="badge bg-danger text-white">出租中</span>
 				  <span th:case="2" class="badge bg-success text-white">已歸還</span>
 				</span>
 			</td>
-            <td th:text="${rent.rentMemo}">訂單備註</td>
-            <td th:text="${rent.returnRestaurantName}">歸還餐廳</td>
+            <td class="align-middle" th:text="${rent.rentMemo}">訂單備註</td>
+            <td class="align-middle" th:text="${rent.returnRestaurantName}">歸還餐廳</td>
             <td class="align-middle">
 				<form th:action="@{/rent/set/{id}(id=${rent.rentId})}" th:method="get">
 					<button type="submit" class="btn btn-sm" id="btn-light-green" name="action" value="get">查看</button>
@@ -137,20 +137,21 @@
       </th:block>
       </tbody>
       </table>
-	  </div>
-     </div>
-    <div>
-     <ul th:if="${rentPages.totalPages > 1}" class="pagination">
-         <li th:if="${rentPages.number > 0}" class="page-item"><a class="page-link" th:href="@{/rent/getAll(p=${rentPages.number})}" th:text="上一頁"></a></li>
-         <li th:if="${rentPages.number == 0}" class="page-item disabled"><a class="page-link" th:text="沒有上一頁"></a></li>
+     <nav aria-label="Page navigation example ">
+     <ul th:if="${rentPages.totalPages > 1}" class="pagination pagination-sm pt-1 align-items-center justify-content-center" >
+         <li th:if="${rentPages.number > 0}" class="page-item"><a class="page-link" th:href="@{/rent/getAll(p=${rentPages.number})}" aria-label="Previous"><i class="fa-solid fa-circle-left"></i></a></li>
+         <li th:if="${rentPages.number == 0}" class="page-item disabled"><a class="page-link" aria-label="Previous"><i class="fa-solid fa-circle-left"></i></a></li>
      <th:block th:each="aNumber : ${#numbers.sequence(1, rentPages.totalPages)}">
          <li th:if="${rentPages.number + 1 == aNumber}" class="page-item active"><a class="page-link"><span th:text="${aNumber}"></span></a></li>
          <li th:if="${rentPages.number + 1 != aNumber}" class="page-item"><a class="page-link" th:href="@{/rent/getAll(p=${aNumber})}" th:text="${aNumber}"></a></li>
      </th:block>
-         <li th:if="${rentPages.number + 1 < rentPages.totalPages}" class="page-item"><a class="page-link" th:href="@{/rent/getAll(p=${rentPages.number + 2})}" th:text="下一頁"></a></li>
-         <li th:if="${rentPages.number + 1 == rentPages.totalPages}" class="page-item disabled"><a class="page-link" th:text="沒有下一頁"></a></li>
+         <li th:if="${rentPages.number + 1 < rentPages.totalPages}" class="page-item"><a class="page-link" th:href="@{/rent/getAll(p=${rentPages.number + 2})}" aria-label="Next"><i class="fa-solid fa-circle-right"></i></a></li>
+         <li th:if="${rentPages.number + 1 == rentPages.totalPages}" class="page-item disabled"><a class="page-link" aria-label="Next"><i class="fa-solid fa-circle-right"></i></a></li>
      </ul>
-     <div>總共有 <span th:text="${rentPages.totalElements}"></span> 筆</div>
+     </nav>
+	  </div>
+     </div>
+    <div>
     </div>
    </div>
   </div>

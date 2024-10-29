@@ -86,11 +86,11 @@
 		<tbody>
 		<th:block th:each=" tableware : ${tablewarePages.content}">
 		<tr>
-			<td th:text="${tableware.tablewareId}">用具編號</td>
-			<td th:text="${tableware.tablewareName}">用具名稱</td>
-			<td th:text="${tableware.tablewareDeposit}">押金金額</td>
-			<td><img width="50px" th:src="${tableware.tablewareImage}" /></td>
-			<td th:text="${tableware.tablewareDescription}">用具描述</td>
+			<td class="align-middle" th:text="${tableware.tablewareId}">用具編號</td>
+			<td class="align-middle" th:text="${tableware.tablewareName}">用具名稱</td>
+			<td class="align-middle" th:text="${tableware.tablewareDeposit}">押金金額</td>
+			<td class="align-middle"><img width="55px" height="60px" th:src="${tableware.tablewareImage}" /></td>
+			<td class="align-middle" th:text="${tableware.tablewareDescription}">用具描述</td>
 			<td class="align-middle">
 				<span th:switch="${tableware.tablewareStatus}">
 				  <span th:case="1" class="badge bg-success text-white">上架中</span>
@@ -112,13 +112,11 @@
 		</th:block>
 		</tbody>
 		</table>
-	 </div>
-    </div>
-    <div>
-      	<ul th:if="${tablewarePages.totalPages != 0}" class="pagination">
+    <nav aria-label="Page navigation example ">
+      	<ul th:if="${tablewarePages.totalPages != 0}" class="pagination pagination-sm pt-1 align-items-center justify-content-center">
 		<th:block th:switch="${tablewarePages.number + 1 == 1}">
-			<li th:case="${false}" class="page-item"><a class="page-link" th:href="@{/tableware/getAll(p=${ tablewarePages.number })}" th:text="上一頁"></a></li>
-			<li th:case="${true}" class="page-item disabled"><a class="page-link" th:href="@{/tableware/getAll(p=${ tablewarePages.number })}" th:text="已經第一頁了"></a></li>
+			<li th:case="${false}" class="page-item"><a class="page-link" th:href="@{/tableware/getAll(p=${ tablewarePages.number })}" ><i class="fa-solid fa-circle-left"></i></a></li>
+			<li th:case="${true}" class="page-item disabled"><a class="page-link" th:href="@{/tableware/getAll(p=${ tablewarePages.number })}" ><i class="fa-solid fa-circle-left"></i></a></li>
 		</th:block>
 		<th:block th:each=" aNumber : ${#numbers.sequence(1, tablewarePages.totalPages)}">
 			<th:block th:switch="${tablewarePages.number + 1 == aNumber}">
@@ -127,11 +125,14 @@
 			</th:block> 
 		</th:block>
 		<th:block th:switch="${tablewarePages.number + 1 == tablewarePages.totalPages}">
-			<li th:case="${true}" class="page-item disabled"><a class="page-link" th:href="@{/tableware/getAll(p=${ tablewarePages.number + 2 })}" th:text="已經最後了"></a></li>
-			<li th:case="${false}" class="page-item"><a class="page-link" th:href="@{/tableware/getAll(p=${ tablewarePages.number + 2 })}" th:text="下一頁"></a></li>
+			<li th:case="${true}" class="page-item disabled"><a class="page-link" th:href="@{/tableware/getAll(p=${ tablewarePages.number + 2 })}" ><i class="fa-solid fa-circle-right"></i></a></li>
+			<li th:case="${false}" class="page-item"><a class="page-link" th:href="@{/tableware/getAll(p=${ tablewarePages.number + 2 })}" ><i class="fa-solid fa-circle-right"></i></a></li>
 		</th:block>
   		</ul>
-    	<div>總共有 <span th:text="${tablewarePages.totalElements}"></span> 筆</div>
+	</nav>
+	 </div>
+    </div>
+    <div>
     </div>
    </div>
   </div>

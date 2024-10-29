@@ -100,8 +100,8 @@
                 <li class="rd-nav-item"><a class="rd-nav-link" href="/SpanTasty/StarCups/rental/home">租借</a>
                   <!-- RD Navbar Dropdown-->
                   <ul class="rd-menu rd-navbar-dropdown">
-                    <li class="rd-dropdown-item"><a class="rd-dropdown-link" href="/SpanTasty/StarCups/rental/lookbook">租借圖冊</a></li>
-                    <li class="rd-dropdown-item"><a class="rd-dropdown-link" href="/SpanTasty/StarCups/rental/rent">開始租借</a></li>
+                    <li class="rd-dropdown-item"><a class="rd-dropdown-link" href="/SpanTasty/StarCups/rental/lookbook">租借用具集</a></li>
+                    <li class="rd-dropdown-item"><a class="rd-dropdown-link" href="javascript:void(0);" onclick="checkTokenAndProceed()">開始租借</a></li>
                   </ul>
                 </li>
                 <li class="rd-nav-item">
@@ -345,4 +345,24 @@
       authLink.href = '/SpanTasty/StarCups/loginRegister';  // 導向登入頁面
     }
   });
+  
+    function checkTokenAndProceed() {
+	    const token = localStorage.getItem('token');
+	    
+	    if (!token) {
+	      Swal.fire({
+	        title: '尚未登入會員',
+	        text: '請登入',
+	        icon: 'error',
+	      }).then((result) => {
+	        if (result.isConfirmed) {
+	          // 使用者按下「確定」按鈕後跳轉
+	          window.location.href = '/SpanTasty/StarCups/loginRegister';
+	        }
+	      });
+	    } else {
+	      // 如果有 token，跳轉到租借頁面
+	      window.location.href = '/SpanTasty/StarCups/rental/rent';
+	    }
+	  }
 </script>

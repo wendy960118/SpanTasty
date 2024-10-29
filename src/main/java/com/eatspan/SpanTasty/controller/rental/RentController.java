@@ -1,6 +1,6 @@
 package com.eatspan.SpanTasty.controller.rental;
 
-import java.io.IOException;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,7 +27,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.eatspan.SpanTasty.dto.rental.RentDetailDTO;
+import com.eatspan.SpanTasty.dto.rental.RentItemDTO;
 import com.eatspan.SpanTasty.dto.rental.RentKeywordDTO;
+import com.eatspan.SpanTasty.dto.rental.RentRequestDTO;
 import com.eatspan.SpanTasty.dto.rental.StockKeywordDTO;
 import com.eatspan.SpanTasty.dto.rental.TablewareFilterDTO;
 import com.eatspan.SpanTasty.entity.account.Member;
@@ -43,11 +45,6 @@ import com.eatspan.SpanTasty.service.rental.TablewareService;
 import com.eatspan.SpanTasty.service.rental.TablewareStockService;
 import com.eatspan.SpanTasty.service.reservation.RestaurantService;
 
-import freemarker.core.ParseException;
-import freemarker.template.MalformedTemplateNameException;
-import freemarker.template.TemplateException;
-import freemarker.template.TemplateNotFoundException;
-import jakarta.mail.MessagingException;
 
 @Controller
 @RequestMapping("/rent")
@@ -213,14 +210,33 @@ public class RentController {
 			return "spantasty/rental/setRent";
 			
 		} else if ("return".equals(action)) {
-			List<RentItem> rentItems = rentItemService.findRentItemsByRentId(rentId);
-			List<Restaurant> restaurants = restaurantService.findAllRestaurants();
+			List<Restaurant> restaurants = restaurantService.findAllRestaurants()
+					.stream()
+	                .filter(restaurant -> restaurant.getRestaurantStatus() == 1)
+	                .collect(Collectors.toList());
 			model.addAttribute("restaurants" ,restaurants);
+			
 			Date returnDate = new Date();
 			rent.setReturnDate(returnDate);
 			model.addAttribute("rent", rent);
-			model.addAttribute("rentItems", rentItems);
-			return "spantasty/rental/setRentReturn";
+			
+			
+			List<RentItem> rentItems = rentItemService.findRentItemsByRentId(rentId);
+			List<RentItemDTO> rentItemsDTO = rentItems.stream()
+				    .map(rentItem -> new RentItemDTO(
+				        rentItem.getRentId(),
+				        rentItem.getTablewareId(),
+				        rentItem.getRentItemQuantity(),
+				        rentItem.getRentItemDeposit(),
+				        rentItem.getReturnMemo(),
+				        rentItem.getReturnStatus(),
+				        rentItem.getTableware().getTablewareName(),
+				        0, // Initialize returnedQuantity for DTO
+				        0  // Initialize damagedQuantity for DTO
+				    )).collect(Collectors.toList());
+			model.addAttribute("rentItemsDTO", rentItemsDTO);
+			
+			return "spantasty/rental/setRentReturn2";
 			
 		}else if("get".equals(action)){
 			List<RentItem> rentItems = rentItemService.findRentItemsByRentId(rentId);
@@ -269,18 +285,13 @@ public class RentController {
 			rentItemService.addRentItem(rentItem);
 			// 更新庫存
 	        int stockChange = returnedQuantity - damagedQuantity;
-	        System.out.println(stockChange);
 	        TablewareStock tablewareStock = tablewareStockService.findStockById(rentItem.getTablewareId(), rent.getReturnRestaurantId());
-	        System.out.println(tablewareStock);
 	        Integer stock = tablewareStock.getStock();
-	        System.out.println(stock);
 	        Integer newStock = stock + stockChange;
-	        System.out.println(newStock);
 	        tablewareStock.setStock(newStock);
 	        tablewareStockService.addStock(tablewareStock);
 		}
 		rentService.addRent(rent);
-		System.out.println("有更新");
 		return "redirect:/rent/getAll";
 	}
 
@@ -292,32 +303,32 @@ public class RentController {
 		List<Member> members = memberService.findAllMembers();
 		model.addAttribute("restaurants" ,restaurants);
 		model.addAttribute("members" ,members);
-		Page<Rent> rentPages = rentService.findAllRentPages(page );
+		Page<Rent> rentPages = rentService.findAllRentPages(page);
 		model.addAttribute("rentPages",rentPages);
 		
 		Map<Integer, String> restaurantMap = restaurants.stream()
 		        .collect(Collectors.toMap(Restaurant::getRestaurantId, Restaurant::getRestaurantName));
-		    Map<Integer, String> memberMap = members.stream()
-		        .collect(Collectors.toMap(Member::getMemberId, Member::getMemberName));
+	    Map<Integer, String> memberMap = members.stream()
+	        .collect(Collectors.toMap(Member::getMemberId, Member::getMemberName));
 
-		    // 使用分頁中的租借訂單進行 DTO 轉換
-		    List<RentDetailDTO> rentDetails = rentPages.getContent().stream().map(rent -> {
-		        RentDetailDTO dto = new RentDetailDTO();
-		        dto.setRentId(rent.getRentId());
-		        dto.setRentDeposit(rent.getRentDeposit());
-		        dto.setRentDate(rent.getRentDate());
-		        dto.setDueDate(rent.getDueDate());
-		        dto.setReturnDate(rent.getReturnDate());
-		        dto.setRentStatus(rent.getRentStatus());
-		        dto.setRentMemo(rent.getRentMemo());
-		        dto.setRestaurantId(rent.getRestaurantId());
-		        dto.setMemberId(rent.getMemberId());
-		        dto.setReturnRestaurantId(rent.getReturnRestaurantId());
+	    // 使用分頁中的租借訂單進行 DTO 轉換
+	    List<RentDetailDTO> rentDetails = rentPages.getContent().stream().map(rent -> {
+	        RentDetailDTO dto = new RentDetailDTO();
+	        dto.setRentId(rent.getRentId());
+	        dto.setRentDeposit(rent.getRentDeposit());
+	        dto.setRentDate(rent.getRentDate());
+	        dto.setDueDate(rent.getDueDate());
+	        dto.setReturnDate(rent.getReturnDate());
+	        dto.setRentStatus(rent.getRentStatus());
+	        dto.setRentMemo(rent.getRentMemo());
+	        dto.setRestaurantId(rent.getRestaurantId());
+	        dto.setMemberId(rent.getMemberId());
+	        dto.setReturnRestaurantId(rent.getReturnRestaurantId());
 
-		        // 從 Map 中查找對應的餐廳名稱和成員名稱
-		        dto.setRestaurantName(restaurantMap.get(rent.getRestaurantId()));
-		        dto.setMemberName(memberMap.get(rent.getMemberId()));
-		        dto.setReturnRestaurantName(restaurantMap.get(rent.getReturnRestaurantId()));
+	        // 從 Map 中查找對應的餐廳名稱和成員名稱
+	        dto.setRestaurantName(restaurantMap.get(rent.getRestaurantId()));
+	        dto.setMemberName(memberMap.get(rent.getMemberId()));
+	        dto.setReturnRestaurantName(restaurantMap.get(rent.getReturnRestaurantId()));
 
 	        
 	        return dto;
@@ -385,11 +396,68 @@ public class RentController {
 	}
 	
 	
-//	查詢訂單(By過期未歸還)
-//	@GetMapping("/overtime")
-//	public String getOvertimeRents(Model model) {
-//		List<Rent> rents = rentService.findOvertimeRents();
-//		model.addAttribute("rents", rents);
-//		return "spantasty/rental/getAllRents";
-//	}
+	//歸還訂單
+	@PostMapping("/setPut3")
+	@ResponseBody
+	public ResponseEntity<Integer> returnRent2(@RequestBody RentRequestDTO rentRequestDTO, Model model) {
+		Rent rent = rentRequestDTO.getRent();
+		List<RentItemDTO> rentItemsDTO = rentRequestDTO.getRentItemsDTO();
+		rent.setRentStatus(2);
+		rent.setRentMemo("已歸還");
+		
+		int totalExpense = 0;
+		
+		for(RentItemDTO rentItemDTO : rentItemsDTO) {
+			Integer rentItemQuantity = rentItemDTO.getRentItemQuantity();
+			Integer returnedQuantity = rentItemDTO.getReturnedQuantity();
+			Integer damagedQuantity = rentItemDTO.getDamagedQuantity();
+			
+			Integer rentItemDeposit = rentItemDTO.getRentItemDeposit();
+			int unreturnedCount = rentItemQuantity - returnedQuantity;
+	        int extraCharge = (unreturnedCount + damagedQuantity) * rentItemDeposit;
+	        totalExpense += extraCharge;
+			
+			Integer returnStatus = null;
+			if (rentItemQuantity == returnedQuantity && damagedQuantity > 0) {
+				returnStatus = 3; //完全歸還(有破損)
+			} else if (rentItemQuantity == returnedQuantity) {
+				returnStatus = 2; //完全歸還
+			} else if (rentItemQuantity > returnedQuantity && damagedQuantity > 0) {
+				returnStatus = 5; //未完全歸還(有破損)
+			} else if (rentItemQuantity > returnedQuantity) {
+				returnStatus = 4; //未完全歸還
+			}
+			
+			// 組合 returnMemo
+	        String returnMemo = "歸還" + returnedQuantity + "破損" + damagedQuantity;
+	        
+			// 更新庫存
+	        int stockChange = returnedQuantity - damagedQuantity;
+	        TablewareStock tablewareStock = tablewareStockService.findStockById(rentItemDTO.getTablewareId(), rent.getReturnRestaurantId());
+	        Integer stock = tablewareStock.getStock();
+	        Integer newStock = stock + stockChange;
+	        tablewareStock.setStock(newStock);
+	        tablewareStockService.addStock(tablewareStock);
+	        
+	        RentItem rentItem = new RentItem();
+	        rentItem.setRentId(rentItemDTO.getRentId());
+	        rentItem.setTablewareId(rentItemDTO.getTablewareId());
+	        rentItem.setReturnMemo(returnMemo);
+	        rentItem.setReturnStatus(returnStatus);
+	        rentItem.setRentItemDeposit(rentItemDeposit);
+	        rentItem.setRentItemQuantity(rentItemQuantity);
+	        rentItemService.addRentItem(rentItem);
+		}
+		rentService.addRent(rent);
+		
+		return ResponseEntity.ok(totalExpense);
+	}
+	
+	
+	//
+	@GetMapping("/expense")
+	public String rentSummary(@RequestParam("totalExpense") Integer totalExpense, Model model) {
+		model.addAttribute("totalExpense", totalExpense);
+	    return "spantasty/rental/getReturnExpense";
+	}
 }
