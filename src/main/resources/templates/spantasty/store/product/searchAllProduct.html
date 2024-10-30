@@ -223,10 +223,12 @@
             "info": true
         });
 
-        $('#productsTable').on('change', '.form-check-input', function() {
-            const productId = this.getAttribute('data-product-id'); 
-            const newStatus = this.checked ? 1 : 2;
+ $('.form-check-input').change(function() {
+	        const productId = this.getAttribute('data-product-id'); 
+	        console.log('Product ID:', productId); // 輸出 productId
+	        const newStatus = this.checked ? 1 : 2; // 1 表示上架，2 表示下架
 
+            // 發送 AJAX 請求更新商品狀態
             axios.put(`http://localhost:8080/SpanTasty/product/updateStatus/${productId}`, null, {
                 params: {
                     productStatus: newStatus
@@ -238,15 +240,6 @@
             .then(response => {
                 if (response.status === 200) {
                     Swal.fire('成功!', '商品狀態已更新', 'success');
-                    const rowIndex = table.rows().indexes().find(index => {
-                        return table.row(index).data()[0] == productId;
-                    });
-
-                    if (rowIndex !== undefined) {
-                        const rowData = table.row(rowIndex).data();
-                        rowData[5] = newStatus === 1 ? '上架' : '下架';
-                        table.row(rowIndex).data(rowData).draw();
-                    }
                 }
             })
             .catch(error => {
