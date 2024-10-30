@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.eatspan.SpanTasty.dto.reservation.RestaurantDTO;
 import com.eatspan.SpanTasty.entity.reservation.Restaurant;
-import com.eatspan.SpanTasty.service.rental.TablewareStockService;
 import com.eatspan.SpanTasty.service.reservation.RestaurantService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -33,9 +32,6 @@ public class RestaurantController {
 	
 	@Autowired
 	private RestaurantService restaurantService;
-//	@Autowired
-//	private TablewareStockService tablewareStockService;
-	
 	
 	
     @GetMapping("/getAll")

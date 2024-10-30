@@ -1,11 +1,7 @@
 package com.eatspan.SpanTasty.entity.reservation;
 
 import java.io.Serializable;
-import java.time.LocalTime;
-import java.util.List;
 import java.util.Objects;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

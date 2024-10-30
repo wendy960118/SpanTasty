@@ -6,10 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.eatspan.SpanTasty.entity.store.Product;
 import com.eatspan.SpanTasty.entity.store.ProductType;
-import com.eatspan.SpanTasty.entity.store.ProductType;
-import com.eatspan.SpanTasty.repository.store.ProductDetailsRepository;
 import com.eatspan.SpanTasty.repository.store.ProductTypeRepository;
 
 @Service

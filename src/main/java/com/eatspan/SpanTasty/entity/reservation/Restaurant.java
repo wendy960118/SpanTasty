@@ -123,10 +123,10 @@ public class Restaurant {
 			this.reserveTimeScale = 30; // 訂位的區間(預設為30分鐘)
 		}
 		if(this.reserveMin == null) {
-			this.reserveMin = 2; // 訂位的區間(預設為30分鐘)
+			this.reserveMin = 2; // 訂位的最少人數(預設為2人)
 		}
 		if(this.reserveMax == null) {
-			this.reserveMax = 10; // 訂位的區間(預設為30分鐘)
+			this.reserveMax = 8; // 訂位的最少人數(預設為8人)
 		}
 		if(this.reserveCombinable == null) {
 			this.reserveCombinable = 1; // 可接受組合桌位(1=不可, 2=可)
