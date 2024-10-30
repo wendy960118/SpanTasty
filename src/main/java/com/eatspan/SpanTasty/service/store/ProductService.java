@@ -2,7 +2,6 @@ package com.eatspan.SpanTasty.service.store;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -14,10 +13,6 @@ import com.eatspan.SpanTasty.entity.store.Product;
 import com.eatspan.SpanTasty.entity.store.ProductType;
 import com.eatspan.SpanTasty.repository.store.ProductRepository;
 import com.eatspan.SpanTasty.repository.store.ProductTypeRepository;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.PersistenceContext;
 
 @Service
 public class ProductService {

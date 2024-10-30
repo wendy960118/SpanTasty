@@ -630,39 +630,104 @@
             });
 		}
 		
-        // 分頁控制函數
-        function generatePagination(totalItems) {
-            const totalPages = Math.ceil(totalItems / itemsPerPage);
-            const paginationContainer = document.getElementById('pagination');
+		// 分頁控制函數
+		function generatePagination(totalItems) {
+		    const totalPages = Math.ceil(totalItems / itemsPerPage);
+		    const paginationContainer = document.getElementById('pagination');
+		    const maxVisibleButtons = 10;
+		    let startPage, endPage;
+		
+		    // 計算顯示的頁碼範圍
+		    if (totalPages <= maxVisibleButtons) {
+		        startPage = 1;
+		        endPage = totalPages;
+		    } else {
+		        if (currentPage <= Math.ceil(maxVisibleButtons / 2)) {
+		            startPage = 1;
+		            endPage = maxVisibleButtons;
+		        } else if (currentPage + Math.floor(maxVisibleButtons / 2) >= totalPages) {
+		            startPage = totalPages - maxVisibleButtons + 1;
+		            endPage = totalPages;
+		        } else {
+		            startPage = currentPage - Math.floor(maxVisibleButtons / 2);
+		            endPage = currentPage + Math.floor(maxVisibleButtons / 2);
+		        }
+		    }
+		
+		    paginationContainer.innerHTML = ''; // 清空現有的分頁按鈕
+		
+		    // 建立 "<<" 按鈕
+		    const firstButton = document.createElement('button');
+		    firstButton.classList.add('btn', 'btn-secondary', 'mx-1');
+		    firstButton.textContent = '<<';
+		    firstButton.disabled = currentPage === 1;
+		    firstButton.onclick = function () {
+		        currentPage = 1;
+		        renderReservations(currentPage);
+		        generatePagination(totalItems);
+		    };
+		    paginationContainer.appendChild(firstButton);
+		
+		    // 建立 "<" 按鈕
+		    const prevButton = document.createElement('button');
+		    prevButton.classList.add('btn', 'btn-secondary', 'mx-1');
+		    prevButton.textContent = '<';
+		    prevButton.disabled = currentPage === 1;
+		    prevButton.onclick = function () {
+		        if (currentPage > 1) {
+		            currentPage--;
+		            renderReservations(currentPage);
+		            generatePagination(totalItems);
+		        }
+		    };
+		    paginationContainer.appendChild(prevButton);
+		
+		    // 動態生成頁碼按鈕
+		    for (let i = startPage; i <= endPage; i++) {
+		        const pageButton = document.createElement('button');
+		        pageButton.classList.add('btn', 'btn-primary', 'mx-1');
+		        pageButton.textContent = i;
+		        if (i === currentPage) {
+		            pageButton.classList.add('active');
+		        }
+		
+		        pageButton.onclick = function () {
+		            currentPage = i;
+		            renderReservations(i);
+		            generatePagination(totalItems);
+		        };
+		
+		        paginationContainer.appendChild(pageButton);
+		    }
+		
+		    // 建立 ">" 按鈕
+		    const nextButton = document.createElement('button');
+		    nextButton.classList.add('btn', 'btn-secondary', 'mx-1');
+		    nextButton.textContent = '>';
+		    nextButton.disabled = currentPage === totalPages;
+		    nextButton.onclick = function () {
+		        if (currentPage < totalPages) {
+		            currentPage++;
+		            renderReservations(currentPage);
+		            generatePagination(totalItems);
+		        }
+		    };
+		    paginationContainer.appendChild(nextButton);
+		
+		    // 建立 ">>" 按鈕
+		    const lastButton = document.createElement('button');
+		    lastButton.classList.add('btn', 'btn-secondary', 'mx-1');
+		    lastButton.textContent = '>>';
+		    lastButton.disabled = currentPage === totalPages;
+		    lastButton.onclick = function () {
+		        currentPage = totalPages;
+		        renderReservations(currentPage);
+		        generatePagination(totalItems);
+		    };
+		    paginationContainer.appendChild(lastButton);
+		}
 
-            paginationContainer.innerHTML = ''; // 清空現有的分頁按鈕
 
-            // 建立分頁按鈕
-            for (let i = 1; i <= totalPages; i++) {
-                const pageButton = document.createElement('button');
-                pageButton.classList.add('btn', 'btn-primary', 'mx-1');
-                pageButton.textContent = i;
-
-                // 設置當前頁面的按鈕樣式
-                if (i === currentPage) {
-                    pageButton.classList.add('active');
-                }
-
-                pageButton.onclick = function () {
-                    currentPage = i; // 更新當前頁面
-                    renderReservations(i); // 渲染對應頁面的資料
-
-                    // 清除所有按鈕的 active 樣式
-                    const buttons = paginationContainer.querySelectorAll('button');
-                    buttons.forEach(button => button.classList.remove('active'));
-
-                    // 設置當前按鈕為 active
-                    pageButton.classList.add('active');
-                };
-
-                paginationContainer.appendChild(pageButton);
-            }
-        }
 
 
         // 開啟修改模態框並填入資料
@@ -795,14 +860,25 @@
             axios.put(`http://localhost:8080/SpanTasty/reserve/setStatus`, setReserveStatus)
                 .then(res => {
                     console.log(res.data);
-                    // 插入訂位成功視窗
-                    alert("修改訂位狀態成功！");
-                    fetchReservations(); // 修改後重新查詢訂位
+		            // 使用 SweetAlert 顯示成功視窗
+		            Swal.fire({
+		                title: '成功！',
+		                text: '修改訂位狀態成功！',
+		                icon: 'success',
+		                confirmButtonText: '確定'
+		            }).then(() => {
+		                fetchReservations(); // 修改後重新查詢訂位
+		            });
                 })
                 .catch(err => {
                     console.error(err);
-                    // 插入訂位失敗視窗
-                    alert("修改訂位狀態失敗，請稍後再試。");
+		            // 使用 SweetAlert 顯示失敗視窗
+		            Swal.fire({
+		                title: '失敗',
+		                text: '修改訂位狀態失敗，請稍後再試。',
+		                icon: 'error',
+		                confirmButtonText: '確定'
+		            });
                 });
         }
 

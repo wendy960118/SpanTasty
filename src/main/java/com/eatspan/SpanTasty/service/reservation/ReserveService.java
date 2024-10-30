@@ -118,7 +118,7 @@ public class ReserveService {
 	}
 
 	
-//	// 新增訂位(組合)
+	// 新增訂位(組合)
 	public Reserve addCombinedReserve(ReserveDTO reserveDTO) {
 	    Reserve reserve = new Reserve();
 	    setReserveByReserveDTO(reserve, reserveDTO);
@@ -167,7 +167,6 @@ public class ReserveService {
 	        // 否則，選擇座位數大於需求或最大桌子
 	        RestaurantTable bestFitTable = filteredTables.stream()
 	            .filter(table -> table.getTableType().getTableTypeName() >= remainingSeats[0])
-//		        .sorted((t1, t2) -> Integer.compare(t1.getTableType().getTableTypeName(), t2.getTableType().getTableTypeName()))
 	            .findFirst()
 	            .orElse(filteredTables.get(0)); // 若無符合大小，選擇最大桌子
 
@@ -299,7 +298,6 @@ public class ReserveService {
 	        // 否則，選擇座位數大於需求或最大桌子
 	        RestaurantTable bestFitTable = filteredTables.stream()
 	            .filter(table -> table.getTableType().getTableTypeName() >= remainingSeats[0])
-//		        .sorted((t1, t2) -> Integer.compare(t1.getTableType().getTableTypeName(), t2.getTableType().getTableTypeName()))
 	            .findFirst()
 	            .orElse(filteredTables.get(0)); // 若無符合大小，選擇最大桌子
 
