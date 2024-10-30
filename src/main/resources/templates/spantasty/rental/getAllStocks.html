@@ -58,7 +58,7 @@
 	 </div>
 	 <div class="mt-0 mb-2 ms-2 gap-2 d-flex">
 		<select id="tablewareId" class="form-select form-select-sm" style="width:180px">
-			<option value="" selected disabled>請選擇餐具編號</option>
+			<option value="" selected disabled>請選擇餐具名稱</option>
 			<option th:each="tableware : ${tablewares}" th:value="${tableware.tablewareId}" th:text="${tableware.tablewareName}"></option>
 		</select>
         <select id="restaurantId" class="form-select form-select-sm" style="width:180px">

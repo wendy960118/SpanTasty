@@ -51,30 +51,28 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
 	
 <section class="section novi-bg novi-bg-img section-xl bg-default">
         <div class="container">
-          <div class="row row-50">
-            <div class="col-lg-5">
+          <div class="row row-50 justify-content-center">
+            <div class="col-lg-5 pe-0" style="width:350px;">
               <div class="slick-product">
                 <!-- Slick Carousel-->
                 <div class="slick-slider carousel-parent" data-swipe="true" data-items="1" data-child="#child-carousel" data-for="#child-carousel">
                   <div class="item">
-                    <div class="slick-product-figure"><img th:src="${tableware.tablewareImage != null ? tableware.tablewareImage : 'https://via.placeholder.com/450x400'}" alt="" width="530" height="480" style="height:480px;"/>
+                    <div class="slick-product-figure"><img th:src="${tableware.tablewareImage != null ? tableware.tablewareImage : 'https://via.placeholder.com/450x400'}" alt="" width="530" height="480" style="height:330px;"/>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-6" style="padding-top:25px;">
               <div class="single-product">
                 <h3 th:text="${tableware.tablewareName}" ></h3>
                 <div class="group-md group-middle">
                   <div class="single-product-price"><span>NT$</span><span th:text="${tableware.tablewareDeposit}"></span><span>/7day</span></div>
                 </div>
-                <p th:text="${tableware.tablewareDescription}"></p>
                 <div class="divider divider-30"></div>
                 <ul class="list list-description d-inline-block d-md-block">
-                  <li><span>材質:</span><span>鐵</span></li>
-                  <li><span>重量:</span><span>2 kg</span></li>
-                  <li><span>容量:</span><span>500 ml</span></li>
+	                <p th:text="${tableware.tablewareDescription}"></p>
+                
                 </ul>
                 <div class="divider divider-40"></div>
                 <div class="group-md group-middle"><span class="social-title">Share</span>

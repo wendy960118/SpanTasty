@@ -415,7 +415,7 @@ public class RentController {
 			
 			Integer tablewareDeposit = tablewareService.findTablewareDeposit(rentItemDTO.getTablewareId());
 			int unreturnedCount = rentItemQuantity - returnedQuantity;
-	        int extraCharge = (unreturnedCount + damagedQuantity) * tablewareDeposit;
+	        int extraCharge = (unreturnedCount + damagedQuantity) * tablewareDeposit * 2;
 	        totalExpense += extraCharge;
 			
 			Integer returnStatus = null;
