@@ -34,10 +34,10 @@
                         </div>
                         <div class="col-md-6 d-flex justify-content-end align-items-center">
                             <a th:href="@{/order/togo/add}" class="btn btn-primary btn-sm me-2">新增訂單</a>
-                            <a th:href="@{/order/togo/get}" class="btn btn-primary btn-sm">查詢訂單</a>
+                            <a th:href="@{/order/togo/get}" class="btn btn-primary btn-sm me-2">查詢訂單</a>
+                            <a th:href="@{/order/togo}" class="btn btn-secondary btn-sm">全部訂單</a>
                         </div>
                     </div>
-
                     <div class="table-responsive mt-3">
                         <table id="demoData" class="table table-secondary table-striped table-hover text-center">
                             <thead class="thead-light">
@@ -48,6 +48,7 @@
                                     <th scope="col">電話</th>
                                     <th scope="col">訂單金額</th>
                                     <th scope="col">成立時間</th>
+                                    <th scope="col">取餐時間</th>
                                     <th scope="col">訂單狀態</th>
                                     <th scope="col">餐廳名稱</th>
                                     <th scope="col">訂單備註</th>
@@ -63,7 +64,8 @@
                                         <td class="align-middle" th:text="${togo.tgName}"></td>
                                         <td class="align-middle" th:text="${togo.tgPhone}"></td>
                                         <td class="align-middle" th:text="${togo.totalPrice}"></td>
-                                        <td class="align-middle" th:text="${togo.formattedDate}"></td>
+                                        <td class="align-middle" th:text="${togo.createTimeformattedDate}"></td>
+                                        <td class="align-middle" th:text="${togo.pickupTimeformattedDate}"></td>
                                         <td class="align-middle">
                                             <span th:switch="${togo.togoStatus}">
                                                 <span th:case="1" class="badge bg-warning">未取餐</span>
@@ -75,17 +77,18 @@
                                         <td class="align-middle" th:text="${togo.togoMemo}"></td>
                                         <td class="align-middle">
                                             <input type="hidden" class="togoId" id="togoId" th:value="${togo.togoId}" />
-                                            <button type="button" class="btn btn-info"
-                                                id="showDetailsBtn">查看</button>
+                                            <button type="button" class="btn btn-info" id="showDetailsBtn">查看</button>
                                         </td>
                                     </tr>
                                 </th:block>
                             </tbody>
                         </table>
                     </div>
+
                 </div>
+
                 <!-- 分頁 -->
-                <div class="d-flex justify-content-end mt-3">
+                <div class="d-flex justify-content-end mt-3" id="pagination-container">
                     <nav aria-label="Page navigation">
                         <ul class="pagination" id="pagination">
                             <!-- 前一頁 -->
@@ -109,7 +112,9 @@
                             </li>
                         </ul>
                     </nav>
+
                 </div>
+
                 <!-- 插入查詢 -->
                 <div class="modal fade" id="showDetailsModal" tabindex="-1" role="dialog"
                     aria-labelledby="showDetailsModalLabel" aria-hidden="true">
@@ -166,7 +171,7 @@
                     console.log(togoId);
                     showDetails(togoId);
                 });
-            });  
+            });
 
         })
 
@@ -248,6 +253,9 @@
 
                     // 遍歷訂單並插入表格
                     togoData.content.forEach(function (togo) {
+
+                        const pickupTimeformattedDate = togo.pickupTimeformattedDate !== null ? togo.pickupTimeformattedDate : '';
+
                         const orderRow = `
                             <tr>
                                 <td class="align-middle">${togo.togoId}</td>
@@ -255,7 +263,8 @@
                                 <td class="align-middle">${togo.tgName}</td>
                                 <td class="align-middle">${togo.tgPhone}</td>
                                 <td class="align-middle">${togo.totalPrice}</td>
-                                <td class="align-middle">${togo.formattedDate}</td>
+                                <td class="align-middle">${togo.createTimeformattedDate}</td>                               
+                                <td class="align-middle">${togo.pickupTimeformattedDate || ''}</td>
                                 <td class="align-middle">
                                     <span>
                                     ${getTogoStatusBadge(togo.togoStatus)}

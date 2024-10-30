@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -83,7 +84,7 @@ public class StarCupsOrderController {
 		List<TogoItemEntity> togoItems = togoItemService.getAllTogoItemByTogoId(togoId);
 		TogoEntity togo = togoService.getTogoById(togoId);
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-	    togo.setFormattedDate(togo.getTogoCreateTime().format(formatter)); // 將日期格式化為字串
+	    togo.setCreateTimeformattedDate(togo.getTogoCreateTime().format(formatter)); // 將日期格式化為字串
 		List<Restaurant> restaurantList = restaurantService.findAllRestaurants();
 		model.addAttribute("togoItems", togoItems);
 		model.addAttribute("togo", togo);
@@ -91,5 +92,26 @@ public class StarCupsOrderController {
 	    model.addAttribute("restaruantList", restaurantList);
 		return "starcups/order/togoInformation";
 	}
+	
+	//會員取得歷史訂單頁面
+	@GetMapping("/memberCenter/OnlineOrderHistory")
+	public String togoHistoryPage(Model model) {
+
+		return "starcups/order/showHistoryTogo";
+	}
+	
+	//會員取得歷史訂單頁面
+	@GetMapping("/memberCenter/OnlineOrderHistory/{togoId}")
+	public String togoHistoryDetailsPage(Model model, @PathVariable Integer togoId) {
+		TogoEntity togo = togoService.getTogoById(togoId);
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	    togo.setCreateTimeformattedDate(togo.getTogoCreateTime().format(formatter)); // 將日期格式化為字串
+		List<TogoItemEntity> togoItems = togoItemService.getAllTogoItemByTogoId(togoId);
+		model.addAttribute("togo", togo);
+		model.addAttribute("togoItems", togoItems);
+		return "starcups/order/togoHistoryDetails";
+	}
+	
+	
 	
 }

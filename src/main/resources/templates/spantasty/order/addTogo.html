@@ -45,21 +45,25 @@
                     <span class="error text-danger" id="tgPhoneError"></span>
                 </div>
                 <div class="col-md-4">
-                    <label for="rentId" class="form-label">租借單號</label>
-                    <input type="text" class="form-control" name="rentId" id="rentId">
-                    <span class="error text-danger" id="rentIdError"></span>
-                </div>
-                <div class="col-md-4">
                     <label for="restaurantId" class="form-label">取餐餐廳</label>
-                    <select name="restaurantId" id="restaurantId" class="form-select" required>
+                    <select name="restaurantId" id="restaurantId" class="form-select" onchange="createPickupTime()"
+                        required>
                         <option value="" selected>請選擇餐廳</option>
                         <th:block th:each="restaurant : ${restaurants}">
                             <option th:value="${restaurant.restaurantId}" th:text="${restaurant.restaurantName}">
                             </option>
                         </th:block>
                     </select>
+                    <span class="error text-danger"></span>
                 </div>
                 <div class="col-md-4">
+                    <label for="togoPickupTime" class="form-label">取餐時間</label>
+                    <select name="togoPickupTime" id="togoPickupTime" class="form-select">
+                        <option value="">選擇時間</option>
+                    </select>
+                    <span class="error text-danger"></span>
+                </div>
+                <!-- <div class="col-md-4">
                     <label for="togoStatus" class="form-label">取餐狀態</label>
                     <select class="form-select" id="togoStatus" aria-label="Default select example" required>
                         <option selected value="">請選擇</option>
@@ -67,8 +71,9 @@
                         <option value="2">已取餐</option>
                         <option value="3">已取消</option>
                     </select>
-                </div>
-                <div class="col-md-6">
+                    <span class="error text-danger"></span>
+                </div> -->
+                <div class="col-md-4">
                     <label for="togoMemo" class="form-label">訂單備註</label>
                     <textarea class="form-control" id="togoMemo" rows="3"></textarea>
                 </div>
@@ -89,34 +94,38 @@
 
             document.getElementById("togoForm").addEventListener("submit", function (event) {
                 event.preventDefault();
-                if (validateForm()) {
-                    // 表單數據
-                    const newTogo = {
-                        memberId: document.getElementById("memberId").value,
-                        tgName: document.getElementById("tgName").value,
-                        tgPhone: document.getElementById("tgPhone").value,
-                        rentId: document.getElementById("rentId").value,
-                        restaurantId: document.getElementById("restaurantId").value,
-                        togoStatus: document.getElementById("togoStatus").value,
-                        togoMemo: document.getElementById("togoMemo").value
-                    };
+                const isConfirmed = confirm("你確定要提交這個訂單嗎？");
 
-                    // 發送 POST 請求
-                    axios.post('http://localhost:8080/SpanTasty/order/togo', newTogo)
-                        .then(function (response) {
-                            console.log(response.data);
-                            alert("訂單已成功提交！");
-                            //提交後回到getAllTogo
-                            window.location.href = 'http://localhost:8080/SpanTasty/order/togo';
-                        })
-                        .catch(function (error) {
-                            console.error("提交訂單時發生錯誤：", error);
-                            alert("提交失敗，請稍後再試。");
-                        })
-                } else {
-                    alert("請修正表單中的錯誤！");
+                if (isConfirmed) {
+                    if (validateForm()) {
+                        // 表單數據
+                        const newTogo = {
+                            memberId: document.getElementById("memberId").value,
+                            tgName: document.getElementById("tgName").value,
+                            tgPhone: document.getElementById("tgPhone").value,
+                            restaurantId: document.getElementById("restaurantId").value,
+                            togoPickupTime: document.getElementById("togoPickupTime").value,
+                            // togoStatus: document.getElementById("togoStatus").value,
+                            togoMemo: document.getElementById("togoMemo").value
+                        };
+
+                        // 發送 POST 請求
+                        axios.post('http://localhost:8080/SpanTasty/order/togo', newTogo)
+                            .then(function (response) {
+                                console.log(response.data);
+                                alert("訂單已成功提交！");
+                                //提交後回到getAllTogo
+                                window.location.href = 'http://localhost:8080/SpanTasty/order/togo';
+                            })
+                            .catch(function (error) {
+                                console.error("提交訂單時發生錯誤：", error);
+                                alert("提交失敗，請稍後再試。");
+                            })
+                    } else {
+                        alert("請修正表單中的錯誤！");
+                    }
                 }
-            })
+                })
 
 
             document.getElementById("autoFillBtn").addEventListener("click", function () {
@@ -124,8 +133,6 @@
                 document.getElementById("memberId").value = "3";
                 document.getElementById("tgName").value = "Johnson";
                 document.getElementById("tgPhone").value = "0973829123";
-                document.getElementById("restaurantId").value = "3";
-                document.getElementById("togoStatus").value = "1";
                 document.getElementById("togoMemo").value = "不用餐具";
 
             });
@@ -156,19 +163,13 @@
                     allowEmpty: false,
                     message: "取餐電話不能為空白"
                 }
-            },
-            rentId: {
-                numericality: {
-                    onlyInteger: true,
-                    greaterThan: 0,
-                    message: "租借單號格式錯誤，只能為數字"
-                }
             }
+
         };
 
         function validateForm() {
             const isValid = true;
-            ['memberId', 'tgName', 'tgPhone', 'rentId'].forEach(field => {
+            ['memberId', 'tgName', 'tgPhone'].forEach(field => {
                 const input = document.querySelector(`input[name="${field}"]`);
                 validateField(input, field);
                 if (document.getElementById(`${field}Error`).textContent !== '') {
@@ -210,7 +211,6 @@
         const memberId = document.getElementById('memberId');
         const tgName = document.getElementById('tgName');
         const tgPhone = document.getElementById('tgPhone');
-        const rentId = document.getElementById('rentId');
 
         memberId.addEventListener('blur', function () {
             console.log("memberId blur triggered");
@@ -227,12 +227,36 @@
             validateField(this, 'tgPhone');
         });
 
-        rentId.addEventListener('blur', function () {
-            console.log("rentId blur triggered");
-            validateField(this, 'rentId');
-        });
+        function createPickupTime() {
+            console.log("change")
+            const restaurantId = document.getElementById("restaurantId").value;
+            const togoPickupTime = document.getElementById("togoPickupTime");
+
+            // 清空舊的選項
+            togoPickupTime.innerHTML = '<option value="">選擇時間</option>'; // 在這裡清空選項
+
+            axios.get(`http://localhost:8080/SpanTasty/order/togo/${restaurantId}/pickup`)
+                .then(function (response) {
+                    const pickupTimes = response.data;
+                    console.log("時間選項" + pickupTimes)
 
 
+                    // 清空舊的選項
+
+
+                    // 將新選項添加到下拉選單
+                    pickupTimes.forEach(time => {
+                        const option = document.createElement("option");
+                        option.value = time;
+                        option.textContent = time;
+                        togoPickupTime.appendChild(option);
+                    });
+                    togoPickupTime.disabled = false;
+                })
+                .catch(function (error) {
+                    console.error("獲取取餐時間失敗:", error);
+                });
+        }
     </script>
 
     <script th:src="@{/js/bootstrap.bundle.min.js}"></script>

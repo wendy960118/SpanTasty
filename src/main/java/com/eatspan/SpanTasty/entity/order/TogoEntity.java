@@ -2,6 +2,7 @@ package com.eatspan.SpanTasty.entity.order;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,14 +61,31 @@ public class TogoEntity implements Serializable {
 	private LocalDateTime togoCreateTime;
 	
 	@Transient
-    private String formattedDate;
+    private String createTimeformattedDate;
 
-    public String getFormattedDate() {
-        return formattedDate;
+    public String getCreateTimeformattedDate() {
+        return createTimeformattedDate;
     }
+    
+    public void setCreateTimeformattedDate(String formattedDate) {
+    	this.createTimeformattedDate = formattedDate;
+    }
+    
+    
+    @DateTimeFormat(pattern = "HH:mm")
+    @JsonFormat(pattern = "HH:mm", timezone = "UTC+8")
+    @Column(name = "togo_pickup_time")
+    private LocalTime togoPickupTime;
 
-    public void setFormattedDate(String formattedDate) {
-        this.formattedDate = formattedDate;
+    @Transient
+    private String pickupTimeformattedDate;
+
+    public String getPickupTimeformattedDate() {
+        return pickupTimeformattedDate;
+    }
+    
+    public void setPickupTimeformattedDate(String formattedDate) {
+        this.pickupTimeformattedDate = formattedDate;
     }
 	
 	@Column(name = "rentId")
@@ -83,7 +101,7 @@ public class TogoEntity implements Serializable {
 	private String togoMemo;
 	
 	@Column(name = "discount_amount")
-	private Integer discoutAmount;   // discount
+	private Integer discountAmount;   // discount
 	
 	@Column(name = "final_total")
 	private Integer finalTotal;   //discount
