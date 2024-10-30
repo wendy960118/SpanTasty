@@ -230,8 +230,8 @@
           	<form th:action= "@{/StarCups/ecpayCheckout(shoppingId=${session['shoppingId']})}" method="post" id="checkoutForm">
           		<button type="submit" class="button button-secondary button-pipaluk" id="checkoutBtn">Proceed to checkout</button>
           	</form>
-			<form th:action="@{/StarCups/orderConfirmP(shoppingId=${session['shoppingId']})}" method="post" id="checkoutForm">
-			    <button type="submit" class="custom-button" id="checkoutBtn"><i class="fa-solid fa-star" style="color: #976f55;" id="confirmOrderIcon"></i></button>
+			<form th:action="@{/StarCups/orderConfirmP(shoppingId=${session['shoppingId']})}" method="post" id="checkoutFormP">
+			    <button type="submit" class="custom-button" id="checkoutBtnP"><i class="fa-solid fa-star" style="color: #976f55;" id="confirmOrderIcon"></i></button>
 			</form>
        	 </div>
       </section>
@@ -448,6 +448,30 @@
           alert("請稍後再試")
         })
       })
+
+      //送出
+      document.getElementById('checkoutFormP').addEventListener('submit',(e)=>{
+        e.preventDefault()
+        const couponDiscount = document.getElementById('couponDiscountTd').dataset.discount
+        const pointDiscount = document.getElementById('pointDiscountTd').dataset.discount    
+        
+        axios.post('/SpanTasty/StarCups/coupon/allDiscount',{
+            couponDiscount:Number(couponDiscount),
+            pointDiscount:Number(pointDiscount),
+            shoppingId:shoppingId,
+            couopnId:couponId,
+            memberId:memberId,
+            finalAmount:changeTotal()
+
+        })
+        .then(res=>{
+          e.target.submit();
+        })
+        .catch(err=>{         
+          alert("請稍後再試")
+        })
+      })
+
 
 
       //使用規則
