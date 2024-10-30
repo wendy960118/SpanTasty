@@ -276,7 +276,7 @@ public class ShoppingOrderService {
         // 设置 ECPay 结账信息
         AllInOne all = new AllInOne("");
         AioCheckOutALL obj = new AioCheckOutALL();
-        obj.setMerchantTradeNo(String.valueOf(shoppingId)); 
+        obj.setMerchantTradeNo(String.valueOf(shoppingId+ System.currentTimeMillis())); 
 //        obj.setMerchantTradeNo("SC" + System.currentTimeMillis()); 
         obj.setMerchantTradeDate(currentDateTime);
 //        obj.setTotalAmount(String.valueOf(totalAmount)); 
@@ -293,9 +293,9 @@ public class ShoppingOrderService {
                 Integer quantity = item.getShoppingItemQuantity(); 
                 Integer price = item.getShoppingItemPrice(); 
                 itemNames.append(product.getProductName())
-                          .append(" ")
+                          .append(" * ")
                           .append(quantity)
-                          .append("*NT$")
+                          .append("= NT$")
                           .append(price)
                           .append("# "); 
             }
