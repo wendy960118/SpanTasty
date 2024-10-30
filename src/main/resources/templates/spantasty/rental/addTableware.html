@@ -86,7 +86,10 @@ form {
 <table class="table w-100 table-striped" id="table">
 	<tr><td>用具名稱: <input class="tableware-input" type="text" name="tablewareName" required/></td></tr>
 	<tr><td>押金金額: <input class="tableware-input" type="text" name="tablewareDeposit" required/></td></tr>
-	<tr><td>用具圖片: <input class="tableware-input" type="file" name="timg" required/></td></tr>
+	<tr><td class="d-flex">
+	用具圖片: <input class="tableware-input" type="file" name="timg" onchange="previewImage(event)" style="width: 30%;border:none;" required/>
+	<div id="image-preview"></div>
+	</td></tr>
 	<tr><td>用具描述: <input class="tableware-input" type="text" name="tablewareDescription" required/></td></tr>
 </table>
 <div id="stock-container">
@@ -108,7 +111,7 @@ form {
 </div>
 <button type="button" id="add-stock-button" class="btn-primary btn btn-sm" >添加庫存</button>
 <button type="submit" class="btn-success btn btn-sm">新增餐具</button>
-<button type="button" onclick="autoFillInputs()" class="btn-warning btn btn-sm">一鍵輸入</button>
+<button type="button" onclick="autoFillInputs()" class="btn-light btn btn-sm">一鍵輸入</button>
 </form>
 </div>
 </div>
@@ -123,9 +126,23 @@ document.addEventListener("DOMContentLoaded", function() {
 </script>
 <script>
 function autoFillInputs() {
-    document.querySelector('input[name="tablewareName"]').value = "環保杯";
-    document.querySelector('input[name="tablewareDeposit"]').value = "50";
-    document.querySelector('input[name="tablewareDescription"]').value = "這是一個環保杯，用於替代一次性塑膠杯。";
+    document.querySelector('input[name="tablewareName"]').value = "循環杯(大)";
+    document.querySelector('input[name="tablewareDeposit"]').value = "70";
+    document.querySelector('input[name="tablewareDescription"]').value = "循環杯材質為PP，重量輕巧，耐熱性好，容量為16oz，相當於470ml";
+}
+
+function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function() {
+        const img = document.createElement("img");
+        img.src = reader.result;
+        img.style.maxWidth = "100px";
+        img.style.marginTop = "10px";
+        const previewContainer = document.getElementById("image-preview");
+        previewContainer.innerHTML = ""; // 清除先前的預覽
+        previewContainer.appendChild(img);
+    };
+    reader.readAsDataURL(event.target.files[0]);
 }
 
 let stockIndex = 0; // 初始化庫存索引

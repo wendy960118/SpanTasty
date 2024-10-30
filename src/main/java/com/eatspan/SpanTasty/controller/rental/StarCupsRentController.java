@@ -73,6 +73,15 @@ public class StarCupsRentController {
 	public String showAllTablewares(Model model, @RequestParam(defaultValue = "1") Integer page) {
 		Page<Tableware> tablewarePages = tablewareService.findAllTablewarePages(page);
 		Integer totalTablewares = tablewareService.countTableware();
+		int itemsPerPage = 10;
+		int currentPage = tablewarePages.getNumber() + 1; // getNumber() 是從 0 開始，所以加 1
+		int totalItems = (int) tablewarePages.getTotalElements();
+
+		int startItem = (currentPage - 1) * itemsPerPage + 1;
+		int endItem = Math.min(currentPage * itemsPerPage, totalItems);
+
+		model.addAttribute("startItem", startItem);
+		model.addAttribute("endItem", endItem);
 		model.addAttribute("totalTablewares", totalTablewares);
 		model.addAttribute("tablewarePages", tablewarePages);
 		return "starcups/rental/allTablewarePage";

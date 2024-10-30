@@ -125,7 +125,7 @@ html.lt-ie-10 .ie-panel {
                 <div class="cart-inline toggle-original-elements" id="cartContainer">
                   <!-- 動態插入資訊 -->
                   <div class="cart-inline-header" id="cartHeaderContainer">
-                    <h5 class="cart-inline-title">In cart: <span id="showAmount">0</span> Products</h5>
+                    <h5 class="cart-inline-title">購物車: <span id="showAmount">0</span> Products</h5>
                   </div>
                   <div class="cart-inline-body pe-0 pb-0">
                     <!-- 動態插入購物車內容 -->
@@ -173,8 +173,8 @@ html.lt-ie-10 .ie-panel {
             <div class="box-pricing-body">
               <div class="box-pricing-caption">
               <img th:src="${tableware.tablewareImage != null ? tableware.tablewareImage : 'https://via.placeholder.com/450x400'}" alt="" width="180" height="180" style="height:180px;" />
-                <h5 class="box-pricing-title" th:text="${tableware.tablewareName}"></h5>
-                <h3 class="box-pricing-price"><span>NT$</span><span class="box-icon-classic-title" th:text="${tableware.tablewareDeposit}"></span></h3>
+                <h6 class="box-pricing-title" th:text="${tableware.tablewareName}"></h6>
+                <h4 class="box-pricing-price"><span>NT$</span><span class="box-icon-classic-title" th:text="${tableware.tablewareDeposit}"></span></h4>
                 <div class="quantity-selector">
                   <div class="table-cart-stepper">
                     <input class="form-input" th:id="'rentItemQuantity'+${tableware.tablewareId}" type="number" data-zeros="true" value="0" min="0" max="1000">
@@ -304,13 +304,13 @@ function updateCartUI(cartItems) {
             <div class="unit-left">
               <img src="${item.itemImage}" alt="" width="70" height="70" style="height:70px"/>
             </div>
-            <div class="unit-body ms-2 mb-0 pb-3" style="width:100px">
+            <div class="unit-body ms-2 mb-0 pb-3" style="width:170px">
               <span class="fs-7 ">${item.itemName}</span>
               <br/>
               <br/>
               <span class="fs-7">${item.rentItemQuantity}</span><span> X </span> <span> NT$${itemTotalPrice}</span>
             </div>
-              <div class="unit-right ms-1 mb-0 mt-4 pt-3" style="width:200px; text-align:right;">
+              <div class="unit-right ms-1 mb-0 mt-4 pt-3" style="width:130px; text-align:right;">
                   <button onclick="removeFromCart(${index})" style="font-size:18px;border:none; background-color:white;" class="pe-3"><i class="fa-solid fa-trash-can-arrow-up"></i></button>
               </div>
           </div>
