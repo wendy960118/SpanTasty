@@ -147,6 +147,7 @@ public class ShoppingOrderController {
 	    }
 
 	    List<ShoppingOrder> shoppings = shoppingOrderService.findAllShoppingOrder();
+	    shoppings.sort((o1, o2) -> o2.getShoppingId().compareTo(o1.getShoppingId()));
 	    model.addAttribute("shoppings", shoppings);
 
 	    return "spantasty/store/shopping/searchAllShopping";

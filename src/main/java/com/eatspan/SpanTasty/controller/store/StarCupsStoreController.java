@@ -85,7 +85,8 @@ public class StarCupsStoreController {
 	    model.addAttribute("totalPages", totalPages);
 	    model.addAttribute("currentPage", page);
 
-	    model.addAttribute("allProductCount", totalProducts); // 新增這行
+	    model.addAttribute("totalProducts", totalProducts);
+
 
 	    for (ProductType productType : productTypes) {
 	        int count = productType.getProducts().size(); 
