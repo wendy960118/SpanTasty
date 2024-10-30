@@ -18,21 +18,21 @@
                 </div>
                 
                 <div style="width: 100%; max-width: 300px; background-color: white; border-radius: 15px; padding: 15px; margin-bottom: 15px;">
-                	<!--------------------------- 設置內文  可用${}動態顯示-------------------------------------->
                     <p>親愛的，${rent.member.memberName}</p>
-                    <p>您的租借訂單 編號: #${rent.rentId} 於 ${rent.dueDate} 即將到期</p>
+                    <p>您的租借訂單 編號: #${rent.rentId}</p> 
+                    <p>即將於 ${rent.dueDate} 到期</p>
                     <p>您的租借品項為:</p>
-					<ul>
+					<ul style="padding-left:0;">
 					    <#list rent.rentItems as rentItem>
-					        <li>
+					        <li style="list-style:none;">
 					            <div class="box-pricing-body">
-					                <i class="fa-solid fa-check"></i>&nbsp;&nbsp;<span>${rentItem.tableware.tablewareName}</span>: 
+					                <span>${rentItem.tableware.tablewareName}</span>: 
 					                <span>${rentItem.rentItemQuantity}</span>
 					            </div>
 					        </li>
 					    </#list>
 					</ul>
-                    <p>請務必按時歸還</p>
+                    <p>請務必按時歸還 謝謝</p>
                     <a href="http://localhost:8080/SpanTasty/StarCups" style="display: inline-block; padding: 10px 20px; background-color: #87461A; color: white; text-decoration: none; border-radius: 5px;">SHOP NOW ></a>
                 </div>
             </td>

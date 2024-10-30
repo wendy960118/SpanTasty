@@ -32,7 +32,7 @@ public interface RentRepository extends JpaRepository<Rent, Integer> {
 	        @Param("rentDateEnd") Date rentDateEnd);
 	
 	
-	@Query(value = "SELECT * FROM rent WHERE due_date = DATE_ADD(current_date(), INTERVAL 1 DAY) AND return_date IS NULL", nativeQuery = true)
+	@Query(value = "SELECT * FROM rent WHERE due_date = DATEADD(DAY, 1, CAST(GETDATE() AS DATE)) AND return_date IS NULL", nativeQuery = true)
 	List<Rent> findByDueDateTomorrow();
 	
 	

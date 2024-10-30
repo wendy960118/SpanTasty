@@ -160,7 +160,7 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
               </thead>
               <tbody>
                 <tr th:each="rentItem : ${rentItems}" th:data-tablewareId="${rentItem.tableware.tablewareId}">
-                  <td style="padding-top:0px; padding-bottom:12px; height:100px;"><div class="table-cart-figure me-2" style="max-width:70px; height:80px;"><img th:src="${rentItem.tableware.tablewareImage != null ? rentItem.tableware.tablewareImage : 'https://via.placeholder.com/450x400'}" alt="" width="70" height="60" style="height:80px;"/></div> <div class="table-cart-link fs-5" th:text="${rentItem.tableware.tablewareName}"></div></td>
+                  <td style="padding-top:12px; padding-bottom:12px; height:100px;"><div class="table-cart-figure me-2" style="max-width:70px; height:80px;"><img th:src="${rentItem.tableware.tablewareImage != null ? rentItem.tableware.tablewareImage : 'https://via.placeholder.com/450x400'}" alt="" width="70" height="60" style="height:80px;"/></div> <div class="table-cart-link fs-5" th:text="${rentItem.tableware.tablewareName}"></div></td>
                   <td><span th:text="${rentItem.tableware.tablewareDeposit}"></span></td>
                   <td>
                   <span th:text="${rentItem.rentItemQuantity}"></span>
@@ -183,10 +183,11 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
               <div class="box-radio mt-0" style="padding-bottom:21px;">
                 <div class="radio-panel">
                   <label class="radio-inline active">
-                    <input name="input-group-radio" value="checkbox-1" type="radio" checked>銀行轉帳支付
+                    <input name="input-group-radio" value="checkbox-1" type="radio" checked>銀聯卡支付
                   </label>
                   <div class="radio-panel-content">
-                    <p>Make your payment directly into our bank account. Please use your Order ID as the payment reference.</p>
+                    <p>使用銀聯卡一次性支付所有租借款項</p>
+					<br/>
                   </div>
                 </div>
                 <div class="radio-panel">
@@ -194,7 +195,8 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
                     <input name="input-group-radio" value="checkbox-1" type="radio">信用卡支付
                   </label>
                   <div class="radio-panel-content">
-                    <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal account.</p>
+                    <p>使用信用卡一次性或分期支付租借款項</p>
+					<br/>
                   </div>
                 </div>
                 <div class="radio-panel">
@@ -202,7 +204,8 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
                     <input name="input-group-radio" value="checkbox-1" type="radio">現金支付
                   </label>
                   <div class="radio-panel-content">
-                    <p>Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.</p>
+                    <p>使用現金支付租借款項</p>
+					<br/>
                   </div>
                 </div>
               </div>
@@ -224,7 +227,7 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
                     </tr>
                     <tr>
                       <td class="pe-0"></td>
-                      <td class="pt-2 pb-2 ps-0" style="text-align:left;width:70%;">
+                      <td class="pt-2 pb-2 ps-0" style="text-align:left;width:67%;">
 			          	<form class="" th:action= "@{/StarCups/rental/ecpayCheckout(rentId=${session['rentId']})}" method="post">
 			          		<button type="submit" class="button button-ujarak button-gray-7">結帳</button>
 			          	</form>

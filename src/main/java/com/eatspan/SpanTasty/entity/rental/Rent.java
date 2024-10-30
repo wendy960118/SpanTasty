@@ -79,7 +79,7 @@ public class Rent implements Serializable {
 	
 	
 	@JsonIgnore
-	@OneToMany(mappedBy = "rent")
+	@OneToMany(mappedBy = "rent" , fetch = FetchType.EAGER)
 	private List<RentItem> rentItems = new ArrayList<RentItem>();
 	
 	
