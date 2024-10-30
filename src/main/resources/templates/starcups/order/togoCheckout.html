@@ -33,30 +33,32 @@
       display: block;
     }
 
-    .point{
-          letter-spacing: .1em;
-          color: #9b9b9b;
-        }
+    .point {
+      letter-spacing: .1em;
+      color: #9b9b9b;
+    }
 
-        .pointText{
-          font-size: 20px;
-        }
-        
-        .box-sportlight-badge {
-          top: 0 !important;
-          font-size: 15px !important;
-        }
-        
-    .addBtn{
-          width: 60px;
-          height: 36px;
-          border: 0;
-          background-color: #efc4a3;
-          border-radius: 3px;
+    .pointText {
+      font-size: 20px;
     }
+
+    .box-sportlight-badge {
+      top: 0 !important;
+      font-size: 15px !important;
+    }
+
+    .addBtn {
+      width: 60px;
+      height: 36px;
+      border: 0;
+      background-color: #efc4a3;
+      border-radius: 3px;
+    }
+
     .cantUse {
-          filter: opacity(50%) grayscale(100%);
+      filter: opacity(50%) grayscale(100%);
     }
+
   </style>
 </head>
 
@@ -166,24 +168,25 @@
               <div class="col-7">
                 <span class="point" style="font-size: 16px;" id="pointItem">點數折抵</span>
                 <div class="form-wrap text-align-center" id="pointItem">
-                  <input class="form-input form-input-inverse pointText" id="pointInput" type="text" name="email" style="font-size: 20px;">
+                  <input class="form-input form-input-inverse pointText" id="pointInput" type="text" name="email"
+                    style="font-size: 20px;">
                   <label class="form-label" for="pointInput">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Point</label>
                 </div>
               </div>
               <div class="col-4 d-flex align-items-end">
                 <ul class="point" id="pointInfo">
-                  <li class="active" style="font-size: 16px;" >可用點數 : 910點(1點折抵1元)</li>
-                  <li class="active" style="font-size: 16px;" >您有 45點將於 2024/13/31到期</li>
-                </ul>  
+                  <li class="active" style="font-size: 16px;">可用點數 : 910點(1點折抵1元)</li>
+                  <li class="active" style="font-size: 16px;">您有 45點將於 2024/13/31到期</li>
+                </ul>
               </div>
               <div class="col"></div>
-            </div>       
+            </div>
           </div>
         </div>
       </div>
     </section>
-     <!-- Modal click select coupon jump out by hao-->
-     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!-- Modal click select coupon jump out by hao-->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -191,14 +194,15 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-              <div class="row ms-1 me-1 " style="background-color: #F7F7F7;height: 70px;">
-                <div class="col-3 d-flex justify-content-end align-items-center">新增優惠券</div>       
-                <div class="col-6 d-flex align-items-center"><input type="text" class="form-control" id="modelCouponCode"></div>       
-                <div class="col-3 d-flex align-items-center"><button class="addBtn" id="add">新增</button></div>       
+            <div class="row ms-1 me-1 " style="background-color: #F7F7F7;height: 70px;">
+              <div class="col-3 d-flex justify-content-end align-items-center">新增優惠券</div>
+              <div class="col-6 d-flex align-items-center"><input type="text" class="form-control" id="modelCouponCode">
               </div>
-                <!--  -->
-              <div id="couponDiv" class="mt-2">
-                <!-- <div class="row">
+              <div class="col-3 d-flex align-items-center"><button class="addBtn" id="add">新增</button></div>
+            </div>
+            <!--  -->
+            <div id="couponDiv" class="mt-2">
+              <!-- <div class="row">
                   <div class="col d-flex mb-3">
                     <div class="d-flex" style="background-color: rgb(232, 208, 192);"><img src="/SpanTasty/starcups/images/coupon/couponhead.png" width="87" height="87" alt=""></div>
                     <div class="border w-100 d-flex justify-content-between">
@@ -216,8 +220,8 @@
                       <div class="box-sportlight-badge box-sportlight-sale mb-3">x 3</div>      
                     </div>
                   </div> -->
-                </div>                  
-            
+            </div>
+
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
@@ -230,17 +234,16 @@
 
 
     <!-- Section payment-->
-    <section class="section novi-bg novi-bg-img section-xl bg-default text-md-start">
+    <section class="section novi-bg novi-bg-img section-xl bg-default text-md-start" style="padding-top: 0px;">
       <div class="container">
         <div class="row row-50 justify-content-center">
           <!-- 取餐資訊 -->
           <div class="col-md-10 col-lg-6">
-            <h4 class="text-spacing-50">取餐門市</h4>
+            <h4 class="text-spacing-50">取餐資訊</h4>
             <div class="row row-14 row-fix gutters-14" style="margin-top: 25px;">
               <!--Select 2-->
 
               <div class="col-sm-6">
-                <!-- <div style="display: flex; gap: 10px;"> -->
                 <select class="form-input select-filter" data-minimum-results-for-search="Infinity"
                   data-constraints="@Required" id="citySelect" onchange="fetchTowns()">
                   <option value="">選擇縣市</option>
@@ -251,12 +254,17 @@
                   data-constraints="@Required" id="townSelect" disabled onchange="fetchRestaurants()">
                   <option value="">選擇鄉鎮</option>
                 </select>
-                <!-- </div> -->
               </div>
-              <div class="col-sm-12">
+              <div class="col-sm-6">
                 <select class="form-input select-filter" data-minimum-results-for-search="Infinity"
-                  data-constraints="@Required" id="restaurantSelect" disabled>
+                  data-constraints="@Required" id="restaurantSelect" disabled onchange="createPickupTime()">
                   <option value="">選擇餐廳</option>
+                </select>
+              </div>
+              <div class="col-sm-6">
+                <select class="form-input select-filter" data-minimum-results-for-search="Infinity"
+                  data-constraints="@Required" id="timeSelect" disabled>
+                  <option value="">選擇時間</option>
                 </select>
               </div>
             </div>
@@ -265,13 +273,15 @@
               <div class="row row-14 row-fix gutters-14">
                 <div class="col-sm-6">
                   <div class="form-wrap">
-                    <input class="form-input" id="tgName" type="text" name="tgName" data-constraints="@Required" placeholder="姓名"/>
+                    <input class="form-input" id="tgName" type="text" name="tgName" data-constraints="@Required"
+                      placeholder="姓名" />
                     <label class="form-label" for="tgName"></label>
                   </div>
                 </div>
                 <div class="col-sm-6">
                   <div class="form-wrap">
-                    <input class="form-input" id="tgPhone" type="text" name="tgPhone" data-constraints="@Required" placeholder="電話"/>
+                    <input class="form-input" id="tgPhone" type="text" name="tgPhone" data-constraints="@Required"
+                      placeholder="電話" />
                     <label class="form-label" for="tgPhone"></label>
                   </div>
                 </div>
@@ -323,8 +333,7 @@
         </div>
         <!-- 訂單送出 -->
         <div class="button-wrap text-center">
-          <button class="button button-secondary button-pipaluk" id="submitTogoBtn" type="submit">Proceed to
-            checkout</button>
+          <button class="button button-secondary button-pipaluk" id="submitTogoBtn" type="submit">送出訂單</button>
         </div>
       </div>
     </section>
@@ -338,26 +347,26 @@
   <!-- footer th:replace -->
   <div th:replace="~{starcups/display/footer}"></div>
   <script>
-    function countSubtotal(){
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        let subtotal=0;
-        cart.forEach(item => {
-          const itemTotalPrice = item.foodPrice * item.quantity;
-          subtotal+= itemTotalPrice
-          })
-        return  subtotal ;
-      }
+    function countSubtotal() {
+      let cart = JSON.parse(localStorage.getItem('cart')) || [];
+      let subtotal = 0;
+      cart.forEach(item => {
+        const itemTotalPrice = item.foodPrice * item.quantity;
+        subtotal += itemTotalPrice
+      })
+      return subtotal;
+    }
     let memberId;
     let conponCode;
     let couponId;
     let discountAmount;
-    let finalAmount=countSubtotal();
+    let finalAmount = countSubtotal();
 
 
     document.addEventListener("DOMContentLoaded", function () {
       loadCartIntoTable(); // 頁面加載時調用
       getProfile();
-      
+
 
 
       //訂單提交
@@ -372,6 +381,8 @@
 
       })
 
+
+
     })
 
     function createTogo() {
@@ -379,16 +390,21 @@
       const memberId = localStorage.getItem('memberId');
       const togoMemo = document.getElementById("togoMemo").value;
       const restaurantId = document.getElementById("restaurantSelect").value;
+      const togoPickupTime = document.getElementById("timeSelect").value;
       const tgName = document.getElementById("tgName").value;
       const tgPhone = document.getElementById("tgPhone").value;
-      const couponDiscount = document.getElementById('couponDiscountTd').dataset.discount ? document.getElementById('couponDiscountTd').dataset.discount:0//edit by hao
-      const pointDiscount = document.getElementById('pointDiscountTd').dataset.discount ? document.getElementById('pointDiscountTd').dataset.discount:0//edit by hao
-      const discoutAmount = Number(couponDiscount)+Number(pointDiscount)//edit by hao
-      const finalTotal = finalAmount-discoutAmount//edit by hao
-      
-      
+      const couponDiscount = document.getElementById('couponDiscountTd').dataset.discount ? document.getElementById('couponDiscountTd').dataset.discount : 0//edit by hao
+      const pointDiscount = document.getElementById('pointDiscountTd').dataset.discount ? document.getElementById('pointDiscountTd').dataset.discount : 0//edit by hao
+      const discoutAmount = Number(couponDiscount) + Number(pointDiscount)//edit by hao
+      const finalTotal = finalAmount - discoutAmount//edit by hao
+
       if (!restaurantId) {
         alert("請選擇餐廳");
+        return;
+      }
+
+      if (!togoPickupTime) {
+        alert("請選擇取餐時間");
         return;
       }
 
@@ -398,6 +414,7 @@
         tgPhone,
         tgName,
         restaurantId,
+        togoPickupTime,
         togoMemo,
         discoutAmount,
         finalTotal
@@ -443,27 +460,27 @@
             alert('訂單已送出')
             // 清除 localStorage 中的購物車資料
             localStorage.removeItem('cart');
-            
+
             /* 使用優惠券、累積點數 */
             const couponDiscount = document.getElementById('couponDiscountTd').dataset.discount
             const pointDiscount = document.getElementById('pointDiscountTd').dataset.discount
             console.log(finalAmount);
-            
-            axios.post('/SpanTasty/StarCups/coupon/allDiscount/togo',{
-              couponDiscount:Number(couponDiscount),
-              pointDiscount:Number(pointDiscount),
-              shoppingId:togoId,
-              couopnId:couponId,
-              memberId:memberId,
-              finalAmount:finalAmount
+
+            axios.post('/SpanTasty/StarCups/coupon/allDiscount/togo', {
+              couponDiscount: Number(couponDiscount),
+              pointDiscount: Number(pointDiscount),
+              shoppingId: togoId,
+              couopnId: couponId,
+              memberId: memberId,
+              finalAmount: finalAmount
             })
-            .then(res=>{
-              // 跳轉到成功頁面
-              window.location.href = `/SpanTasty/StarCups/order/togo/information?id=${togoId}`;
-            })
-            .catch(err=>{         
-              alert("請稍後再試")
-            })
+              .then(res => {
+                // 跳轉到成功頁面
+                window.location.href = `/SpanTasty/StarCups/order/togo/information?id=${togoId}`;
+              })
+              .catch(err => {
+                alert("請稍後再試")
+              })
 
           } else {
             console.log('訂單明細建立失敗');
@@ -537,6 +554,39 @@
       } else {
         document.getElementById("restaurantSelect").disabled = true;
       }
+    }
+
+
+
+    function createPickupTime() {
+      console.log("change")
+      const restaurantId = document.getElementById("restaurantSelect").value;
+      const timeSelect = document.getElementById("timeSelect");
+
+      // 清空舊的選項
+      timeSelect.innerHTML = '<option value="">選擇時間</option>'; // 在這裡清空選項
+
+      axios.get(`http://localhost:8080/SpanTasty/order/togo/${restaurantId}/pickup`)
+        .then(function (response) {
+          const pickupTimes = response.data;
+          console.log("時間選項" + pickupTimes)
+
+
+          // 清空舊的選項
+
+
+          // 將新選項添加到下拉選單
+          pickupTimes.forEach(time => {
+            const option = document.createElement("option");
+            option.value = time;
+            option.textContent = time;
+            timeSelect.appendChild(option);
+          });
+          timeSelect.disabled = false;
+        })
+        .catch(function (error) {
+          console.error("獲取取餐時間失敗:", error);
+        });
     }
 
     // 頁面載入時預先載入縣市選項
@@ -633,185 +683,186 @@
   </script>
   <script>
     //折扣
-    
-    
 
-    document.addEventListener('DOMContentLoaded',function(){
+
+
+    document.addEventListener('DOMContentLoaded', function () {
 
 
       const token = localStorage.getItem('token');
-        if(!token){
-          console.error('Notoken found')
-          alert('需要登入才能繼續')
-          window.location.href='/SpanTasty/StarCups/loginRegister'
-          return;
+      if (!token) {
+        console.error('Notoken found')
+        alert('需要登入才能繼續')
+        window.location.href = '/SpanTasty/StarCups/loginRegister'
+        return;
+      }
+
+      axios.get('/SpanTasty/member/profile', {
+        headers: {
+          'Authorization': `${token}`
         }
-      
-      axios.get('/SpanTasty/member/profile',{
-          headers:{
-            'Authorization':`${token}`
-          }
-        })
-        .then(response=>{
-          if(response.data.success){
+      })
+        .then(response => {
+          if (response.data.success) {
             const memberData = response.data.data
             memberId = memberData.memberId
-            console.log('會員資訊:',memberData);
+            console.log('會員資訊:', memberData);
             discountInfo(memberId)
-          }    
+          }
         })
-        .catch(err=>{
+        .catch(err => {
           throw new Error('無法獲取會員資訊')
         })
-        
-        
-        let maxPointUse;
-        function discountInfo(memberId){
-          axios.get('/SpanTasty/StarCups/togo/checkout',{
-            headers:{
-                    'Content-Type':'application/json'
-            },
-            params:{
-              memberId:memberId
-            }
-          })
-          .then(res=>{
+
+
+      let maxPointUse;
+      function discountInfo(memberId) {
+        axios.get('/SpanTasty/StarCups/togo/checkout', {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          params: {
+            memberId: memberId
+          }
+        })
+          .then(res => {
             console.log(res.data);
-            maxPointUse=res.data.pointMemberTotalPoint
+            maxPointUse = res.data.pointMemberTotalPoint
             pointHtmlMaker(res.data)
 
           })
-          .catch(err=>{
-            console.error(err);                       
+          .catch(err => {
+            console.error(err);
           })
       }
 
-      
 
 
-      function pointHtmlMaker(data){
-        document.getElementById('pointInfo').innerHTML=`
+
+      function pointHtmlMaker(data) {
+        document.getElementById('pointInfo').innerHTML = `
         <li class="active" style="font-size: 16px;" >可用點數 : ${data.pointMemberTotalPoint}點(1點折抵1元)</li>
         <li class="active" style="font-size: 16px;" >您有 ${data.pointMember.expiringPoints}點將於 ${data.pointMember.expiryDate}到期</li>`
 
       }
       let totalAmount;
-      document.getElementById('selectCoupon').addEventListener('click',()=>{
+      document.getElementById('selectCoupon').addEventListener('click', () => {
         var myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
         myModal.show();
 
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         let totalPrice = count(cart);
-        totalAmount=totalPrice
-        function count(cart){
-          let totalPrice=0;
+        totalAmount = totalPrice
+        function count(cart) {
+          let totalPrice = 0;
           cart.forEach(item => {
-          const itemTotalPrice = item.foodPrice * item.quantity;
-          totalPrice += itemTotalPrice;}) 
+            const itemTotalPrice = item.foodPrice * item.quantity;
+            totalPrice += itemTotalPrice;
+          })
           return totalPrice
         }
         console.log(cart);
-        
-        
-        
-        axios.post('http://localhost:8080/SpanTasty/StarCups/coupon/checkout/togo',{
-                    togoItems: cart,
-                    totalAmount: totalPrice,
-                    memberId: memberId
-                })
-                .then(res=>{
-                  console.log('123');
-                  
-                    console.log(res.data);
-                    HtmlMaker(res.data)
-                    // let coupons = res.data
-                })
+
+
+
+        axios.post('http://localhost:8080/SpanTasty/StarCups/coupon/checkout/togo', {
+          togoItems: cart,
+          totalAmount: totalPrice,
+          memberId: memberId
+        })
+          .then(res => {
+            console.log('123');
+
+            console.log(res.data);
+            HtmlMaker(res.data)
+            // let coupons = res.data
+          })
 
 
       })
-      
-      function HtmlMaker(data){
-        const couponDiv =document.getElementById('couponDiv')
-        couponDiv.innerHTML=''
+
+      function HtmlMaker(data) {
+        const couponDiv = document.getElementById('couponDiv')
+        couponDiv.innerHTML = ''
         data.forEach(coupon => {
-          couponDiv.innerHTML +=`
-            <div class="row mt-1 ${coupon.canUse? '':'cantUse'}">
+          couponDiv.innerHTML += `
+            <div class="row mt-1 ${coupon.canUse ? '' : 'cantUse'}">
               <div class="col d-flex mb-3">
                 <div class="d-flex" style="background-color: rgb(232, 208, 192);"><img src="/SpanTasty/starcups/images/coupon/couponhead.png" width="87" height="87" alt=""></div>
                 <div class="border w-100 d-flex justify-content-between">
                   <div class="ms-1 mt-1">                                                        
                     <ul class="">
                       <li class="text-start"><span>${coupon.coupon.rulesDescription}</span><span></span></li>
-                      <li class="text-start"><span>低消: </span><span>$${coupon.coupon.minOrderDiscount?coupon.coupon.minOrderDiscount:'-'}</span></li>
-                      <li class="text-start"><span>最多折抵: </span><span>$${coupon.coupon.maxDiscount?coupon.coupon.maxDiscount:'-'}</span></li>
+                      <li class="text-start"><span>低消: </span><span>$${coupon.coupon.minOrderDiscount ? coupon.coupon.minOrderDiscount : '-'}</span></li>
+                      <li class="text-start"><span>最多折抵: </span><span>$${coupon.coupon.maxDiscount ? coupon.coupon.maxDiscount : '-'}</span></li>
                       <li class="text-start"><span>數量: </span><span>${coupon.usageAmount}</span></li>
                       <li class="text-start"><span>有效日期: </span><span>${coupon.coupon.couponEndDate}</span><a href="#" class="ms-2 rule" data-couponid=${coupon.coupon.couponId}>使用規則</a></li>
                     </ul>
                   </div>
                   <div class="d-flex align-items-center me-3">
-                    <input type="radio"  name="radioCoupon" ${coupon.canUse? '':'disabled'}  data-couponcode="${coupon.coupon.couponCode}" data-couponid="${coupon.coupon.couponId}">  
+                    <input type="radio"  name="radioCoupon" ${coupon.canUse ? '' : 'disabled'}  data-couponcode="${coupon.coupon.couponCode}" data-couponid="${coupon.coupon.couponId}">  
                   </div>                                                       
                 </div>
               </div>
-            </div>`  
+            </div>`
         });
       }
 
-          //使用優惠券
-          document.getElementById('useCoupon').addEventListener('click',()=>{
+      //使用優惠券
+      document.getElementById('useCoupon').addEventListener('click', () => {
         let couponCode = document.querySelector('input[name="radioCoupon"]:checked').dataset.couponcode
         couponId = document.querySelector('input[name="radioCoupon"]:checked').dataset.couponid
-        document.getElementById('coupon-code').value=couponCode
-        document.getElementById('coupon-code-label').textContent=''
+        document.getElementById('coupon-code').value = couponCode
+        document.getElementById('coupon-code-label').textContent = ''
 
-        axios.get("/SpanTasty/StarCups/coupon/discount",{
+        axios.get("/SpanTasty/StarCups/coupon/discount", {
           params: {
-            totalAmount:totalAmount,
-            couponCode:couponCode
+            totalAmount: totalAmount,
+            couponCode: couponCode
           }
         })
-        .then(res=>{
-          console.log(res.data);
-          couponDiscountHmtlMaker(res.data)
-          changeTotal()
-        }
+          .then(res => {
+            console.log(res.data);
+            couponDiscountHmtlMaker(res.data)
+            changeTotal()
+          }
 
-        )
+          )
       })
 
-      function couponDiscountHmtlMaker(data){
-        document.getElementById('couponDiscountTd').textContent=`-${data}`
-        document.getElementById('couponDiscountTd').dataset.discount=data
+      function couponDiscountHmtlMaker(data) {
+        document.getElementById('couponDiscountTd').textContent = `-${data}`
+        document.getElementById('couponDiscountTd').dataset.discount = data
       }
-      
+
 
       //變更點數
-      document.getElementById('pointInput').addEventListener('change',(e)=>{
+      document.getElementById('pointInput').addEventListener('change', (e) => {
         console.log('touch');
-        
-        
-        if(Number(e.target.value)>maxPointUse){
+
+
+        if (Number(e.target.value) > maxPointUse) {
           alert('超過點數上限')
-          e.target.value=''
-          document.getElementById('pointDiscountTd').textContent=`-${e.target.value}`
+          e.target.value = ''
+          document.getElementById('pointDiscountTd').textContent = `-${e.target.value}`
           changeTotal()
           return
         }
-        document.getElementById('pointDiscountTd').textContent=`-${e.target.value}`
-        document.getElementById('pointDiscountTd').dataset.discount=e.target.value
+        document.getElementById('pointDiscountTd').textContent = `-${e.target.value}`
+        document.getElementById('pointDiscountTd').dataset.discount = e.target.value
         changeTotal()
 
       })
 
       //計算最終金額
-      function changeTotal(){
+      function changeTotal() {
         const couponDiscount = document.getElementById('couponDiscountTd').dataset.discount
         const pointDiscount = document.getElementById('pointDiscountTd').dataset.discount
-        
-        document.getElementById('total').textContent=`$${totalAmount-couponDiscount-pointDiscount}`
-        document.getElementById('total').setAttribute('data-value',totalAmount-couponDiscount-pointDiscount)
-        finalAmount=totalAmount-couponDiscount-pointDiscount
-        return totalAmount-couponDiscount-pointDiscount
+
+        document.getElementById('total').textContent = `$${totalAmount - couponDiscount - pointDiscount}`
+        document.getElementById('total').setAttribute('data-value', totalAmount - couponDiscount - pointDiscount)
+        finalAmount = totalAmount - couponDiscount - pointDiscount
+        return totalAmount - couponDiscount - pointDiscount
       }
 
 
@@ -824,9 +875,9 @@
         }
       })
 
-      
 
-     
+
+
 
     })
 

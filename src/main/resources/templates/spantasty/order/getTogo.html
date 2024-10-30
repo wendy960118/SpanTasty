@@ -34,10 +34,11 @@
                         <tr>
                             <th scope="col">訂單編號</th>
                             <th scope="col">會員編號</th>
-                            <th scope="col">訂購人姓名</th>
-                            <th scope="col">訂購人電話</th>
+                            <th scope="col">姓名</th>
+                            <th scope="col">電話</th>
                             <th scope="col">訂單金額</th>
                             <th scope="col">成立時間</th>
+                            <th scope="col">取餐時間</th>
                             <th scope="col">訂單狀態</th>
                             <th scope="col">餐廳名稱</th>
                             <th scope="col">訂單備註</th>
@@ -98,7 +99,8 @@
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="addTogoItemModalLabel">新增明細</h1>
                     <input type="hidden" id="hiddenTogoId" name="togoId">
-                    <button type="button" class="btn-close" id="closeAddItemsBtn" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close" id="closeAddItemsBtn" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="addItemForm">
@@ -126,8 +128,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="submit" class="btn btn-primary" id="saveItemsBtn">新增</button>
-                            <button type="button" class="btn btn-secondary" id="returnItemsBtn" data-bs-target="#showDetailsModal"
-                                data-bs-toggle="modal">返回</button>
+                            <button type="button" class="btn btn-secondary" id="returnItemsBtn"
+                                data-bs-target="#showDetailsModal" data-bs-toggle="modal">返回</button>
                         </div>
                     </form>
                 </div>
@@ -200,7 +202,7 @@
         document.getElementById("returnItemsBtn").addEventListener("click", function () {
             console.log("返回明細")
             const togoId = document.getElementById("hiddenTogoId").value;
-            console.log("返回"+togoId)
+            console.log("返回" + togoId)
             showTogoItems(togoId);
 
         })
@@ -212,10 +214,10 @@
             const tgPhone = document.getElementById("phoneSearch").value;
 
             if (togoId) {
-                console.log("id被調用 "+togoId)
+                console.log("id被調用 " + togoId)
                 getTogoById();
             } else if (tgPhone) {
-                console.log("phone被調用 "+tgPhone)
+                console.log("phone被調用 " + tgPhone)
                 getTogoByPhone();
             }
         })
@@ -227,10 +229,10 @@
             const tgPhone = document.getElementById("phoneSearch").value;
 
             if (togoId) {
-                console.log("id被調用 "+togoId)
+                console.log("id被調用 " + togoId)
                 getTogoById();
             } else if (tgPhone) {
-                console.log("phone被調用 "+tgPhone)
+                console.log("phone被調用 " + tgPhone)
                 getTogoByPhone();
             }
         })
@@ -262,30 +264,36 @@
 
                     // 動態生成表格內容
 
-                    const row = document.createElement("tr");
-                    row.setAttribute("data-id", togoData.togoId);
                     const memberId = togoData.memberId !== null ? togoData.memberId : '';
                     const togoMemo = togoData.togoMemo !== null ? togoData.togoMemo : '';
+                    const togoPickupTime = togoData.pickupTimeformattedDate !== null ? togoData.pickupTimeformattedDate : '';
+                    if (togoData && togoData.togoId) {
+                        const row = document.createElement("tr");
+                        row.setAttribute("data-id", togoData.togoId);
+                        row.innerHTML = `
+                            <td>${togoData.togoId}</td>
+                            <td>${togoData.memberId || ''}</td>
+                            <td>${togoData.tgName}</td>
+                            <td>${togoData.tgPhone}</td>
+                            <td>${togoData.totalPrice}</td>
+                            <td>${togoData.createTimeformattedDate}</td>
+                            <td>${togoData.pickupTimeformattedDate || ''}</td>
+                            <td>${getTogoStatusBadge(togoData.togoStatus)}</td>
+                            <td>${togoData.restaurant.restaurantName}</td>
+                            <td>${togoData.togoMemo || ''}</td>
+                            <td><button class="btn btn-info" onclick="showTogoItems(${togoData.togoId})">查看</button></td>
+                            <td><button class="btn btn-warning" onclick="showUpdateModal(${togoData.togoId})">修改</button></td>
+                            <td><button class="btn btn-danger" onclick="deleteTogo(${togoData.togoId})">刪除</button></td>
+                            `;
 
-                    row.innerHTML = `
-                        <td>${togoData.togoId}</td>
-                        <td>${togoData.memberId || ''}</td>
-                        <td>${togoData.tgName}</td>
-                        <td>${togoData.tgPhone}</td>
-                        <td>${togoData.totalPrice}</td>
-                        <td>${togoData.formattedDate}</td>
-                        <td>${getTogoStatusBadge(togoData.togoStatus)}</td>
-                        <td>${togoData.restaurant.restaurantName}</td>
-                        <td>${togoData.togoMemo || ''}</td>
-                        <td><button class="btn btn-info" onclick="showTogoItems(${togoData.togoId})">查看</button></td>
-                        <td><button class="btn btn-warning" onclick="showUpdateModal(${togoData.togoId})">修改</button></td>
-                        <td><button class="btn btn-danger" onclick="deleteTogo(${togoData.togoId})">刪除</button></td>
-                    `;
+                        // 添加到表格中
+                        tbody.appendChild(row);
+                        // 清空輸入框
+                        document.getElementById("idSearch").value = "";
+                    } else {
+                        alert("查無結果");
+                    }
 
-                    // 添加到表格中
-                    tbody.appendChild(row);
-                    // 清空輸入框
-                    document.getElementById("idSearch").value = "";
                 })
                 .catch(function (error) {
                     console.error("查詢訂單時發生錯誤：", error);
@@ -329,17 +337,19 @@
 
                     const memberId = togoList.memberId !== null ? togoList.memberId : '';
                     const togoMemo = togoList.togoMemo !== null ? togoList.togoMemo : '';
-
-                    togoList.forEach(togoData => {
-                        const row = document.createElement("tr");
-                        row.setAttribute("data-id", togoData.togoId);
-                        row.innerHTML = `
+                    const togoPickupTime = togoList.pickupTimeformattedDate !== null ? togoList.pickupTimeformattedDate : ''
+                    if (togoList.length > 0) {
+                        togoList.forEach(togoData => {
+                            const row = document.createElement("tr");
+                            row.setAttribute("data-id", togoData.togoId);
+                            row.innerHTML = `
                         <td>${togoData.togoId}</td>
                         <td>${togoData.memberId || ''}</td>
                         <td>${togoData.tgName}</td>
                         <td>${togoData.tgPhone}</td>
                         <td>${togoData.totalPrice}</td>
-                        <td>${togoData.formattedDate}</td>
+                        <td>${togoData.createTimeformattedDate}</td>
+                        <td>${togoData.pickupTimeformattedDate || ''}</td>
                         <td>${getTogoStatusBadge(togoData.togoStatus)}</td>
                         <td>${togoData.restaurant.restaurantName}</td>
                         <td>${togoData.togoMemo || ''}</td>
@@ -348,12 +358,16 @@
                         <td><button class="btn btn-danger" onclick="deleteTogo(${togoData.togoId})">刪除</button></td>
                     `;
 
-                        // 添加到表格中
-                        tbody.appendChild(row);
-                    })
+                            // 添加到表格中
+                            tbody.appendChild(row);
+                        })
 
-                    // 清空輸入框
-                    document.getElementById("idSearch").value = "";
+                        // 清空輸入框
+                        document.getElementById("idSearch").value = "";
+                    } else {
+                        alert("查無結果");
+                    }
+
                 })
                 .catch(function (error) {
                     console.error("查詢訂單時發生錯誤：", error);
@@ -457,7 +471,8 @@
                     <td>${togoData.tgName}</td>
                     <td>${togoData.tgPhone}</td>
                     <td>${togoData.totalPrice || ''}</td>
-                    <td>${togoData.formattedDate}</td>
+                    <td>${togoData.createTimeformattedDate}</td>
+                    <td>${togoData.pickupTimeformattedDate}</td>
                     <td>${getTogoStatusBadge(togoData.togoStatus)}</td>
                     <td>${togoData.restaurant.restaurantName}</td>
                     <td>${togoData.togoMemo || ''}</td>
@@ -565,7 +580,7 @@
                     // 清空表單欄位
                     document.getElementById("foodKindId").value = "";
                     document.getElementById("foodId").innerHTML = `<option value="" selected>請選擇</option>`; // 重置選項
-                    document.getElementById("amount").value = "";                    
+                    document.getElementById("amount").value = "";
                 })
                 .catch(error => {
                     console.log({ error });

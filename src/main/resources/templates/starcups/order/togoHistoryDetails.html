@@ -58,28 +58,29 @@
     <section class="section breadcrumbs-custom-inset">
       <div class="breadcrumbs-custom context-dark">
         <div class="container">
-          <h2 class="breadcrumbs-custom-title">Order Details</h2>
+          <h2 class="breadcrumbs-custom-title">會員中心</h2>
           <ul class="breadcrumbs-custom-path">
             <li><a href="/SpanTasty/StarCups">Home</a></li>
-            <li><a href="/SpanTasty/StarCups/order">Online Order</a></li>
+            <li><a href="/SpanTasty/StarCups/memberCenter">Member Center</a></li>
+            <li><a href="/SpanTasty/StarCups/memberCenter/OnlineOrderHistory">Online Order History</a></li>
             <li class="active">Order Details</li>
           </ul>
         </div>
         <div class="box-position novi-bg novi-bg-img" style="background-image: url(images/bg-breadcrumbs.jpg);"></div>
       </div>
     </section>
-    <section class="section novi-bg novi-bg-img section-xl bg-default text-md-start">
+    <!-- <section class="section novi-bg novi-bg-img section-xl bg-default text-md-start">
       <div class="container">
         <h3 class="text-spacing-50" style="text-align: center;">訂單已成立✅</h3>
         <h4 class="text-spacing-50" style="text-align: center;">門市取餐時間：<span th:text="${togo.togoPickupTime}"></span> </h4>
-        
+
       </div>
-    </section>
+    </section> -->
     <!-- 取餐資訊 -->
     <section class="section novi-bg novi-bg-img section-xl bg-default text-md-start">
       <div class="container">
         <div class="col-md-10 col-lg-12">
-          <h4 class="text-spacing-50" >訂購資訊</h4>
+          <h4 class="text-spacing-50">訂購資訊</h4>
           <div class="table-custom-responsive">
             <table class="table-custom table-custom-primary table-checkout">
               <tbody>
@@ -105,8 +106,10 @@
           <div class="group-xmd group-middle">
             <div style="display: flex; align-items: center; margin-left: auto; margin-bottom: 10px;">
               <h6 class="text-gray-500" style="margin-right: 10px;">折抵</h6>
-              <h3 class="cart-product-price" th:text="'$' + (${togo.discountAmount} != null ? ${togo.discountAmount} : 0)" style="margin-right: 20px;"><sup>$</sup></h3>
-              <h6 class="text-gray-500" style="margin-right: 10px;">折扣後總金額</h6>
+              <h3 class="cart-product-price"
+                th:text="'$' + (${togo.discountAmount} != null ? ${togo.discountAmount} : 0)"
+                style="margin-right: 20px;"><sup>$</sup></h3>
+              <h6 class="text-gray-500" style="margin-right: 10px;">合計</h6>
               <h3 class="cart-product-price" th:text="'$' + ${togo.finalTotal}"><sup>$</sup></h3>
             </div>
           </div>
@@ -135,18 +138,34 @@
                     <img th:src="${item.menu.foodPicture}" alt="" width="146" height="132" />
                   </div>
                   <!-- 名稱 -->
-                  <div class="table-cart-link" th:text="${item.menu.foodName}"></div>
+                  <div class="table-cart-link" id="foodName" th:text="${item.menu.foodName}"></div>
                 </td>
                 <!-- 價格 -->
                 <td th:text="'$' + ${item.menu.foodPrice}"></td>
                 <!-- 數量 -->
-                <td th:text="${item.amount}"></td>
+                <td id="amount" th:text="${item.amount}"></td>
                 <!-- 單項總價 -->
                 <td th:text="'$' + ${item.togoItemPrice}"></td>
               </tr>
             </tbody>
           </table>
-        </div>       
+        </div>
+        <div class="group-xl group-lg-justify">
+          <div>
+          </div>
+          <div>
+            <div class="group-xmd group-middle">
+              <div>
+                <div class="group-xmd group-middle">
+                </div>
+              </div>
+              <!-- th:href="@{/StarCups/order}" -->
+              <a class="button button-md button-default-outline button-wapasha" onclick="reOrder()">再次訂購</a>
+              <a class="button button-md button-primary button-pipaluk"
+                th:href="@{/StarCups/memberCenter/OnlineOrderHistory}">返回訂單</a>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -161,10 +180,76 @@
   <!-- Javascript-->
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      // getTogoById();
 
+      console.log("-----------")
 
     })
+
+    function getTogoIdFromUrl() {
+      // URL
+      const currentUrl = window.location.pathname;
+
+      // 取 togoId
+      const regex = /\/SpanTasty\/StarCups\/memberCenter\/OnlineOrderHistory\/(\d+)/;
+      const match = currentUrl.match(regex);
+
+      // 检查匹配结果是否存在
+      if (match && match[1]) {
+        return match[1]; // 返回匹配到的 togoId
+      } else {
+        console.error("未找到 togoId");
+        return null;
+      }
+    }
+
+    function getTogoItems() {
+      const togoId = getTogoIdFromUrl();
+      axios.get(`http://localhost:8080/SpanTasty/order/togo/items/${togoId}`)
+        .then(function (response) {
+          const togoItems = response.data;
+          console.log("取得的 TogoItems:", togoItems);
+
+          // 構建重新訂購的 cart 物件
+          const cart = togoItems.map(item => {
+            console.log(item.menu.foodId)
+            console.log(item.menu.foodName)
+            console.log(item.menu.foodPrice)
+            console.log(item.amount)
+            console.log(item.menu.foodPicture)
+            return {
+              foodId: item.menu.foodId,
+              foodName: item.menu.foodName,
+              foodPicture: item.menu.foodPicture,
+              foodPrice: item.menu.foodPrice,
+              foodKindName: item.menu.foodKind.foodKindName,
+              quantity: item.amount
+            };
+          });
+
+          // 將 cart 存儲到 localStorage
+          localStorage.setItem('cart', JSON.stringify(cart));
+        })
+        .catch(function (error) {
+          console.error("查詢訂單品項時發生錯誤：", error);
+          alert("無法取得訂單品項，請稍後再試。");
+        });
+    }
+
+    function reOrder() {
+      // 獲取所有品項數據
+      const togoId = getTogoIdFromUrl();
+      console.log("reorder"+togoId)
+
+      getTogoItems();
+      // console.log("reorder加入 " + togoItems)
+
+
+      const cart = localStorage.getItem('cart');
+      console.log({cart})
+      // 跳轉到訂購頁面
+      window.location.href = '/SpanTasty/StarCups/order';
+
+    }
 
     // function getTogoById() {
     //   const urlParams = new URLSearchParams(window.location.search);
