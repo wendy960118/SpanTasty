@@ -135,6 +135,12 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
      //   console.error(err); 
      // })
      </script>
+     <script>
+    // 清除 localStorage 中的點擊數量
+    window.onload = function() {
+        localStorage.setItem('cartItemCount', 0); // 假設用 'cartItemCount' 儲存點擊數量
+    };
+</script>
 	<script
 		src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
 	<script src="/SpanTasty/starcups/js/core.min.js"></script>

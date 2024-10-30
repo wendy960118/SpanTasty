@@ -9,8 +9,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         .custom-button {
-            background: none;
-            border: none;
+            background: none !important;
+            border: none !important;
             cursor: pointer;
             color: #9d80f4;
         }
@@ -48,9 +48,9 @@
                     <div class="card bg-light text-dark shadow">
                         <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center">
                             <h2 class="mb-0">訂單資料</h2>
-                            <a th:href="@{/shoppingOrder/add}" class="custom-button-add">
+                            <button class="custom-button-add" data-bs-toggle="modal" data-bs-target="#addOrderModal">
                                 <i class="fa-solid fa-file-circle-plus"></i> 新增訂單
-                            </a>
+                            </button>
                         </div>
                         <div class="table-responsive">
                             <table id="shoppingTable" class="table table-striped table-hover text-center">
@@ -121,6 +121,57 @@
         </div>
     </div>
 
+    <!-- 新增訂單 Modal -->
+    <div class="modal fade" id="addOrderModal" tabindex="-1" aria-labelledby="addOrderModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addOrderModalLabel">新增訂單</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addOrderForm" method="post" th:action="@{/shoppingOrder/addPost}">
+                        <div class="row mb-3">
+                            <label for="memberId" class="form-label col-sm-3">會員:</label>
+                            <div class="col-sm-9">
+                                <select name="memberId" id="memberId" class="form-select" required>
+                                    <option value="">請選擇會員</option>
+                                    <th:block th:each="member : ${members}">
+                                        <option th:value="${member.memberId}" th:text="${member.memberId} + '. ' + ${member.memberName} + '. ' + ${member.phone}"></option>
+                                    </th:block>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="productRows">
+                            <div class="row mb-3 product-row">
+                                <label for="productId0" class="form-label col-sm-3">購買商品:</label>
+                                <div class="col-sm-9">
+                                    <select name="productId[]" id="productId0" class="form-select" required>
+                                        <option value="">請選擇商品</option>
+                                        <th:block th:each="product : ${products}">
+                                            <option th:value="${product.productId}" th:text="${product.productId} + '. ' + ${product.productName}"></option>
+                                        </th:block>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3 product-row">
+                                <label for="shoppingItemQuantity0" class="form-label col-sm-3">產品數量:</label>
+                                <div class="col-sm-9">
+                                    <input type="number" min="1" name="shoppingItemQuantity[]" id="shoppingItemQuantity0" class="form-control" required />
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-secondary" id="addProductBtn">新增商品</button>
+                        <button type="button" class="btn btn-danger" id="removeProductBtn">刪除商品</button>
+                        <button type="submit" class="btn btn-primary">確定</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         $(document).ready(function() {
             $('#shoppingTable').DataTable({
@@ -151,8 +202,60 @@
             });
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
-            showSidebar('store');
+        // 新增商品的JavaScript處理
+        let productCount = 1;
+        $('#addProductBtn').click(function() {
+            if (productCount < 10) { // 限制最多10個商品
+                const productRow = `
+                    <div class="row mb-3 product-row">
+                        <label for="productId${productCount}" class="form-label col-sm-3">購買商品:</label>
+                        <div class="col-sm-9">
+                            <select name="productId[]" id="productId${productCount}" class="form-select" required>
+                                <option value="">請選擇商品</option>
+                                <th:block th:each="product : ${products}">
+                                    <option th:value="${product.productId}" th:text="${product.productId} + '. ' + ${product.productName}"></option>
+                                </th:block>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-3 product-row">
+                        <label for="shoppingItemQuantity${productCount}" class="form-label col-sm-3">產品數量:</label>
+                        <div class="col-sm-9">
+                            <input type="number" min="1" name="shoppingItemQuantity[]" id="shoppingItemQuantity${productCount}" class="form-control" required />
+                        </div>
+                    </div>
+                `;
+                $('#productRows').append(productRow);
+                productCount++;
+            } else {
+                alert("已達到最大商品數量");
+            }
+        });
+
+        $('#removeProductBtn').click(function() {
+            if (productCount > 1) {
+                $('.product-row:last').remove();
+                $('.product-row:last').remove();
+                productCount--;
+            }
+        });
+
+        // 表單提交時檢查數量
+        $('#addOrderForm').on('submit', function(event) {
+            let valid = true;
+            $('input[name="shoppingItemQuantity[]"]').each(function() {
+                const quantity = $(this).val();
+                if (quantity <= 0 || isNaN(quantity)) {
+                    valid = false;
+                    $(this).siblings('.error-container').show();
+                } else {
+                    $(this).siblings('.error-container').hide();
+                }
+            });
+            if (!valid) {
+                event.preventDefault();
+                alert('請確認所有產品數量正確');
+            }
         });
     </script>
     <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
