@@ -40,8 +40,7 @@ public class OvertimeRentSendMailService {
 	
 	
 	// 每天早上8點發送超時信
-	@Scheduled(cron = "0 0 8 * * ?")
-	//@Scheduled(fixedRate = 30000)//每半分鐘執行
+	@Scheduled(fixedRate = 30000)//每半分鐘執行
 	public void findOvertimeRents() throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, MessagingException, IOException, TemplateException {
 		List<Rent> overtimeRents = rentService.findByDueDateTomorrow();
 		

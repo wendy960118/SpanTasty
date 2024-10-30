@@ -19,6 +19,9 @@ public class RentItemDTO {
     private Integer returnedQuantity;
     private Integer damagedQuantity;
     
+    public RentItemDTO() {
+	}
+    
     public RentItemDTO(Integer rentId, Integer tablewareId, Integer rentItemQuantity, Integer rentItemDeposit,
             String returnMemo, Integer returnStatus, String tablewareName, Integer returnedQuantity, Integer damagedQuantity) {
 		this.rentId = rentId;
@@ -31,4 +34,14 @@ public class RentItemDTO {
 		this.damagedQuantity = damagedQuantity;
 		this.tablewareName = tablewareName;
 	}
+    
+    public RentItemDTO( Integer rentItemQuantity, Integer rentItemDeposit, String tablewareName, Integer returnedQuantity, Integer damagedQuantity) {
+    	this.rentItemQuantity = rentItemQuantity;
+    	this.rentItemDeposit = rentItemDeposit;
+    	this.tablewareName = tablewareName;
+    	this.returnedQuantity = returnedQuantity;
+    	this.damagedQuantity = damagedQuantity;
+    }
+    
+    
 }

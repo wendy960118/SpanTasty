@@ -308,7 +308,7 @@ function updateCartUI(cartItems) {
               <span class="fs-7 ">${item.itemName}</span>
               <br/>
               <br/>
-              <span class="fs-7">${item.rentItemQuantity}</span><span> X </span> <span> NT$${itemTotalPrice}</span>
+              <span> X </span> <span class="fs-7">${item.rentItemQuantity}</span><span> </span><span> NT$${itemTotalPrice}</span>
             </div>
               <div class="unit-right ms-1 mb-0 mt-4 pt-3" style="width:130px; text-align:right;">
                   <button onclick="removeFromCart(${index})" style="font-size:18px;border:none; background-color:white;" class="pe-3"><i class="fa-solid fa-trash-can-arrow-up"></i></button>
@@ -344,8 +344,8 @@ function submitCart() {
         if (response.status === 200) {
         	Swal.fire({
 			    icon: 'question',
-			    title: '確認提交購物車',
-			    text: '確認請按確定',
+			    title: '提交購物車',
+			    text: '確定提交購物車後 無法再更動租借用品',
 			    showCancelButton: true,
 			    confirmButtonColor: "#3085d6",
         		cancelButtonColor: "#d33",
@@ -462,7 +462,7 @@ function removeFromCart(index) {
         if (Number(stock.stock) === 0) {
           linkElement.classList.add('disabled');
           linkElement.style.pointerEvents = 'none'; // 禁用點擊事件
-          linkElement.style.opacity = '0.5'; // 改變樣式表示禁用狀態
+          linkElement.style.opacity = '0.3'; // 改變樣式表示禁用狀態
           quantityInput.value = 0;
         } else {
 	       	quantityInput.value = 0;

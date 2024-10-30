@@ -81,6 +81,7 @@ form {
                 <td>
 			        <input type="hidden" id="rentId" th:name="'rentItemsDTO[' + ${index.index} + '].rentId'" th:value="${rentItemDTO.rentId}" />
 			        <input type="hidden" id="tablewareId" th:name="'rentItemsDTO[' + ${index.index} + '].tablewareId'" th:value="${rentItemDTO.tablewareId}" />
+			        <input type="hidden" id="tablewareName" th:name="'rentItemsDTO[' + ${index.index} + '].tablewareName'" th:value="${rentItemDTO.tablewareName}" />
 			        <input type="hidden" id="rentItemQuantity" th:name="'rentItemsDTO[' + ${index.index} + '].rentItemQuantity'" th:value="${rentItemDTO.rentItemQuantity}" />
 			        <input type="hidden" id="rentItemDeposit" th:name="'rentItemsDTO[' + ${index.index} + '].rentItemDeposit'" th:value="${rentItemDTO.rentItemDeposit}" />
 			        <input type="hidden" id="returnStatus" th:name="'rentItemsDTO[' + ${index.index} + '].returnStatus'" th:value="${rentItemDTO.returnStatus}" />
@@ -123,8 +124,13 @@ function autoFillInputs() {
             returnedQuantities[index].value = rentItemQuantity - 1;
             damagedQuantities[index].value = 0;
         } else if (index === 3) {
-            returnedQuantities[index].value = rentItemQuantity - 1;
-            damagedQuantities[index].value = 1;
+        	if(rentItemQuantity > 1){
+	            returnedQuantities[index].value = rentItemQuantity - 1;
+	            damagedQuantities[index].value = 1;
+        	}else{
+	            returnedQuantities[index].value = rentItemQuantity - 0;
+	            damagedQuantities[index].value = 1;
+        	}
         } else {
         	returnedQuantities[index].value = rentItemQuantity;
             damagedQuantities[index].value = 0;
@@ -166,6 +172,7 @@ submitBtn.addEventListener('click', (e)=>{
     const rentItemsDTO = Array.from(document.querySelectorAll('#tablewareId')).map((_, index) => ({
         rentId: document.querySelectorAll('#rentId')[index].value,
         tablewareId: document.querySelectorAll('#tablewareId')[index].value,
+        tablewareName: document.querySelectorAll('#tablewareName')[index].value,
         rentItemQuantity: document.querySelectorAll('#rentItemQuantity')[index].value,
         rentItemDeposit: document.querySelectorAll('#rentItemDeposit')[index].value,
         returnStatus: document.querySelectorAll('#returnStatus')[index].value,
@@ -182,7 +189,8 @@ submitBtn.addEventListener('click', (e)=>{
     
     axios.post(url,rentRequestDTO)
     .then(res => {
-       const totalExpense = res.data;
+       console.log(res.data);
+       const { totalExpense, damagedItems, unreturnedItems } = res.data;
        Swal.fire({
            title: '歸還成功！',
            text: `需再繳交金額: $${totalExpense}`,
@@ -191,7 +199,11 @@ submitBtn.addEventListener('click', (e)=>{
        }).then((result) => {
            if (result.isConfirmed) {
                // 跳轉至金額頁面
-               window.location.href = `http://localhost:8080/SpanTasty/rent/expense?totalExpense=${totalExpense}`;
+               const urlParams = new URLSearchParams();
+                urlParams.append('totalExpense', totalExpense);
+                urlParams.append('damagedItems', JSON.stringify(damagedItems));
+                urlParams.append('unreturnedItems', JSON.stringify(unreturnedItems));
+                window.location.href = `http://localhost:8080/SpanTasty/rent/expense?${urlParams.toString()}`;
            }
        });
     })

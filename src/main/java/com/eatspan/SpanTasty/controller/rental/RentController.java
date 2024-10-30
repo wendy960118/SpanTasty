@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -44,6 +45,10 @@ import com.eatspan.SpanTasty.service.rental.RentService;
 import com.eatspan.SpanTasty.service.rental.TablewareService;
 import com.eatspan.SpanTasty.service.rental.TablewareStockService;
 import com.eatspan.SpanTasty.service.reservation.RestaurantService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @Controller
@@ -399,13 +404,16 @@ public class RentController {
 	//歸還訂單
 	@PostMapping("/setPut3")
 	@ResponseBody
-	public ResponseEntity<Integer> returnRent2(@RequestBody RentRequestDTO rentRequestDTO, Model model) {
+	public ResponseEntity<Map<String, Object>> returnRent2(@RequestBody RentRequestDTO rentRequestDTO, Model model) {
 		Rent rent = rentRequestDTO.getRent();
 		List<RentItemDTO> rentItemsDTO = rentRequestDTO.getRentItemsDTO();
 		rent.setRentStatus(2);
 		rent.setRentMemo("已歸還");
 		
 		int totalExpense = 0;
+		
+		List<RentItemDTO> damagedItems = new ArrayList<>();
+	    List<RentItemDTO> unreturnedItems = new ArrayList<>();
 		
 		for(RentItemDTO rentItemDTO : rentItemsDTO) {
 			Integer rentItemQuantity = rentItemDTO.getRentItemQuantity();
@@ -418,6 +426,27 @@ public class RentController {
 	        int extraCharge = (unreturnedCount + damagedQuantity) * tablewareDeposit * 2;
 	        totalExpense += extraCharge;
 			
+	        // 將未歸還和損壞情況分開記錄
+	        if (damagedQuantity > 0) {
+	            RentItemDTO damagedItem = new RentItemDTO();
+	            damagedItem.setRentItemQuantity(rentItemDTO.getRentItemQuantity());
+	            damagedItem.setRentItemDeposit(rentItemDTO.getRentItemDeposit());
+	            damagedItem.setTablewareName(rentItemDTO.getTablewareName());
+	            damagedItem.setReturnedQuantity(returnedQuantity);
+	            damagedItem.setDamagedQuantity(damagedQuantity);
+	            damagedItems.add(damagedItem);
+	        }
+
+	        if (unreturnedCount > 0) {
+	            RentItemDTO unreturnedItem = new RentItemDTO();
+	            unreturnedItem.setTablewareName(rentItemDTO.getTablewareName());
+	            unreturnedItem.setRentItemQuantity(rentItemDTO.getRentItemQuantity());
+	            unreturnedItem.setReturnedQuantity(returnedQuantity);
+	            unreturnedItem.setDamagedQuantity(0); // 不記錄損壞
+	            unreturnedItem.setRentItemDeposit(rentItemDTO.getRentItemDeposit());
+	            unreturnedItems.add(unreturnedItem);
+	        }
+	        
 			Integer returnStatus = null;
 			if (rentItemQuantity == returnedQuantity && damagedQuantity > 0) {
 				returnStatus = 3; //完全歸還(有破損)
@@ -450,15 +479,32 @@ public class RentController {
 	        rentItemService.addRentItem(rentItem);
 		}
 		rentService.addRent(rent);
+		System.out.println(unreturnedItems);
+		System.out.println(damagedItems);
+		Map<String, Object> response = new HashMap<>();
+	    response.put("totalExpense", totalExpense);
+	    response.put("damagedItems", damagedItems);
+	    response.put("unreturnedItems", unreturnedItems);
+	    
 		
-		return ResponseEntity.ok(totalExpense);
+		return ResponseEntity.ok(response);
 	}
 	
 	
 	//
 	@GetMapping("/expense")
-	public String rentSummary(@RequestParam("totalExpense") Integer totalExpense, Model model) {
-		model.addAttribute("totalExpense", totalExpense);
+	public String rentSummary(@RequestParam("totalExpense") Integer totalExpense,
+	                          @RequestParam("damagedItems") String damagedItemsJson,
+	                          @RequestParam("unreturnedItems") String unreturnedItemsJson,
+	                          Model model) throws JsonMappingException, JsonProcessingException {
+	    
+	    ObjectMapper mapper = new ObjectMapper();
+	    List<RentItemDTO> damagedItems = mapper.readValue(damagedItemsJson, new TypeReference<List<RentItemDTO>>(){});
+	    List<RentItemDTO> unreturnedItems = mapper.readValue(unreturnedItemsJson, new TypeReference<List<RentItemDTO>>(){});
+	    
+	    model.addAttribute("totalExpense", totalExpense);
+	    model.addAttribute("damagedItems", damagedItems);
+	    model.addAttribute("unreturnedItems", unreturnedItems);
 	    return "spantasty/rental/getReturnExpense";
 	}
 }
