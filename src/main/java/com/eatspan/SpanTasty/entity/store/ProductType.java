@@ -38,6 +38,11 @@ public class ProductType {
 	@OneToMany(fetch= FetchType.LAZY, cascade=CascadeType.ALL, mappedBy="productType")
 	private Set<Product> products;
 
+    public int countAvailableProducts() {
+        return (int) products.stream()
+            .filter(product -> product.getProductStatus() == 1)
+            .count();
+    }
 	
-	
+    
 }

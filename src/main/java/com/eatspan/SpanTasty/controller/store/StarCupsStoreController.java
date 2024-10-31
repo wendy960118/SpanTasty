@@ -2,6 +2,7 @@ package com.eatspan.SpanTasty.controller.store;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -86,47 +87,62 @@ public class StarCupsStoreController {
 	    return "starcups/store/allProduct";
 	}
 
-	
-	   @GetMapping("/productsByProductType/{productTypeId}")
-	    public String searchProductsByProductType(@PathVariable Integer productTypeId,
-	    		@RequestParam(value = "page", defaultValue = "1") int page, Model model) {
-	        List<Product> products = productService.findProductsByProductType(productTypeId);
-	        List<ProductType> productTypes = productTypeService.findAllProductType();
-	        
-
-			int totalProducts = productService.countAllProducts();
-			int totalPages = (int) Math.ceil((double) totalProducts / 12);
-			model.addAttribute("totalPages", totalPages);
-			model.addAttribute("currentPage", page);
-	        
-	        model.addAttribute("products", products);
-	        model.addAttribute("productTypes", productTypes);
-	        model.addAttribute("totalProducts", products.size());
-	        System.out.println("ProductTypeId: " + productTypeId);
-
-	        
-	        return "starcups/store/allProduct"; 
+	@GetMapping("/cartCount")
+	public ResponseEntity<Integer> getCartCount(HttpSession session) {
+	    Integer shoppingId = (Integer) session.getAttribute("shoppingId");
+	    if (shoppingId == null) {
+	        return ResponseEntity.ok(0);
 	    }
+
+	    List<ShoppingItem> items = shoppingItemService.findShoppingItemById(shoppingId);
+	    System.out.println("Items: " + items); // 打印所有 ShoppingItem
+	    int totalCount = items.stream().mapToInt(ShoppingItem::getShoppingItemQuantity).sum();
+	    System.out.println("Total Count: " + totalCount); // 打印計算的總數量
+	    return ResponseEntity.ok(totalCount);
+	}
+
+
 	
-
-
-//	@GetMapping("/productsByProductType/{productTypeId}")
-//	@ResponseBody
-//	public ResponseEntity<List<Product>> searchProductsByProductType(@PathVariable Integer productTypeId) {
-//	    // 查找產品
-//	    List<Product> products = productService.findProductsByProductType(productTypeId);
-//	    
-//	    // 檢查是否有產品
-//	    if (products.isEmpty()) {
-//	        return ResponseEntity.noContent().build(); // 若無內容，返回204
-//	    }
-//
-//	    // 返回找到的產品列表
-//	    return ResponseEntity.ok(products); 
-//	}
-
- 
 	
+	@GetMapping("/productsByProductType/{productTypeId}")
+	public String searchProductsByProductType(@PathVariable Integer productTypeId,
+	        @RequestParam(value = "page", defaultValue = "1") int page, Model model) {
+
+	    // 獲取所有商品類型
+	    List<ProductType> productTypes = productTypeService.findAllProductType();
+	    model.addAttribute("productTypes", productTypes);
+
+	    // 獲取指定類型的商品
+	    List<Product> allProducts = productService.findProductsByProductType(productTypeId);
+
+	    // 過濾狀態為 1 的商品
+	    List<Product> availableProducts = allProducts.stream()
+	            .filter(product -> product.getProductStatus() == 1)
+	            .collect(Collectors.toList());
+
+	    // 總商品數（狀態為 1）
+	    int totalProducts = availableProducts.size();
+	    
+	    // 計算總頁數
+	    int totalPages = (int) Math.ceil((double) totalProducts / 12);
+	    
+	    // 獲取當前頁面的商品
+	    int fromIndex = (page - 1) * 12;
+	    int toIndex = Math.min(fromIndex + 12, totalProducts);
+	    List<Product> products = availableProducts.subList(fromIndex, toIndex);
+
+	    model.addAttribute("totalPages", totalPages);
+	    model.addAttribute("currentPage", page);
+	    model.addAttribute("products", products);
+	    model.addAttribute("totalProducts", totalProducts); // 更新顯示的商品數量
+
+	    System.out.println("ProductTypeId: " + productTypeId);
+	    
+	    return "starcups/store/allProduct"; 
+	}
+
+
+
 	
 	@PostMapping("/addPost")
 	@ResponseBody
@@ -140,7 +156,7 @@ public class StarCupsStoreController {
 
 	        Integer shoppingId = (Integer) session.getAttribute("shoppingId");
 	        ShoppingOrder order;
-//	        System.out.println("Add Item");
+	        System.out.println("shoppingId:"+shoppingId+1);
 	        if (shoppingId == null) {
 	            order = shoppingOrderService.addShoppingOrder(memberId, productId, shoppingItemQuantity);
 	            session.setAttribute("shoppingId", order.getShoppingId()); 

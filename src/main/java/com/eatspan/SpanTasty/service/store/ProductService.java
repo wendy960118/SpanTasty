@@ -83,7 +83,7 @@ public class ProductService {
 	    return (int) productRepo.count();
 	}
 
-
+	
 
 	//除了商品總類其他都可以更新
 	@Transactional
