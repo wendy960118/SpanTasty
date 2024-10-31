@@ -208,5 +208,6 @@ public class ShoppingItemService {
     public List<ShoppingItem> findAllShoppingItems() {
         return shoppingItemRepo.findAll();
     }
+    
 	
 }

@@ -1,20 +1,15 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org/" class="wide wow-animation" lang="en">
+<html xmlns:th="http://www.thymeleaf.org/" lang="en">
 <head>
     <title>Shopping Cart</title>
     <meta name="format-detection" content="telephone=no">
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
     <link rel="icon" href="images/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Poppins:400,500%7CTeko:300,400,500%7CMaven+Pro:500">
     <link rel="stylesheet" href="/SpanTasty/starcups/css/bootstrap.css">
     <link rel="stylesheet" href="/SpanTasty/starcups/css/fonts.css">
     <link rel="stylesheet" href="/SpanTasty/starcups/css/style.css">
     <style>
-        .ie-panel { display: none; background: #212121; padding: 10px 0; box-shadow: 3px 3px 5px 0 rgba(0,0,0,.3); clear: both; text-align:center; position: relative; z-index: 1; }
-        html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel { display: block; }
-
         .cart-icon {
             position: fixed; 
             top: 100px; 
@@ -27,25 +22,24 @@
     </style>
 </head>
 <body>
-    <!-- navbar th:replace=-->
     <div th:replace="~{starcups/display/navbar}"></div>
     <input type="hidden" th:value="${session.shoppingId}" id="shoppingId">
-    
-	<!-- Breadcrumbs -->
-	<section class="section breadcrumbs-custom-inset">
-		<div class="breadcrumbs-custom context-dark">
-			<div class="container">
+
+    <!-- Breadcrumbs -->
+    <section class="section breadcrumbs-custom-inset">
+        <div class="breadcrumbs-custom context-dark">
+            <div class="container">
                 <h2 class="breadcrumbs-custom-title">Shopping Cart</h2>
                 <ul class="breadcrumbs-custom-path">
                     <li><a href="/SpanTasty/StarCups">Home</a></li>
                     <li><a href="/SpanTasty/StarCups/allProduct">Shop</a></li>
                     <li class="active">Shopping Cart</li>
                 </ul>
-			</div>
-			<div class="box-position novi-bg novi-bg-img"
-				style="background-image: url(images/bg-breadcrumbs.jpg);"></div>
-		</div>
-	</section>
+            </div>
+            <div class="box-position novi-bg novi-bg-img"
+                 style="background-image: url(images/bg-breadcrumbs.jpg);"></div>
+        </div>
+    </section>
 
     <!-- Shopping Cart -->
     <section class="section novi-bg novi-bg-img section-xl bg-default">
@@ -72,7 +66,7 @@
                             <td>
                                 <div class="table-cart-stepper">
                                     <input class="form-input updateCart" type="number" data-zeros="true" th:value="${item.shoppingItemQuantity}" 
-                                    		min="0" max="1000" onchange="updateTotal(this)" />
+                                           min="0" max="1000" onchange="updateTotal(this)" />
                                 </div>
                             </td>
                             <td class="itemTotal" th:text="'$' + ${item.product.productPrice * item.shoppingItemQuantity}"></td>
@@ -80,27 +74,27 @@
                     </tbody>
                 </table>
             </div>
+
+            <div th:if="${items.isEmpty()}">
+                <p>沒有狀態為 3 的訂單。</p>
+            </div>
+
             <div class="group-xl group-lg-justify justify-content-end">
-                
                 <div>
                     <div class="group-xmd group-middle">
                         <div>
-                            <div class="group-xmd group-middle">
-                                <h6 class="text-gray-500">Total</h6>
-                                <h3 class="cart-product-price" id="totalPrice"><sup>$</sup><span th:text="${totalAmount}"></span></h3>
-                            </div>
+                            <h6 class="text-gray-500">Total</h6>
+                            <h3 class="cart-product-price" id="totalPrice"><sup>$</sup><span th:text="${totalAmount}"></span></h3>
                         </div>
-                        <form th:action= "@{/StarCups/checkOut(shoppingId=${session['shoppingId']})}" method="post">
-                        	<button type="submit" class="button button-primary button-pipaluk" >Proceed to checkout</button>
-						</form>
+                        <form th:action="@{/StarCups/checkOut(shoppingId=${session['shoppingId']})}" method="post">
+                            <button type="submit" class="button button-primary button-pipaluk">Proceed to checkout</button>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    
-    <div class="snackbars" id="form-output-global"></div>
-    
+
     <div th:replace="~{starcups/display/footer}"></div>
 
     <script src="/SpanTasty/starcups/js/core.min.js"></script>
@@ -108,54 +102,47 @@
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script th:inline="javascript">
+        let debounceTimeout;
 
+        function updateTotal(input) {
+            clearTimeout(debounceTimeout);
+            debounceTimeout = setTimeout(() => {
+                const quantity = parseInt(input.value);
+                const productId = input.closest('tr').getAttribute('data-productid'); 
+                const shoppingId = document.getElementById('shoppingId').value;
 
-let debounceTimeout;
+                const token = localStorage.getItem('token');
 
-
-
-function updateTotal(input) {
-    clearTimeout(debounceTimeout);
-    debounceTimeout = setTimeout(() => {
-        const quantity = parseInt(input.value);
-        const productId = input.closest('tr').getAttribute('data-productid'); 
-        const shoppingId = document.getElementById('shoppingId').value;
-
-        const token = localStorage.getItem('token');
-
-        if (token) {
-            axios.post(`http://localhost:8080/SpanTasty/StarCups/updateItem`, null, {
-                params: {
-                    shoppingId: shoppingId, 
-                    productId: productId,
-                    shoppingItemQuantity: quantity 
-                },
-                headers: {
-                    'Authorization': `${token}`,
-                    'Content-Type': 'application/json'
+                if (token) {
+                    axios.post(`http://localhost:8080/SpanTasty/StarCups/updateItem`, null, {
+                        params: {
+                            shoppingId: shoppingId, 
+                            productId: productId,
+                            shoppingItemQuantity: quantity 
+                        },
+                        headers: {
+                            'Authorization': `${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        if (response.status === 200) {
+                            const row = input.closest('tr');
+                            const price = parseFloat(row.cells[1].innerText.replace('$', ''));
+                            const itemTotal = row.querySelector('.itemTotal');
+                            itemTotal.innerText = '$' + (price * quantity);
+                            updateCartTotal();
+                        } else {
+                            alert('數量更新失敗，請稍後再試');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('發生錯誤，請檢查控制台');
+                    });
                 }
-            })
-            .then(response => {
-                console.log(response.data);
-                if (response.status === 200) {
-                    const row = input.closest('tr');
-                    const price = parseFloat(row.cells[1].innerText.replace('$', ''));
-                    const itemTotal = row.querySelector('.itemTotal');
-                    itemTotal.innerText = '$' + (price * quantity);
-                    updateCartTotal(); // 更新總計
-
-
-                } else {
-                    alert('數量更新失敗，請稍後再試');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('發生錯誤，請檢查控制台');
-            });
+            }, 200);
         }
-    }, 200); // 設定防抖延遲時間
-}
         
         function updateCartTotal() {
             const itemTotals = document.querySelectorAll('.itemTotal');
@@ -165,23 +152,8 @@ function updateTotal(input) {
                 grandTotal += parseFloat(total.innerText.replace('$', ''));
             });
 
-            finalTotal=grandTotal;
             document.getElementById('totalPrice').innerText = '$' + grandTotal;
-
-
-            //get shoppingItem after update  賦值給finalItems    edit by hao
-            const shoppingId =document.getElementById('shoppingId').value;
-            finalItems = axios.get(`http://localhost:8080/SpanTasty/StarCups/findItem`,{
-                params:{
-                    shoppingId: shoppingId    
-                }
-            })
-            .then(res=>{             
-                return res.data
-            })
-          
         }
-        
         
         
     </script>

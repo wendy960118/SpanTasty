@@ -18,4 +18,5 @@ public interface ShoppingItemRepository extends JpaRepository<ShoppingItem, Shop
     void deleteAllByShoppingOrderId(@Param("shoppingId") int shoppingId);
 	
 	List<ShoppingItem> findByShoppingOrderShoppingId(Integer shoppingId);
+
 }

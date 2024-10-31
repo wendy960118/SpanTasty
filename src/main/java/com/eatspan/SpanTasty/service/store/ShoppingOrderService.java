@@ -80,6 +80,7 @@ public class ShoppingOrderService {
 	    return (totalAmount != null) ? totalAmount.intValue() : 0; // 轉換為 Integer
 	}
 	
+
 	
 	@Transactional
 	public ShoppingOrder addShoppingOrder(Integer memberId, Integer productId, Integer shoppingItemQuantity) {
@@ -87,7 +88,7 @@ public class ShoppingOrderService {
 	    ShoppingOrder shoppingOrder = new ShoppingOrder();
 	    shoppingOrder.setMemberId(memberId);
 	    shoppingOrder.setShoppingDate(LocalDateTime.now());
-	    shoppingOrder.setShoppingStatus(1);
+	    shoppingOrder.setShoppingStatus(3); //未結帳
 	    shoppingOrder.setShoppingTotal(0); 
 
 	    ShoppingOrder savedOrder = shoppingOrderRepo.save(shoppingOrder);
@@ -230,6 +231,11 @@ public class ShoppingOrderService {
 	    }
 	    return null; 
 	}
+
+	
+	public ShoppingOrder findOrderByMemberIdAndStatus(Integer memberId, int status) {
+        return shoppingOrderRepo.findFirstByMemberIdAndShoppingStatus(memberId, status);
+    }
 
 	
 //	    // 取得購物訂單

@@ -24,12 +24,19 @@
             text-align: center;
         }
         .form-container {
-            width: 45%;
+            width: 55%;
+        }
+        .form-control {
+            max-width: 300px; /* 設定最大寬度 */
+            width: 100%; /* 讓欄位填滿容器 */
         }
         .error-container {
             padding: 10px;
             color: red;
             display: none;
+        }
+        .status-label {
+            font-size: 0.85em;
         }
     </style>
 </head>
@@ -37,76 +44,80 @@
     <div class="navbar" th:replace="~{spantasty/display/navbar}"></div>
     <div class="content">
         <div class="form-container">
-            <h2>更新訂單狀態</h2>
-            <form id="updateOrderForm" th:method="put" th:action="@{/shoppingOrder/updatePut}" enctype="application/x-www-form-urlencoded">
-                <input type="hidden" name="shoppingId" th:value="${shoppingOrder.shoppingId}" />
-                
-                <div class="row mb-3">
-                    <label class="form-label col-sm-3">訂單編號:</label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" th:value="${shoppingOrder.shoppingId}" disabled />
-                    </div>
+            <div class="card bg-light text-dark shadow">
+                <div class="card-header bg-transparent border-0">
+                    <h2 class="mt-4 mb-3">更新訂單狀態</h2>
                 </div>
-
-                <div class="row mb-3">
-                    <label class="form-label col-sm-3">訂單總金額:</label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" name="shoppingTotal" th:value="${shoppingOrder.shoppingTotal}" disabled />
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <label class="form-label col-sm-3">訂單日期:</label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" th:value="${shoppingOrder.formattedShoppingDate}" disabled />
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <label class="form-label col-sm-3">會員編號:</label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" th:value="${shoppingOrder.memberId}" disabled />
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <label class="form-label col-sm-3">會員姓名:</label>
-                    <div class="col-sm-9">
-                        <input type="text" class="form-control" th:value="${shoppingOrder.member.memberName}" disabled />
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <label class="form-label col-sm-3">訂單狀況:</label>
-                    <div class="col-sm-9">
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="shoppingStatus" id="status1" value="1" th:checked="${shoppingOrder.shoppingStatus == 1}" />
-                            <label class="form-check-label" for="status1">1. 未結帳</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="shoppingStatus" id="status2" value="2" th:checked="${shoppingOrder.shoppingStatus == 2}" />
-                            <label class="form-check-label" for="status2">2. 已結帳</label>
-                        </div>
-                        <div class="form-check form-check-inline">
-                            <input class="form-check-input" type="radio" name="shoppingStatus" id="status3" value="3" th:checked="${shoppingOrder.shoppingStatus == 3}" />
-                            <label class="form-check-label" for="status3">3. 其他</label>
-                        </div>
-                        <div id="error-container-status" class="error-container">
-                            <i class="fa-regular fa-circle-xmark error-icon"></i>
-                            <span id="error-message-status">請選擇正確的訂單狀況</span>
+                <form id="updateOrderForm" th:method="put" th:action="@{/shoppingOrder/updatePut}" enctype="application/x-www-form-urlencoded">
+                    <input type="hidden" name="shoppingId" th:value="${shoppingOrder.shoppingId}" />
+                    
+                    <div class="row mb-3">
+                        <label class="form-label col-sm-3">訂單編號:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" th:value="${shoppingOrder.shoppingId}" disabled />
                         </div>
                     </div>
-                </div>
 
-                <div class="row mb-3">
-                    <label class="form-label col-sm-3">訂單備註:</label>
-                    <div class="col-sm-9">
-                        <textarea name="shoppingMemo" rows="4" class="form-control" th:text="${shoppingOrder.shoppingMemo}"></textarea>
+                    <div class="row mb-3">
+                        <label class="form-label col-sm-3">訂單總金額:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" name="shoppingTotal" th:value="${shoppingOrder.shoppingTotal}" disabled />
+                        </div>
                     </div>
-                </div>
 
-                <button type="submit" class="btn btn-primary" onclick="return confirmUpdate(event);">確定</button>
-            </form>
+                    <div class="row mb-3">
+                        <label class="form-label col-sm-3">訂單日期:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" th:value="${shoppingOrder.formattedShoppingDate}" disabled />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="form-label col-sm-3">會員編號:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" th:value="${shoppingOrder.memberId}" disabled />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="form-label col-sm-3">會員姓名:</label>
+                        <div class="col-sm-9">
+                            <input type="text" class="form-control" th:value="${shoppingOrder.member.memberName}" disabled />
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="form-label col-sm-3">訂單狀況:</label>
+                        <div class="col-sm-9 text-start">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="shoppingStatus" id="status1" value="1" th:checked="${shoppingOrder.shoppingStatus == 1}" />
+                                <label class="form-check-label status-label" for="status1">1. 已結帳待出貨</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="shoppingStatus" id="status2" value="2" th:checked="${shoppingOrder.shoppingStatus == 2}" />
+                                <label class="form-check-label status-label" for="status2">2. 已結帳已出貨</label>
+                            </div>
+                            <!--  --><div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="shoppingStatus" id="status3" value="3" th:checked="${shoppingOrder.shoppingStatus == 3}" />
+                                <label class="form-check-label status-label" for="status3">3. 其他</label>
+                            </div>
+                            <div id="error-container-status" class="error-container">
+                                <i class="fa-regular fa-circle-xmark error-icon"></i>
+                                <span id="error-message-status">請選擇正確的訂單狀況</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <label class="form-label col-sm-3">訂單備註:</label>
+                        <div class="col-sm-9">
+                            <textarea name="shoppingMemo" rows="4" class="form-control" th:text="${shoppingOrder.shoppingMemo}" style="max-width: 300px;"></textarea>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mb-4" onclick="return confirmUpdate(event);">確定</button>
+                </form>
+            </div>
         </div>
     </div>
 
