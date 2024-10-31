@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.eatspan.SpanTasty.dto.reservation.RestaurantDTO;
 import com.eatspan.SpanTasty.entity.reservation.Restaurant;
+import com.eatspan.SpanTasty.service.rental.TablewareStockService;
 import com.eatspan.SpanTasty.service.reservation.RestaurantService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,6 +33,8 @@ public class RestaurantController {
 	
 	@Autowired
 	private RestaurantService restaurantService;
+	@Autowired
+	private TablewareStockService tablewareStockService;
 	
 	
     @GetMapping("/getAll")
@@ -77,8 +80,8 @@ public class RestaurantController {
         
     	Restaurant restaurant = restaurantService.uploadFile(addRestaurant, file);
         restaurantService.addRestaurant(restaurant);
-        // 增加餐廳時 增加餐廳用具預設庫存量 我先註解起來
-        // tablewareStockService.addStockByRestaurantId(restaurant.getRestaurantId());
+        // 增加餐廳時 增加餐廳用具預設庫存量
+         tablewareStockService.addStockByRestaurantId(restaurant.getRestaurantId());
         return "redirect:/restaurant/getAll";
     }
     
