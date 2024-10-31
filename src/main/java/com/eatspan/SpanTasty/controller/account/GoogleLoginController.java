@@ -31,7 +31,9 @@ public class GoogleLoginController {
     // 處理 Google OAuth 的回調
     @GetMapping("/oauth2/callback/google")
     public String callback(@RequestParam String code, Model model) {
+    	
         try {
+        	System.out.println("code :"+code);
             String token = googleOauthService.handleCallback(code);  // 獲取 JWT token
             System.out.println("token :"+token);
             model.addAttribute("token", token);  // 將 JWT Token 傳給前端

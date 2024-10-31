@@ -37,6 +37,18 @@ public class MemberController {
 	// 註冊會員
 	@PostMapping("/register")
 	public Result<Member> registerMember(@RequestBody Member member, @RequestParam String confirmPassword) {
+		
+	    // 檢查帳號、信箱、密碼是否為空
+	    if (member.getAccount() == null || member.getAccount().trim().isEmpty()) {
+	        return Result.failure("帳號不得為空");
+	    }
+	    if (member.getEmail() == null || member.getEmail().trim().isEmpty()) {
+	        return Result.failure("信箱不得為空");
+	    }
+	    if (member.getPassword() == null || member.getPassword().trim().isEmpty()) {
+	        return Result.failure("密碼不得為空");
+	    }
+		
 		// 檢查帳號是否已存在
 		if (memberService.existsByAccount(member.getAccount())) {
 			return Result.failure("帳號已存在");
@@ -85,7 +97,7 @@ public class MemberController {
 	public Result<String> logout(HttpSession session) {
 		System.out.println("前台有登出了!!!");
 		
-		session.invalidate(); // 使 session 無效
+		session.removeAttribute("shoppingId");
 		return Result.success("登出成功");
 	}
 

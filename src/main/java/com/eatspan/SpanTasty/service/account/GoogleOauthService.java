@@ -87,6 +87,7 @@ public class GoogleOauthService {
 
         Map<String, Object> responseBody = response.getBody();
         String accessToken = (String) responseBody.get("access_token");
+        System.out.println("accessToken : " +accessToken);
 
         // 使用訪問令牌請求 Google 用戶信息
         HttpHeaders userInfoHeaders = new HttpHeaders();
