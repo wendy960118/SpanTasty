@@ -179,6 +179,7 @@ public class ProductController {
 		model.addAttribute("productTypes", productTypes);
 		List<Product> products = productService.findAllProduct();
 		model.addAttribute("products", products);
+//		System.out.println(products);
 		return "spantasty/store/product/searchAllProduct";
 	}
 
