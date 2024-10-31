@@ -44,7 +44,7 @@ public class StarCupsOrderController {
 	//前台新增訂單
 	@GetMapping("/order")
 	public String starcupsAddTogoPage(Model model) {
-		List<MenuEntity> foodList = menuService.getAllFoods();
+		List<MenuEntity> foodList = menuService.getFoodsByFoodStatus(1);
 		List<FoodKindEntity> foodKindList = foodKindService.getAllFoodKind();
 		model.addAttribute("foodList", foodList);
 		model.addAttribute("foodKindList", foodKindList);
@@ -54,7 +54,7 @@ public class StarCupsOrderController {
 	//前台菜單展示
 	@GetMapping("/menu")
 	public String getAllMenu(Model model) {
-		List<MenuEntity> foodList = menuService.getAllFoods();
+		List<MenuEntity> foodList = menuService.getFoodsByFoodStatus(1);
 		List<FoodKindEntity> foodKindList = foodKindService.getAllFoodKind();
 		model.addAttribute("foodList", foodList);
 		model.addAttribute("foodKindList", foodKindList);

@@ -46,12 +46,12 @@ public class TogoServiceImpl implements TogoService {
 
 	@Override
 	public List<TogoEntity> getTogoByMemberId(Integer memberId) {
-		return togoRepository.findByMemberId(memberId);
+		return togoRepository.findByMemberIdOrderByTogoIdDesc(memberId);
 	}
 
 	@Override
 	public List<TogoEntity> getTogoByPhone(String tgPhone) {
-		return togoRepository.findTogoByTgPhoneContaining(tgPhone);
+		return togoRepository.findTogoByTgPhoneContainingOrderByTogoIdDesc(tgPhone);
 	}
 	
 	@Override

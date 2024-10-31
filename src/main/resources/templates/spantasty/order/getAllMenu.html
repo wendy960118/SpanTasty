@@ -38,6 +38,7 @@
                                     <th scope="col">餐點編號</th>
                                     <th scope="col">餐點名稱</th>
                                     <th scope="col">餐點照片</th>
+                                    <th scope="col">價格</th>
                                     <th scope="col">餐點種類</th>
                                     <th scope="col">描述</th>
                                     <th scope="col">餐點狀態</th>
@@ -52,6 +53,7 @@
                                             <img th:src="${food.foodPicture}" th:alt="${food.foodName}"
                                                 style="width: 100px; height: auto;">
                                         </td>
+                                        <td class="align-middle" th:text="${food.foodPrice}"></td>
                                         <td class="align-middle" th:text="${food.foodKind.foodKindName}"></td>
                                         <td class="align-middle" th:text="${food.foodDescription}"></td>
                                         <td class="align-middle">
@@ -96,6 +98,7 @@
                                 <td class="align-middle">
                                     <img src="${food.foodPicture}" alt="${food.foodName}" style="width: 100px; height: auto;">
                                 </td>
+                                <td class="align-middle">${food.foodPrice}</td>
                                 <td class="align-middle">${food.foodKind.foodKindName}</td>
                                 <td class="align-middle">${food.foodDescription || ''}</td>
                                 <td class="align-middle">

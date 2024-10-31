@@ -10,9 +10,9 @@ import com.eatspan.SpanTasty.entity.order.TogoEntity;
 
 public interface TogoRepository extends JpaRepository<TogoEntity, Integer> {
 	
-	List<TogoEntity> findByMemberId(Integer memberId);
+	List<TogoEntity> findByMemberIdOrderByTogoIdDesc(Integer memberId);
 	Page<TogoEntity> findByRestaurantId(Integer restaurantId, Pageable pageable);
-	List<TogoEntity> findTogoByTgPhoneContaining(String tgPhone);
+	List<TogoEntity> findTogoByTgPhoneContainingOrderByTogoIdDesc(String tgPhone);
 	List<TogoEntity> findByTgNameAndTgPhone(String tgName, String tgPhone);
 	
 }
