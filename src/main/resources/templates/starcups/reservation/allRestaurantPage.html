@@ -65,39 +65,43 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
 				center: center
 			});
 
-			// 在此定義 geocoder
-			const geocoder = new google.maps.Geocoder(); // Geocoding API
-
 			// 使用 Axios 獲取所有餐廳的 API
 			axios.get('/SpanTasty/StarCups/api/restaurants')
 				.then(response => {
 					console.log(response.data);
 					const restaurants = response.data;
-					// 對每個餐廳地址進行地理編碼
+					// 對每個餐廳地址進行地理編碼，改為調用後端 API
 					restaurants.forEach(restaurant => {
-						geocoder.geocode({ 'address': restaurant.restaurantAddress }, function (results, status) {
-							if (status === 'OK') {
-								const location = results[0].geometry.location;
-								// 在地圖上標記每個分店
-								new google.maps.Marker({
-									position: location,
-									map: map,
-									title: restaurant.restaurantName,
-									icon: {
-										url: 'http://localhost:8080/SpanTasty/starcups/images/reservation/cartoon_coffee.png', // 圖標的路徑
-										scaledSize: new google.maps.Size(64, 64) // 設定圖標的大小
-									}
-								});
-							} else {
-								console.error('Geocode was not successful for the following reason: ' + status);
-							}
-						});
+						axios.get('/SpanTasty/api/geocode', { params: { address: restaurant.restaurantAddress } })
+							.then(geocodeResponse => {
+								const data = geocodeResponse.data;
+
+								if (data && data.results && data.results.length > 0) {
+									const location = data.results[0].geometry.location;
+									// 在地圖上標記每個分店
+									new google.maps.Marker({
+										position: location,
+										map: map,
+										title: restaurant.restaurantName,
+										icon: {
+											url: 'http://localhost:8080/SpanTasty/starcups/images/reservation/cartoon_coffee.png', // 圖標的路徑
+											scaledSize: new google.maps.Size(64, 64) // 設定圖標的大小
+										}
+									});
+								} else {
+									console.error('無法找到該地址的地理位置');
+								}
+							})
+							.catch(error => {
+								console.error('Geocoding API 請求錯誤:', error);
+							});
 					});
 				})
 				.catch(error => {
 					console.error('Error fetching restaurants:', error);
 				});
 		}
+
 
 
 		// 獲取當前位置並初始化地圖
