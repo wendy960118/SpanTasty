@@ -117,6 +117,8 @@ public class ProductService {
             }
             if (product.getProductStatus() != null) {
                 existingProduct.setProductStatus(product.getProductStatus());
+            } else {
+                existingProduct.setProductStatus(existingProduct.getProductStatus());
             }
             if (product.getProductDescription() != null) {
                 existingProduct.setProductDescription(product.getProductDescription());

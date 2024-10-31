@@ -11,4 +11,6 @@ public interface ShoppingOrderRepository extends JpaRepository<ShoppingOrder, In
 
 	List<ShoppingOrder> findOrdersByMemberId(Integer memberId);
 
+	 ShoppingOrder findFirstByMemberIdAndShoppingStatus(Integer memberId, Integer shoppingStatus);
+
 }

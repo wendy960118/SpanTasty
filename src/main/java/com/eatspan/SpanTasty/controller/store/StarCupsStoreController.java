@@ -104,6 +104,161 @@ public class StarCupsStoreController {
 
 	
 	
+	
+
+	@PostMapping("/addPost")
+	@ResponseBody
+	public ResponseEntity<?> addOrder(@RequestHeader(value = "Authorization") String token,
+	                                   @RequestParam Integer productId,
+	                                   @RequestParam Integer shoppingItemQuantity) {
+	    try {
+	        // 解析 JWT token 取得 claims
+	        Map<String, Object> claims = JwtUtil.parseToken(token);
+	        Integer memberId = (Integer) claims.get("memberId"); // 獲取會員 ID
+
+	        // 確認會員是否有狀態為3的訂單
+	        ShoppingOrder existingOrder = shoppingOrderService.findOrderByMemberIdAndStatus(memberId, 3);
+	        if (existingOrder == null) {
+	            // 沒有狀態為3的訂單，則新建訂單
+	            ShoppingOrder order = shoppingOrderService.addShoppingOrder(memberId, productId, shoppingItemQuantity);
+	            session.setAttribute("shoppingId", order.getShoppingId());
+	            return ResponseEntity.status(HttpStatus.OK).body(order);
+	        } else {
+	            // 有狀態為3的訂單，將商品明細加入該訂單
+	            shoppingItemService.addShoppingItemToExistingOrder(existingOrder.getShoppingId(), productId, shoppingItemQuantity);
+	            // 將該訂單的 shoppingId 放入 session
+	            session.setAttribute("shoppingId", existingOrder.getShoppingId());
+	            return ResponseEntity.status(HttpStatus.OK).body(existingOrder);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("發生錯誤：" + e.getMessage());
+	    }
+	}
+
+
+	
+//	@PostMapping("/addPost")
+//	@ResponseBody
+//	public ResponseEntity<?> addOrder(@RequestHeader(value = "Authorization") String token,
+//	                                   @RequestParam Integer productId,
+//	                                   @RequestParam Integer shoppingItemQuantity) {
+//	    try {
+//	        // 解析 JWT token 取得 claims
+//	        Map<String, Object> claims = JwtUtil.parseToken(token);
+//	        Integer memberId = (Integer) claims.get("memberId"); // 獲取會員 ID
+//
+//	        Integer shoppingId = (Integer) session.getAttribute("shoppingId");
+//	        ShoppingOrder order;
+//	        System.out.println("shoppingId:"+shoppingId+1);
+//	        if (shoppingId == null) {
+//	            order = shoppingOrderService.addShoppingOrder(memberId, productId, shoppingItemQuantity);
+//	            session.setAttribute("shoppingId", order.getShoppingId()); 
+//	        } else {
+//	            shoppingItemService.addShoppingItemToExistingOrder(shoppingId, productId, shoppingItemQuantity);
+//	            order = shoppingOrderService.findShoppingOrderById(shoppingId); 
+//	        }
+//	        
+//	        return ResponseEntity.status(HttpStatus.OK).body(order);
+//	    } catch (Exception e) {
+//	        // 日誌記錄錯誤
+//	        e.printStackTrace();
+//	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("發生錯誤：" + e.getMessage());
+//	    }
+//	}
+
+	@PostMapping("/cartDetail")
+	public String toShoppingItem( @RequestParam String token, Model model) {
+	    try {
+	        // 解析 JWT token 取得 claims
+	    	System.out.println(token);
+	    	
+	        Map<String, Object> claims = JwtUtil.parseToken(token);
+	        Integer memberId = (Integer) claims.get("memberId"); // 獲取會員 ID
+	        // 確認會員是否有狀態為3的訂單
+	        ShoppingOrder existingOrder = shoppingOrderService.findOrderByMemberIdAndStatus(memberId, 3);
+	        if (existingOrder == null) {
+	            // 沒有狀態為3的訂單，則返回錯誤頁面
+	            return "starcups/store/page505"; // 錯誤頁面
+	        } else {
+	            // 有狀態為3的訂單，獲取該訂單的明細
+	            List<ShoppingItem> items = shoppingItemService.findShoppingItemById(existingOrder.getShoppingId());
+	            Integer totalAmount = shoppingOrderService.calculateTotalAmount(existingOrder.getShoppingId());
+
+	            model.addAttribute("shopping", existingOrder);
+	            model.addAttribute("items", items);
+	            model.addAttribute("totalAmount", totalAmount);
+	            
+	            return "starcups/store/cartPage"; // 返回訂單明細頁面
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return "starcups/store/page505"; // 出現錯誤時返回錯誤頁面
+	    }
+	}
+
+	
+
+//	@PostMapping("/cartDetail")
+//	public String toShoppingItem(Model model) {
+//	    Integer shoppingId = (Integer) session.getAttribute("shoppingId");
+//
+//	    if (shoppingId == null) {
+//	        return "starcups/store/page505"; // 如果沒有訂單，顯示錯誤頁面
+//	    }
+//
+//	    ShoppingOrder shopping = shoppingOrderService.findShoppingOrderById(shoppingId);
+//	    model.addAttribute("shopping", shopping);
+//	    List<ShoppingItem> items = shoppingItemService.findShoppingItemById(shoppingId);
+//	    model.addAttribute("items", items);
+//	    List<Product> productList = productService.findAllProduct();
+//	    model.addAttribute("productList", productList);
+//	    Integer totalAmount = shoppingOrderService.calculateTotalAmount(shoppingId);
+//	    model.addAttribute("totalAmount", totalAmount);
+//	    
+//	    return "starcups/store/cartPage"; // 返回購物車頁面
+//	}
+
+	
+	@PostMapping("/updateItem")
+	@ResponseBody
+	public ResponseEntity<?> updateShoppingItem(
+			@RequestHeader(value = "Authorization") String token,
+			@RequestParam Integer shoppingId,
+			@RequestParam Integer productId,
+			@RequestParam Integer shoppingItemQuantity) {
+		
+		try {
+			// 解析 JWT token 取得 claims
+			Map<String, Object> claims = JwtUtil.parseToken(token);
+			Integer memberId = (Integer) claims.get("memberId"); 
+			System.out.println("updateItem=HIHI");
+			ShoppingItemId shoppingItemId = new ShoppingItemId(shoppingId, productId);
+			ShoppingItem existingItem = shoppingItemService.findShoppingItemById(shoppingItemId);
+			System.out.println("update");
+			if (existingItem != null) {
+				existingItem.setShoppingItemQuantity(shoppingItemQuantity);
+				
+				Integer productPrice = shoppingItemService.getProductPriceById(productId);
+				Integer totalPrice = productPrice != null ? productPrice * shoppingItemQuantity : 0;
+				existingItem.setShoppingItemPrice(totalPrice);
+				shoppingItemService.updateShoppingItem(existingItem);
+				
+				ShoppingOrder shopping = shoppingOrderService.findShoppingOrderById(shoppingId);
+				shopping.setShoppingTotal(shoppingOrderService.calculateTotalAmount(shoppingId));
+				shoppingOrderService.updateShoppingOrder(shopping);
+				
+				return ResponseEntity.status(HttpStatus.OK).body(existingItem);
+			} else {
+				return ResponseEntity.status(HttpStatus.NOT_FOUND).body("購物項目未找到");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("發生錯誤：" + e.getMessage());
+		}
+	}
+
+	
 	@GetMapping("/productsByProductType/{productTypeId}")
 	public String searchProductsByProductType(@PathVariable Integer productTypeId,
 	        @RequestParam(value = "page", defaultValue = "1") int page, Model model) {
@@ -140,128 +295,78 @@ public class StarCupsStoreController {
 	    
 	    return "starcups/store/allProduct"; 
 	}
-
-
-
 	
-	@PostMapping("/addPost")
-	@ResponseBody
-	public ResponseEntity<?> addOrder(@RequestHeader(value = "Authorization") String token,
-	                                   @RequestParam Integer productId,
-	                                   @RequestParam Integer shoppingItemQuantity) {
-	    try {
-	        // 解析 JWT token 取得 claims
-	        Map<String, Object> claims = JwtUtil.parseToken(token);
-	        Integer memberId = (Integer) claims.get("memberId"); // 獲取會員 ID
-
-	        Integer shoppingId = (Integer) session.getAttribute("shoppingId");
-	        ShoppingOrder order;
-	        System.out.println("shoppingId:"+shoppingId+1);
-	        if (shoppingId == null) {
-	            order = shoppingOrderService.addShoppingOrder(memberId, productId, shoppingItemQuantity);
-	            session.setAttribute("shoppingId", order.getShoppingId()); 
-	        } else {
-	            shoppingItemService.addShoppingItemToExistingOrder(shoppingId, productId, shoppingItemQuantity);
-	            order = shoppingOrderService.findShoppingOrderById(shoppingId); 
-	        }
-	        
-	        return ResponseEntity.status(HttpStatus.OK).body(order);
-	    } catch (Exception e) {
-	        // 日誌記錄錯誤
-	        e.printStackTrace();
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("發生錯誤：" + e.getMessage());
-	    }
-	}
-
-	@PostMapping("/updateItem")
-	@ResponseBody
-	public ResponseEntity<?> updateShoppingItem(
-	        @RequestHeader(value = "Authorization") String token,
-	        @RequestParam Integer shoppingId,
-	        @RequestParam Integer productId,
-	        @RequestParam Integer shoppingItemQuantity) {
-
-	    try {
-	        // 解析 JWT token 取得 claims
-	        Map<String, Object> claims = JwtUtil.parseToken(token);
-	        Integer memberId = (Integer) claims.get("memberId"); 
-	        System.out.println("updateItem=HIHI");
-	        ShoppingItemId shoppingItemId = new ShoppingItemId(shoppingId, productId);
-	        ShoppingItem existingItem = shoppingItemService.findShoppingItemById(shoppingItemId);
-	        System.out.println("update");
-	        if (existingItem != null) {
-	            existingItem.setShoppingItemQuantity(shoppingItemQuantity);
-	            
-	            Integer productPrice = shoppingItemService.getProductPriceById(productId);
-	            Integer totalPrice = productPrice != null ? productPrice * shoppingItemQuantity : 0;
-	            existingItem.setShoppingItemPrice(totalPrice);
-	            shoppingItemService.updateShoppingItem(existingItem);
-	            
-	            ShoppingOrder shopping = shoppingOrderService.findShoppingOrderById(shoppingId);
-	            shopping.setShoppingTotal(shoppingOrderService.calculateTotalAmount(shoppingId));
-	            shoppingOrderService.updateShoppingOrder(shopping);
-	            
-	            return ResponseEntity.status(HttpStatus.OK).body(existingItem);
-	        } else {
-	            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("購物項目未找到");
-	        }
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("發生錯誤：" + e.getMessage());
-	    }
-	}
-
-
-	// 查詢單筆
-	@PostMapping("/cartDetail")
-	public String toShoppingItem(Model model) {
-		
-		Integer shoppingId = (Integer) session.getAttribute("shoppingId");
-		
-		 if (shoppingId == null) {
-		        return "starcups/store/page505"; // 
-		    }
 	
-		 ShoppingOrder shopping = shoppingOrderService.findShoppingOrderById(shoppingId);
-			model.addAttribute("shopping", shopping);
-			List<ShoppingItem> items = shoppingItemService.findShoppingItemById(shoppingId);
-			model.addAttribute("items", items);
-			List<Product> productList = productService.findAllProduct();
-			model.addAttribute("productList", productList);
-			Integer totalAmount = shoppingOrderService.calculateTotalAmount(shoppingId);
-			model.addAttribute("totalAmount", totalAmount);
-			System.out.println(shoppingId);
-			return "starcups/store/cartPage";
-			
-
-	}
-
-
 	@PostMapping("/checkOut")
 	public String checkOut(Model model) {
-		Integer shoppingId = (Integer) session.getAttribute("shoppingId");
-		ShoppingOrder shopping = shoppingOrderService.findShoppingOrderById(shoppingId);
-		
-		model.addAttribute("shopping", shopping);
-		List<ShoppingItem> items = shoppingItemService.findShoppingItemById(shoppingId);
-		model.addAttribute("items", items);
-		List<Product> productList = productService.findAllProduct();
-		model.addAttribute("productList", productList);
-		Integer totalAmount = shoppingOrderService.calculateTotalAmount(shoppingId);
-		model.addAttribute("totalAmount", totalAmount);
-		Member members = memberService.findMemberByShoppingId(shoppingId);
-		model.addAttribute("members",members);
-		//點數 
-		Integer memberId = shopping.getMemberId();
-		PointMemberDTO pointMember = pointService.getPointMember(memberId);
-		if(pointMember==null) {
-			pointMember=new PointMemberDTO();
-		}	
-		model.addAttribute("pointMember",pointMember);
-		Integer pointMemberTotalPoint = pointService.getPointMemberExpiryPoint(memberId);
-		model.addAttribute("pointMemberTotalPoint",pointMemberTotalPoint);
-		return "starcups/store/checkOut";
+	    Integer shoppingId = (Integer) session.getAttribute("shoppingId");
+	    
+	    if (shoppingId == null) {
+	        // 假設有一個方法可以獲取當前用戶的 memberId
+	        Integer memberId = (Integer) session.getAttribute("memberId");
+	        
+	        // 根據 memberId 和商品狀態為 3 獲取訂單
+	        ShoppingOrder shopping = shoppingOrderService.findOrderByMemberIdAndStatus(memberId, 3);
+	        
+	    }
+	    
+	    // 繼續原有的邏輯
+	    ShoppingOrder shopping = shoppingOrderService.findShoppingOrderById(shoppingId);
+	    model.addAttribute("shopping", shopping);
+	    
+	    List<ShoppingItem> items = shoppingItemService.findShoppingItemById(shoppingId);
+	    model.addAttribute("items", items);
+	    
+	    List<Product> productList = productService.findAllProduct();
+	    model.addAttribute("productList", productList);
+	    
+	    Integer totalAmount = shoppingOrderService.calculateTotalAmount(shoppingId);
+	    model.addAttribute("totalAmount", totalAmount);
+	    
+	    Member members = memberService.findMemberByShoppingId(shoppingId);
+	    model.addAttribute("members", members);
+	    
+	    // 點數 
+	    Integer memberId = shopping.getMemberId();
+	    PointMemberDTO pointMember = pointService.getPointMember(memberId);
+	    if (pointMember == null) {
+	        pointMember = new PointMemberDTO();
+	    }    
+	    model.addAttribute("pointMember", pointMember);
+	    
+	    Integer pointMemberTotalPoint = pointService.getPointMemberExpiryPoint(memberId);
+	    model.addAttribute("pointMemberTotalPoint", pointMemberTotalPoint);
+	    
+	    return "starcups/store/checkOut";
 	}
+
+
+
+//	@PostMapping("/checkOut")
+//	public String checkOut(Model model) {
+//		Integer shoppingId = (Integer) session.getAttribute("shoppingId");
+//		ShoppingOrder shopping = shoppingOrderService.findShoppingOrderById(shoppingId);
+//		
+//		model.addAttribute("shopping", shopping);
+//		List<ShoppingItem> items = shoppingItemService.findShoppingItemById(shoppingId);
+//		model.addAttribute("items", items);
+//		List<Product> productList = productService.findAllProduct();
+//		model.addAttribute("productList", productList);
+//		Integer totalAmount = shoppingOrderService.calculateTotalAmount(shoppingId);
+//		model.addAttribute("totalAmount", totalAmount);
+//		Member members = memberService.findMemberByShoppingId(shoppingId);
+//		model.addAttribute("members",members);
+//		//點數 
+//		Integer memberId = shopping.getMemberId();
+//		PointMemberDTO pointMember = pointService.getPointMember(memberId);
+//		if(pointMember==null) {
+//			pointMember=new PointMemberDTO();
+//		}	
+//		model.addAttribute("pointMember",pointMember);
+//		Integer pointMemberTotalPoint = pointService.getPointMemberExpiryPoint(memberId);
+//		model.addAttribute("pointMemberTotalPoint",pointMemberTotalPoint);
+//		return "starcups/store/checkOut";
+//	}
 
 	
 	
@@ -312,8 +417,17 @@ public class StarCupsStoreController {
 	    }
 	    model.addAttribute("discountAmount", discountAmount);
 		
-	    shopping.setShoppingStatus(2);
+	    shopping.setShoppingStatus(1);
 	    shoppingOrderService.updateShoppingOrder(shopping);
+	    
+	    for (ShoppingItem item : items) {
+	        Product product = item.getProduct();
+	        if (product != null && product.getProductStock() > 0) {
+	            product.setProductStock(product.getProductStock() - item.getShoppingItemQuantity());
+	            productService.updateProduct(product); 
+	        }
+	    }
+	    
 	    
         try {
         	shoppingOrderService.sendMail(shopping);
@@ -329,44 +443,49 @@ public class StarCupsStoreController {
 	
 	
 	@GetMapping("/orderConfirm")
-//	public String checkOutFinish(@RequestParam Map<String, String>map, Model model) {
-		public String checkOutFinish(Model model) {
-		
-		Integer shoppingId = (Integer) session.getAttribute("shoppingId");
-		ShoppingOrder shopping = shoppingOrderService.findShoppingOrderById(shoppingId);
-//		String string = map.get("TradeNo");
-//		System.out.println(map);
-		
-		
-		System.out.println("shoppingId "+shoppingId );
-		
-		model.addAttribute("shopping", shopping);
-		List<ShoppingItem> items = shoppingItemService.findShoppingItemById(shoppingId);
-		model.addAttribute("items", items);
-		List<Product> productList = productService.findAllProduct();
-		model.addAttribute("productList", productList);
-		Integer totalAmount = shoppingOrderService.calculateTotalAmount(shoppingId);
-		model.addAttribute("totalAmount", totalAmount);
+	public String checkOutFinish(Model model) {
+	    Integer shoppingId = (Integer) session.getAttribute("shoppingId");
+	    ShoppingOrder shopping = shoppingOrderService.findShoppingOrderById(shoppingId);
+	    
+	    System.out.println("shoppingId " + shoppingId);
+	    
+	    model.addAttribute("shopping", shopping);
+	    List<ShoppingItem> items = shoppingItemService.findShoppingItemById(shoppingId);
+	    model.addAttribute("items", items);
+	    List<Product> productList = productService.findAllProduct();
+	    model.addAttribute("productList", productList);
+	    Integer totalAmount = shoppingOrderService.calculateTotalAmount(shoppingId);
+	    model.addAttribute("totalAmount", totalAmount);
+	    
 	    Integer discountAmount = shopping.getDiscountAmount();
 	    if (discountAmount == null) {
 	        discountAmount = 0;
 	    }
 	    model.addAttribute("discountAmount", discountAmount);
-		
+	    
 	    shopping.setShoppingStatus(2);
 	    shoppingOrderService.updateShoppingOrder(shopping);
 	    
-        try {
-        	shoppingOrderService.sendMail(shopping);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-        
+	    for (ShoppingItem item : items) {
+	        Product product = item.getProduct();
+	        if (product != null && product.getProductStock() > 0) {
+	            product.setProductStock(product.getProductStock() - item.getShoppingItemQuantity());
+	            productService.updateProduct(product); 
+	        }
+	    }
+	    
+	    // 發送郵件
+	    try {
+	        shoppingOrderService.sendMail(shopping);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
 	    
 	    session.removeAttribute("shoppingId");
 	    
-		return "starcups/store/OrderConfirm";
+	    return "starcups/store/OrderConfirm";
 	}
+
 	
 	
 	

@@ -1,5 +1,7 @@
 package com.eatspan.SpanTasty.controller.store;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.eatspan.SpanTasty.entity.account.Member;
 import com.eatspan.SpanTasty.entity.store.Product;
+import com.eatspan.SpanTasty.entity.store.ShoppingItem;
 import com.eatspan.SpanTasty.entity.store.ShoppingOrder;
 import com.eatspan.SpanTasty.service.account.MemberService;
 import com.eatspan.SpanTasty.service.store.ProductService;
@@ -53,7 +56,11 @@ public class ShoppingOrderController {
         return "spantasty/store/shopping/addShoppingOrder"; // 返回新增訂單的視圖
     }
 	
-	
+    @GetMapping("/all")
+    public ResponseEntity<List<ShoppingOrder>> getAllProducts() {
+        List<ShoppingOrder> shoppings = shoppingOrderService.findAllShoppingOrder(); 
+        return ResponseEntity.ok(shoppings);
+    }
 
     
     
@@ -91,6 +98,8 @@ public class ShoppingOrderController {
         return "spantasty/store/shopping/updateShoppingOrder"; 
     }
 	
+	
+	
 	@PutMapping("/updatePut")
 	public String updateShoppingOrder(
 	        @RequestParam Integer shoppingId,
@@ -107,7 +116,7 @@ public class ShoppingOrderController {
 	    return "redirect:/shoppingOrder/findAll"; 
 	}
 	
-	
+
 	
 //	@GetMapping("/find/{id}")
 //	public ResponseEntity<?> findByShoppingOrderId(@PathVariable("id") Integer shoppingOrderId){
@@ -158,6 +167,5 @@ public class ShoppingOrderController {
 	    return ResponseEntity.ok(latestOrder);
 	}
 
-	
 
 }

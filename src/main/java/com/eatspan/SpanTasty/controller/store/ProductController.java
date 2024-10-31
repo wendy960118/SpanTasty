@@ -1,5 +1,6 @@
 package com.eatspan.SpanTasty.controller.store;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -45,11 +47,17 @@ public class ProductController {
 	// 導向新增商品頁面
 	@GetMapping("/add")
 	public String toAddProduct(Model model) {
-		List<ProductType> productTypes = productTypeService.findAllProductType(); // 獲取所有商品類別
-		model.addAttribute("productTypes", productTypes); // 添加商品類別到模型
+		List<ProductType> productTypes = productTypeService.findAllProductType(); 
+		model.addAttribute("productTypes", productTypes); 
 		return "spantasty/store/product/addProduct";
 	}
 
+    @GetMapping("/all")
+    public ResponseEntity<List<Product>> getAllProducts() {
+        List<Product> products = productService.findAllProduct(); 
+        return ResponseEntity.ok(products);
+    }
+	
 	// 新增
 	@PostMapping("/addPost")
 	public String addProduct(@ModelAttribute Product addProduct, @RequestParam MultipartFile file,
@@ -174,4 +182,6 @@ public class ProductController {
 		return "spantasty/store/product/searchAllProduct";
 	}
 
+
+	
 }
