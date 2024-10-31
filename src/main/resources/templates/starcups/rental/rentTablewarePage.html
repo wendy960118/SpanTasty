@@ -43,7 +43,7 @@ html.lt-ie-10 .ie-panel {
    
 #cartIcon, .disable-link {
   pointer-events: none;
-  opacity: 0.5;
+  opacity: 0.3;
 }
 
 .rd-navbar-basket {
@@ -462,7 +462,7 @@ function removeFromCart(index) {
         if (Number(stock.stock) === 0) {
           linkElement.classList.add('disabled');
           linkElement.style.pointerEvents = 'none'; // 禁用點擊事件
-          linkElement.style.opacity = '0.3'; // 改變樣式表示禁用狀態
+          linkElement.style.opacity = '0.2'; // 改變樣式表示禁用狀態
           quantityInput.value = 0;
         } else {
 	       	quantityInput.value = 0;

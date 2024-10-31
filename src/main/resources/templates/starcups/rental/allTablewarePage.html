@@ -117,6 +117,10 @@ html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {
 <script src="/SpanTasty/starcups/js/core.min.js"></script>
 <script src="/SpanTasty/starcups/js/script.js"></script>
 <script>
+function autoFillInputs() {
+    document.querySelector('input[name="tablewareName"]').value = "循環杯(大)";
+}
+
 const url = 'http://localhost:8080/SpanTasty/StarCups/rental/showTablewares';
 const sendBtn = document.getElementById('search');
 sendBtn.addEventListener('click', (e)=>{
