@@ -101,6 +101,12 @@ public class MenuController {
 		return ResponseEntity.ok(menuService.getFoodsByKind(foodKindId));
 	}
 	
+	@GetMapping("/menu/{foodStatus}/kinds/{foodKindId}")
+	@ResponseBody
+	public ResponseEntity<List<MenuEntity>> getFoodsByKindAndStatus(@PathVariable Integer foodKindId, @PathVariable Integer foodStatus) {
+		return ResponseEntity.ok(menuService.getFoodsByFoodKindIdAndFoodStatus(foodKindId, 1));
+	}
+	
 	@GetMapping("/menu/kinds/all")
 	@ResponseBody
 	public ResponseEntity<List<MenuEntity>> getAllFoods() {

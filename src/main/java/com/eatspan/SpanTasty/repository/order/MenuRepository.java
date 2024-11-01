@@ -14,4 +14,8 @@ public interface MenuRepository extends JpaRepository<MenuEntity, Integer> {
 	
 	List<MenuEntity> findFoodsByFoodNameContaining(String foodName);
 	
+	List<MenuEntity> findFoodsByFoodStatus(Integer foodStatus);
+	
+	List<MenuEntity> findFoodsByFoodKindIdAndFoodStatus(Integer foodKindId, Integer foodStatus);
+	
 }

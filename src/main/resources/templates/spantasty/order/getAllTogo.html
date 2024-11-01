@@ -255,6 +255,7 @@
                     togoData.content.forEach(function (togo) {
 
                         const pickupTimeformattedDate = togo.pickupTimeformattedDate !== null ? togo.pickupTimeformattedDate : '';
+                        const togoMemo = togo.togoMemo !== null ? togo.togoMemo : '';
 
                         const orderRow = `
                             <tr>
@@ -271,7 +272,8 @@
                                     </span>
                                 </td>
                                 <td class="align-middle">${togo.restaurant.restaurantName}</td>
-                                <td class="align-middle">${togo.togoMemo}</td>
+                                
+                                <td class="align-middle">${togo.togoMemo || ''}</td>
                                 <td  class="align-middle">
                                     <button type="button" class="btn btn-info" id="shwoDetailsBtn" onclick="showDetails(${togo.togoId})">查看</button>
                                 </td>

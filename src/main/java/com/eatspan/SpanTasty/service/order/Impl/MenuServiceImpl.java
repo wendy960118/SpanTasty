@@ -59,6 +59,15 @@ public class MenuServiceImpl implements MenuService {
 		return menuRepository.findFoodsByFoodNameContaining(foodName);
 	}
 	
+	@Override
+	public List<MenuEntity> getFoodsByFoodStatus(Integer foodStatus) {
+		return menuRepository.findFoodsByFoodStatus(foodStatus);
+	}
+	
+	@Override
+	public List<MenuEntity> getFoodsByFoodKindIdAndFoodStatus(Integer foodKindId, Integer foodStatus) {
+		return menuRepository.findFoodsByFoodKindIdAndFoodStatus(foodKindId, foodStatus);
+	}
 
 	@Override
 	public MenuEntity addFood(MenuEntity newFood) {
@@ -116,6 +125,5 @@ public class MenuServiceImpl implements MenuService {
 		return null;
 	}
 
-	
 	
 }

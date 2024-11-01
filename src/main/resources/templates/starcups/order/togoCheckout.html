@@ -58,6 +58,11 @@
     .cantUse {
       filter: opacity(50%) grayscale(100%);
     }
+    
+    .dropdown-time {
+  	  max-height: 50px; 
+  	  overflow-y: auto;  
+	}
 
   </style>
 </head>
@@ -92,7 +97,7 @@
             <li class="active">Checkout</li>
           </ul>
         </div>
-        <div class="box-position novi-bg novi-bg-img" style="background-image: url(images/bg-breadcrumbs.jpg);"></div>
+        <div class="box-position novi-bg novi-bg-img" style="background-image: url('/SpanTasty/starcups/images/bg-breadcrumbs.jpg');"></div>
       </div>
     </section>
     <!-- Section checkout form-->
@@ -265,6 +270,7 @@
                 <select class="form-input select-filter" data-minimum-results-for-search="Infinity"
                   data-constraints="@Required" id="timeSelect" disabled>
                   <option value="">選擇時間</option>
+                  <!-- style="overflow: auto; height: 50px" -->
                 </select>
               </div>
             </div>

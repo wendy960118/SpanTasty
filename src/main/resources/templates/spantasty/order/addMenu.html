@@ -19,6 +19,7 @@
         }
     </style>
     <script src="//cdnjs.cloudflare.com/ajax/libs/validate.js/0.13.1/validate.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <body>
@@ -28,7 +29,7 @@
         <div class="container mt-2">
             <h1 class="display-6">☕新增菜單☕</h1>
             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                <button class="btn btn-secondary btn-sm" id="autoFillBtn">一鍵填入</button>
+                <button class="btn btn-outline-light btn-sm" id="autoFillFoodBtn"><i class="fa-solid fa-mug-hot"></i></button>
             </div>
 
             <form id="menuForm" class="row g-3 mt-1">
@@ -100,7 +101,8 @@
                                     <input type="text" class="form-control" id="foodKindName" placeholder="請輸入種類名稱"
                                         required>
                                 </div>
-                                <div class="modal-footer">
+                                <div class="modal-footer">      
+                                    <button type="button" class="btn btn-outline-light btn-sm" id="autoFillKindBtn"><i class="fa-solid fa-mug-hot"></i></button>                        	
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
                                         id="cancelChangesBtn">取消</button>
                                     <button type="submit" class="btn btn-primary" id="saveChangesBtn">新增</button>
@@ -215,16 +217,18 @@
         }
 
         // 一鍵輸入
-        document.getElementById("autoFillBtn").addEventListener("click", function () {
+        document.getElementById("autoFillFoodBtn").addEventListener("click", function () {
             // 填入輸入框
-            document.getElementById("foodName").value = "國慶蛋糕";
-            document.getElementById("foodPrice").value = "10";
-            document.getElementById("foodKindId").value = "5";
-            document.getElementById("foodStatus").value = "2";
-            document.getElementById("foodDescription").value = "雙十國慶限定";
-
-
+            document.getElementById("foodName").value = "芒果冰沙";
+            document.getElementById("foodPrice").value = "95";
+            // document.getElementById("foodKindId").value = "5";
+            document.getElementById("foodStatus").value = "1";
+            document.getElementById("foodDescription").value = "夏季限定";
         });
+
+        document.getElementById("autoFillKindBtn").addEventListener("click", function () {
+            document.getElementById("foodKindName").value = "冰沙";
+        })
 
         // 判斷格式
         const constraints = {
