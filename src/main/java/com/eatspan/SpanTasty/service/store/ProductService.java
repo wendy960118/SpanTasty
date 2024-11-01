@@ -134,13 +134,11 @@ public class ProductService {
 	    Optional<Product> optional = productRepo.findById(productId);
 	    if (optional.isPresent()) {
 	        Product product = optional.get();
-	        if (product.getProductStatus() != null) {
-	        	product.setProductStatus(product.getProductStatus());
-            }
 	        product.setProductStatus(productStatus);
 	        productRepo.save(product);
 	    }
 	}
+
 	
 	public Product findProductByIdU(Integer id) {
 		return productRepo.findById(id).orElse(null);

@@ -463,7 +463,7 @@ public class StarCupsStoreController {
 	    }
 	    model.addAttribute("discountAmount", discountAmount);
 	    
-	    shopping.setShoppingStatus(2);
+	    shopping.setShoppingStatus(1);
 	    shoppingOrderService.updateShoppingOrder(shopping);
 	    
 	    for (ShoppingItem item : items) {

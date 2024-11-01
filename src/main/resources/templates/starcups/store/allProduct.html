@@ -90,8 +90,8 @@
             <div class="row row-90 row-fix justify-content-center">
                 <div class="col-lg-9 col-Fxl-9">
                     <div class="product-top-panel group-lg">
-                        <div class="mb-1 mt-1">Showing 1–12 of <span th:text="${totalProducts}"></span> results</div> 
-                    </div>
+                       <!--  <div class="mb-1 mt-1">Showing 1–12 of <span th:text="${totalProducts}"></span> results</div>  -->
+                    </div>  
                     <div class="row row-lg row-40">
                         <div class="col-sm-6 col-md-4" th:each="product : ${products}" th:if="${product.productStatus != 2}">
                             <article class="product" th:data-productstatus="${product.productStatus}" 
