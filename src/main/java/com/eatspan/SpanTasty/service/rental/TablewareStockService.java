@@ -79,7 +79,7 @@ public class TablewareStockService {
 			TablewareStock tablewareStock = new TablewareStock();
 			tablewareStock.setTablewareId(tableware.getTablewareId());
 			tablewareStock.setRestaurantId(restaurantId);
-			tablewareStock.setStock(10);
+			tablewareStock.setStock(0);
 			tablewareStockRepository.save(tablewareStock);
 		}
 	}
