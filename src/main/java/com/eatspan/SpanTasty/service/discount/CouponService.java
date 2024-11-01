@@ -271,15 +271,17 @@ public class CouponService {
 		for (Coupon couponBean : allCoupon) {
 			Integer maxAmount = couponBean.getMaxCoupon();
 			Integer receivedAmount = couponBean.getCouponMember().stream().mapToInt(CouponMember::getTotalAmount).sum();
-
-			// null表示無發放限制
-			if (maxAmount == null) {
-				couponOption.add(couponBean);
-			} else {
-				int usageAmount = maxAmount - receivedAmount;
-				if (usageAmount >= distributeAmount) {
+			if(couponBean.getCouponStatus().equals("上架")) {
+				// null表示無發放限制
+				if (maxAmount == null) {
 					couponOption.add(couponBean);
+				} else {
+					int usageAmount = maxAmount - receivedAmount;
+					if (usageAmount >= distributeAmount) {
+						couponOption.add(couponBean);
+					}
 				}
+				
 			}
 		}
 		return convertCouponDistributeDTO(couponOption);
