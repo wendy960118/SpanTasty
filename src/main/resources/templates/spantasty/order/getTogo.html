@@ -44,7 +44,7 @@
                             <th scope="col">訂單備註</th>
                             <th scope="col">查看</th>
                             <th scope="col">修改</th>
-                            <th scope="col">刪除</th>
+                            <th scope="col">取消</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -289,7 +289,7 @@
                             <td>${togoData.togoMemo || ''}</td>
                             <td><button class="btn btn-info" onclick="showTogoItems(${togoData.togoId})">查看</button></td>
                             <td><button class="btn btn-warning" onclick="showUpdateModal(${togoData.togoId})">修改</button></td>
-                            <td><button class="btn btn-danger" onclick="deleteTogo(${togoData.togoId})">刪除</button></td>
+                            <td><button class="btn btn-danger" onclick="deleteTogo(${togoData.togoId})">取消</button></td>
                             `;
 
                         // 添加到表格中
@@ -361,7 +361,7 @@
                         <td>${togoData.togoMemo || ''}</td>
                         <td><button class="btn btn-info" onclick="showTogoItems(${togoData.togoId})">查看</button></td>
                         <td><button class="btn btn-warning" onclick="showUpdateModal(${togoData.togoId})">修改</button></td>
-                        <td><button class="btn btn-danger" onclick="deleteTogo(${togoData.togoId})">刪除</button></td>
+                        <td><button class="btn btn-danger" onclick="deleteTogo(${togoData.togoId})">取消</button></td>
                     `;
 
                             // 添加到表格中
@@ -486,7 +486,7 @@
                     <td>${togoData.togoMemo || ''}</td>
                     <td><button class="btn btn-info" onclick="showTogoItems(${togoData.togoId})">查看</button></td>
                     <td><button class="btn btn-warning" onclick="showUpdateModal(${togoData.togoId})">修改</button></td>
-                    <td><button class="btn btn-danger" onclick="deleteTogo(${togoData.togoId})">刪除</button></td>
+                    <td><button class="btn btn-danger" onclick="deleteTogo(${togoData.togoId})">取消</button></td>
                 `;
                     }
                 })

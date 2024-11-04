@@ -341,7 +341,7 @@
                     console.log("取得訂單詳情成功", response.data);
                     const togoItems = response.data;
                     const detailsTableBody = document.getElementById("detailsTableBody");
-
+                    detailsTableBody.innerHTML = "";
                     togoItems.forEach(item => {
                         const row = `
                         <tr>
