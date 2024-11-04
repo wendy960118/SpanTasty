@@ -3,8 +3,10 @@ package com.eatspan.SpanTasty.service.rental;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
@@ -38,14 +40,18 @@ public class OvertimeRentSendMailService {
 	@Autowired
 	private freemarker.template.Configuration freemarkerConfig; // javaMail要注入
 	
+	private Set<Integer> notifiedRentIds = new HashSet<>();
 	
 	// 每天早上8點發送超時信
-//	@Scheduled(fixedRate = 5000)//每半分鐘執行
+	@Scheduled(fixedRate = 1000)//每半分鐘執行
 	public void findOvertimeRents() throws TemplateNotFoundException, MalformedTemplateNameException, ParseException, MessagingException, IOException, TemplateException {
 		List<Rent> overtimeRents = rentService.findByDueDateTomorrow();
 		
 		for(Rent rent: overtimeRents) {
-			sendMail(rent);
+			if(!notifiedRentIds.contains(rent.getRentId())){
+				sendMail(rent);
+				notifiedRentIds.add(rent.getRentId());
+			}
 		}
 	}
 	

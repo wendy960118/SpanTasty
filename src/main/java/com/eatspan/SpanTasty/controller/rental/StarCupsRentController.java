@@ -99,6 +99,7 @@ public class StarCupsRentController {
 		List<Tableware> tablewares = tablewareService.findAllTablewares()
 		        .stream()
 		        .filter(tableware -> tableware.getTablewareStatus() != 2)
+		        .sorted((t1, t2) -> t2.getTablewareId().compareTo(t1.getTablewareId())) 
 		        .collect(Collectors.toList());
 		model.addAttribute("tablewares", tablewares);
 		model.addAttribute("restaurants" ,restaurants);
