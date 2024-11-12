@@ -9,3 +9,5 @@ download [SQL data](https://drive.google.com/file/d/1a_dSCYy9u7tPF4noXOthLY9Iiz_
 ``Café webpage -> http://localhost:8080/SpanTasty/StarCups``
 
 >Other: install Lombok
+
+>[Demo Video](https://drive.google.com/file/d/1GnD55dV6xQUuIn10wdoj_b6e6d5pVV9r/view?usp=sharing)
